@@ -17,3 +17,7 @@
     box-shadow: none!important;
     border-color: #CCC!important;
 }
+
+.cell-vertical-bottom { vertical-align: bottom !important; }
+.cell-vertical-middle { vertical-align: middle !important; }
+.cell-vertical-top { vertical-align: top !important; }

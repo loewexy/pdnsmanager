@@ -49,8 +49,8 @@ limitations under the License.
             <table class="table table-hover" id="table-domains">
                 <thead>
                     <tr>
-                        <td><strong>ID</strong> <span class="glyphicon glyphicon-sort cursor-pointer"></span></td>
-                        <td>
+                        <td class="cell-vertical-middle"><strong>ID</strong> <span class="glyphicon glyphicon-sort cursor-pointer"></span></td>
+                        <td class="cell-vertical-middle">
                             <form class="form-inline">
                                 <div class="form-group">
                                 <strong>Name</strong> 
@@ -59,7 +59,7 @@ limitations under the License.
                                 </div>
                             </form>
                         </td>
-                        <td>
+                        <td class="cell-vertical-middle">
                             <form class="form-inline">
                                 <div class="form-group">
                                 <strong>Type</strong> 
@@ -71,7 +71,7 @@ limitations under the License.
                                 </div>
                             </form>
                         </td>
-                        <td><strong>Records</strong> <span class="glyphicon glyphicon-sort cursor-pointer"></span></td>
+                        <td class="cell-vertical-middle"><strong>Records</strong> <span class="glyphicon glyphicon-sort cursor-pointer"></span></td>
                     </tr>
                 </thead>
                 <tbody>
