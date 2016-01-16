@@ -9,4 +9,6 @@
 .vspacer-100 { height: 100px; }
 .vspacer-150 { height: 150px; }
 
-.defaulthidden { display: none; }
+.defaulthidden { display: none !important; }
+
+.cursor-pointer {cursor: pointer; }

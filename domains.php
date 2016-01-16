@@ -46,7 +46,39 @@ limitations under the License.
         </nav>
         
         <div class="container">
-            
+            <table class="table table-hover" id="table-domains">
+                <thead>
+                    <tr>
+                        <td><strong>ID</strong> <span class="glyphicon glyphicon-sort cursor-pointer"></span></td>
+                        <td>
+                            <form class="form-inline">
+                                <div class="form-group">
+                                <strong>Name</strong> 
+                                <span class="glyphicon glyphicon-sort cursor-pointer cursor-pointer"></span>
+                                <input type="text" class="form-control" id="searchName" placeholder="Search" autocomplete="off">
+                                </div>
+                            </form>
+                        </td>
+                        <td>
+                            <form class="form-inline">
+                                <div class="form-group">
+                                <strong>Type</strong> 
+                                <span class="glyphicon glyphicon-sort cursor-pointer cursor-pointer"></span>
+                                <select class="form-control" id="searchType">
+                                    <option value="none">No filter...</option>
+                                    <option value="MASTER">MASTER</option>
+                                </select>
+                                </div>
+                            </form>
+                        </td>
+                        <td><strong>Records</strong> <span class="glyphicon glyphicon-sort cursor-pointer"></span></td>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+                
+            </table>
         </div>
+
     </body>
 </html>
