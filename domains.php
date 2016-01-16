@@ -55,7 +55,7 @@ limitations under the License.
                                 <div class="form-group">
                                 <strong>Name</strong> 
                                 <span class="glyphicon glyphicon-sort cursor-pointer cursor-pointer"></span>
-                                <input type="text" class="form-control" id="searchName" placeholder="Search" autocomplete="off">
+                                <input type="text" class="form-control no-shadow" id="searchName" placeholder="Search" autocomplete="off">
                                 </div>
                             </form>
                         </td>
@@ -64,7 +64,7 @@ limitations under the License.
                                 <div class="form-group">
                                 <strong>Type</strong> 
                                 <span class="glyphicon glyphicon-sort cursor-pointer cursor-pointer"></span>
-                                <select class="form-control" id="searchType">
+                                <select class="form-control no-shadow" id="searchType">
                                     <option value="none">No filter...</option>
                                     <option value="MASTER">MASTER</option>
                                 </select>

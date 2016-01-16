@@ -12,3 +12,8 @@
 .defaulthidden { display: none !important; }
 
 .cursor-pointer {cursor: pointer; }
+
+.no-shadow { 
+    box-shadow: none!important;
+    border-color: #CCC!important;
+}
