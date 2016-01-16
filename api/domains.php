@@ -23,15 +23,15 @@ require_once '../lib/session.php';
 $input = json_decode(file_get_contents('php://input'));
 
 $sql = "
-    SELECT D.id,D.name,D.type,count(R.domain_id) AS records,P.user
+    SELECT D.id,D.name,D.type,count(R.domain_id) AS records
     FROM domains D
     LEFT OUTER JOIN records R ON D.id = R.domain_id
     LEFT OUTER JOIN permissions P ON D.id = P.domain
+    WHERE (P.user=? OR ?)
     GROUP BY D.id
     HAVING
     (D.name LIKE ? OR ?) AND
-    (D.type=? OR ?) AND
-    (P.user=? OR ?)
+    (D.type=? OR ?)
 ";
 
 if(isset($input->sort->field) && $input->sort->field != "") {
@@ -76,9 +76,9 @@ if(isset($input->type)) {
 }
 
 $stmt->bind_param("sisiii",
+        $id_filter, $id_filter_used,
         $name_filter, $name_filter_used,
-        $type_filter, $type_filter_used,
-        $id_filter, $id_filter_used
+        $type_filter, $type_filter_used
 );
 $stmt->execute();
 
@@ -87,7 +87,6 @@ $result = $stmt->get_result();
 $retval = Array();
 
 while($obj = $result->fetch_object()) {
-    unset($obj->user);
     $retval[] = $obj;
 }
 
