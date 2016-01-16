@@ -91,7 +91,7 @@ function recreateTable(data) {
         var type = $(this).children('td').eq(2).text();
         
         if(type == 'MASTER') {
-            location.assign('edit-master.php?id=' + id);
+            location.assign('edit-master.php#' + id);
         }
     });
 }
