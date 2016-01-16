@@ -16,27 +16,4 @@
 
 $(document).ready(function() {
     
-    $('#buttonSubmit').click(function(event) {
-        event.preventDefault();
-        
-        $('#alertLoginFailed').slideUp(300);
-        
-        var data = {};
-        data.user=$('#inputUser').val();
-        data.password=$('#inputPassword').val();
-        
-        $.post(
-            "api/index.php",
-            JSON.stringify(data),
-            function(data){
-                if(data.status == "fail") {
-                    $('#alertLoginFailed').slideDown(600);
-                } else {
-                    location.assign("domains.php");
-                }
-            },
-            "json"
-        );
-        
-    });
 });
