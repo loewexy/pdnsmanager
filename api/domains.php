@@ -18,17 +18,20 @@
 
 require_once '../config/config-default.php';
 require_once '../lib/database.php';
+require_once '../lib/session.php';
 
 $input = json_decode(file_get_contents('php://input'));
 
 $sql = "
-    SELECT D.id,D.name,D.type,count(R.domain_id) AS records
+    SELECT D.id,D.name,D.type,count(R.domain_id) AS records,P.user
     FROM domains D
     LEFT OUTER JOIN records R ON D.id = R.domain_id
+    LEFT OUTER JOIN permissions P ON D.id = P.domain
     GROUP BY D.id
     HAVING
     (D.name LIKE ? OR ?) AND
-    (D.type=? OR ?)
+    (D.type=? OR ?) AND
+    (P.user=? OR ?)
 ";
 
 if(isset($input->sort->field) && $input->sort->field != "") {
@@ -61,6 +64,9 @@ if(isset($input->name)) {
     $name_filter_used = 1;
 }
 
+$id_filter = $_SESSION['id'];
+$id_filter_used = (int)($_SESSION['type'] == "admin" ? 1 : 0);
+
 if(isset($input->type)) {
     $type_filter = $input->type;
     $type_filter_used = 0;
@@ -69,9 +75,10 @@ if(isset($input->type)) {
     $type_filter_used = 1;
 }
 
-$stmt->bind_param("sisi",
+$stmt->bind_param("sisiii",
         $name_filter, $name_filter_used,
-        $type_filter, $type_filter_used
+        $type_filter, $type_filter_used,
+        $id_filter, $id_filter_used
 );
 $stmt->execute();
 
@@ -80,6 +87,7 @@ $result = $stmt->get_result();
 $retval = Array();
 
 while($obj = $result->fetch_object()) {
+    unset($obj->user);
     $retval[] = $obj;
 }
 
