@@ -23,8 +23,13 @@ $(document).ready(function() {
     
     $('#soa button[type=submit]').click(function(){
         if(validateSoaData()) {
-            $('#soa button[type=submit]').prop("disabled", "true");
+            saveSoaData();
+            $('#soa button[type=submit]').prop("disabled", true);
         }
+    });
+    
+    $('#soa input').bind("paste keyup change", function() {
+        $('#soa button[type=submit]').prop("disabled", false);
     });
     
     $('#soa form input').bind("paste keyup change", function() {
@@ -67,6 +72,7 @@ $(document).ready(function() {
     });
 
     requestRecordData();
+    requestSoaData();
 
 });
 
@@ -133,4 +139,31 @@ function requestRecordData() {
         },
         "json"
     );
+}
+
+function requestSoaData() {
+    var data = {
+        action: "getSoa"
+    };
+    
+    data.domain = location.hash.substring(1);
+    
+    $.post(
+        "api/edit-master.php",
+        JSON.stringify(data),
+        function(data) {
+            $('#soa-primary').val(data.primary);
+            $('#soa-mail').val(data.email);
+            $('#soa-refresh').val(data.refresh);
+            $('#soa-retry').val(data.retry);
+            $('#soa-expire').val(data.expire);
+            $('#soa-ttl').val(data.ttl);
+            $('#soa-serial').val(data.serial);
+        },
+        "json"
+    );
+}
+
+function saveSoaData() {
+    
 }

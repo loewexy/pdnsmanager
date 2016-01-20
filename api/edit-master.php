@@ -19,6 +19,7 @@
 require_once '../config/config-default.php';
 require_once '../lib/database.php';
 require_once '../lib/session.php';
+require_once '../lib/soa-mail.php';
 
 $input = json_decode(file_get_contents('php://input'));
 
@@ -122,6 +123,32 @@ if(isset($input->action) && $input->action == "getRecords") {
         $retval[] = $obj;
     }
 
+}
+
+//Action for getting SOA
+if(isset($input->action) && $input->action == "getSoa") {
+    $domainId = (int)$input->domain;
+    
+    $stmt = $db->prepare("SELECT content FROM records WHERE type='SOA' AND domain_id=?");
+    $stmt->bind_param("i", $domainId);
+    $stmt->execute();
+    
+    $stmt->bind_result($content);
+    $stmt->fetch();
+    
+    $content = explode(" ", $content);
+    
+    $retval = Array();
+    
+    $retval['primary'] = preg_replace('/\\.$/', "", $content[0]);
+    $retval['email'] = soa_to_mail($content[1]);
+    $retval['serial'] = $content[2];
+    $retval['refresh'] = $content[3];
+    $retval['retry'] = $content[4];
+    $retval['expire'] = $content[5];
+    $retval['ttl'] = $content[6];
+    
+    
 }
 
 echo json_encode($retval);
