@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
+var sort = {
+    field: "",
+    order: 1
+}
+
 $(document).ready(function() {
     
     $('#soa button[type=submit]').click(function(){
@@ -30,8 +35,39 @@ $(document).ready(function() {
             $(this).parent().removeClass("has-error"); 
         }
     });
-
     
+    $('#searchType').select2({
+        placeholder: "Filter..."
+    });
+
+    $('#table-records>thead>tr>td span.glyphicon').click(function() {
+        var field = $(this).siblings('strong').text().toLowerCase();
+        if(sort.field == field) {
+            if(sort.order == 1) sort.order = 0;
+            else sort.field = "";
+        } else {
+            sort.field = field;
+            sort.order = 1;
+        }
+        $('#table-records>thead>tr>td span').removeClass("glyphicon-sort-by-attributes glyphicon-sort-by-attributes-alt");
+       
+        if(sort.field == field) {
+            if(sort.order == 1) $(this).addClass("glyphicon-sort-by-attributes");
+            else $(this).addClass("glyphicon-sort-by-attributes-alt");
+        }
+        requestRecordData();
+    });
+    
+    $('#searchName, #searchContent').bind("paste keyup", function() {
+        requestRecordData();
+    });
+    
+    $('#searchType').change(function() {
+        requestRecordData();
+    });
+
+    requestRecordData();
+
 });
 
 function validateSoaData() {
@@ -49,23 +85,52 @@ function validateSoaData() {
 }
 
 function recreateTable(data) {
-    $('#table-domains>tbody').empty();
+    $('#table-records>tbody').empty();
     
     $.each(data, function(index,item) {
-       $('<tr></tr>').appendTo('#table-domains>tbody')
+       $('<tr></tr>').appendTo('#table-records>tbody')
             .append('<td>' + item.id + '</td>')
             .append('<td>' + item.name + '</td>')
             .append('<td>' + item.type + '</td>')
-            .append('<td>' + item.records + '</td>');
+            .append('<td>' + item.content + '</td>')
+            .append('<td>' + item.priority + '</td>')
+            .append('<td>' + item.ttl + '</td>')
+            .append('<td><span class="glyphicon glyphicon-pencil cursor-pointer "></span></td>')
+            .append('<td><span class="glyphicon glyphicon-trash cursor-pointer "></span></td>');
        
     });
+}
+
+function requestRecordData() {
+    var restrictions = {};
     
-    $('#table-domains>tbody>tr').click(function() {
-        var id = $(this).children('td').first().text();
-        var type = $(this).children('td').eq(2).text();
-        
-        if(type == 'MASTER') {
-            location.assign('edit-master.php#' + id);
-        }
-    });
+    restrictions.sort = sort;
+    
+    var searchName = $('#searchName').val();
+    if(searchName.length > 0) {
+        restrictions.name = searchName;
+    }
+    
+    var searchType = $('#searchType').val();
+    if(searchType != null && searchType.length > 0) {
+        restrictions.type = searchType;
+    }
+    
+    var searchContent = $('#searchContent').val();
+    if(searchContent.length > 0) {
+        restrictions.content = searchContent;
+    }
+    
+    restrictions.action = "getRecords";
+    
+    restrictions.domain = location.hash.substring(1);
+    
+    $.post(
+        "api/edit-master.php",
+        JSON.stringify(restrictions),
+        function(data) {
+            recreateTable(data);
+        },
+        "json"
+    );
 }

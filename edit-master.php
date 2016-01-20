@@ -25,10 +25,13 @@ limitations under the License.
         
         <link href="include/bootstrap/css/bootstrap.min.css" rel="stylesheet">
         <link href="include/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+        <link href="include/select2/select2.min.css" rel="stylesheet">
+        <link href="include/select2/select2-bootstrap.min.css" rel="stylesheet">
         <link href="include/custom.css" rel="stylesheet">
         
         <script src="include/jquery.js"></script>
         <script src="include/bootstrap/js/bootstrap.min.js"></script>
+        <script src="include/select2/select2.min.js"></script>
         
         <script src="js/edit-master.js"></script>
     </head>
@@ -101,7 +104,87 @@ limitations under the License.
                 </row>
             </div>
             
+            <row class="row vspacer-50"></row>
             
+            <div id="records" class="container">
+                <table class="table table-hover" id="table-records">
+                    <thead>
+                        <tr>
+                            <td class="cell-vertical-middle"><strong>ID</strong> <span class="glyphicon glyphicon-sort cursor-pointer"></span></td>
+                            <td class="cell-vertical-middle">
+                                <form class="form-inline">
+                                    <div class="form-group">
+                                    <strong>Name</strong> 
+                                    <span class="glyphicon glyphicon-sort cursor-pointer "></span>
+                                    <input type="text" class="form-control no-shadow" id="searchName" placeholder="Search" autocomplete="off">
+                                    </div>
+                                </form>
+                            </td>
+                            <td class="cell-vertical-middle">
+                                <form class="form-inline">
+                                    <div class="form-group">
+                                    <strong>Type</strong> 
+                                    <span class="glyphicon glyphicon-sort cursor-pointer"></span>
+                                    <select class="form-control no-shadow" id="searchType" multiple>
+                                        <option value="A" >A</option>
+                                        <option value="AAAA" >AAAA</option>
+                                        <option value="AFSDB" >AFSDB</option>
+                                        <option value="CERT" >CERT</option>
+                                        <option value="CNAME" >CNAME</option>
+                                        <option value="DHCID" >DHCID</option>
+                                        <option value="DLV" >DLV</option>
+                                        <option value="DNSKEY" >DNSKEY</option>
+                                        <option value="DS" >DS</option>
+                                        <option value="EUI48" >EUI48</option>
+                                        <option value="EUI64" >EUI64</option>
+                                        <option value="HINFO" >HINFO</option>
+                                        <option value="IPSECKEY" >IPSECKEY</option>
+                                        <option value="KEY" >KEY</option>
+                                        <option value="KX" >KX</option>
+                                        <option value="LOC" >LOC</option>
+                                        <option value="MINFO" >MINFO</option>
+                                        <option value="MR" >MR</option>
+                                        <option value="MX" >MX</option>
+                                        <option value="NAPTR" >NAPTR</option>
+                                        <option value="NS" >NS</option>
+                                        <option value="NSEC" >NSEC</option>
+                                        <option value="NSEC3" >NSEC3</option>
+                                        <option value="NSEC3PARAM" >NSEC3PARAM</option>
+                                        <option value="OPT" >OPT</option>
+                                        <option value="PTR" >PTR</option>
+                                        <option value="RKEY" >RKEY</option>
+                                        <option value="RP" >RP</option>
+                                        <option value="RRSIG" >RRSIG</option>
+                                        <option value="SOA" >SOA</option>
+                                        <option value="SPF" >SPF</option>
+                                        <option value="SRV" >SRV</option>
+                                        <option value="SSHFP" >SSHFP</option>
+                                        <option value="TLSA" >TLSA</option>
+                                        <option value="TSIG" >TSIG</option>
+                                        <option value="TXT" >TXT</option>
+                                        <option value="WKS" >WKS</option>
+                                    </select>
+                                    </div>
+                                </form>
+                            </td>
+                            <td class="cell-vertical-middle">
+                                <form class="form-inline">
+                                    <div class="form-group">
+                                    <strong>Content</strong> 
+                                    <span class="glyphicon glyphicon-sort cursor-pointer"></span>
+                                    <input type="text" class="form-control no-shadow" id="searchContent" placeholder="Search" autocomplete="off">
+                                    </div>
+                                </form>
+                            </td>
+                            <td class="cell-vertical-middle"><strong>Priority</strong> <span class="glyphicon glyphicon-sort cursor-pointer"></span></td>
+                            <td class="cell-vertical-middle"><strong>TTL</strong> <span class="glyphicon glyphicon-sort cursor-pointer"></span></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+
+                </table>
+            </div>
         </div>
 
     </body>
