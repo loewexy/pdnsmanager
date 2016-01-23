@@ -17,7 +17,18 @@
 var sort = {
     field: "",
     order: 1
-}
+};
+
+var domainName = "";
+
+var recordTypes = [
+    "A","AAAA","AFSDB","CERT","CNAME","DHCID",
+    "DLV","DNSKEY","DS","EUI48","EUI64","HINFO",
+    "IPSECKEY","KEY","KX","LOC","MINFO","MR",
+    "MX","NAPTR","NS","NSEC","NSEC3","NSEC3PARAM",
+    "OPT","PTR","RKEY","RP","RRSIG","SOA","SPF",
+    "SRV","SSHFP","TLSA","TSIG","TXT","WKS"
+];
 
 $(document).ready(function() {
     
@@ -42,7 +53,12 @@ $(document).ready(function() {
     });
     
     $('#searchType').select2({
-        placeholder: "Filter..."
+        placeholder: "Filter...",
+        data: recordTypes
+    });
+    
+    $('#addType').select2({
+        data: recordTypes
     });
 
     $('#table-records>thead>tr>td span.glyphicon').click(function() {
@@ -70,10 +86,13 @@ $(document).ready(function() {
     $('#searchType').change(function() {
         requestRecordData();
     });
-
+    
+    $('#addButton').click(addRecord);
+    
     requestRecordData();
     requestSoaData();
-
+    requestSerial();
+    requestDomainName();
 });
 
 function validateSoaData() {
@@ -101,10 +120,13 @@ function recreateTable(data) {
             .append('<td>' + item.content + '</td>')
             .append('<td>' + item.priority + '</td>')
             .append('<td>' + item.ttl + '</td>')
-            .append('<td><span class="glyphicon glyphicon-pencil cursor-pointer "></span></td>')
-            .append('<td><span class="glyphicon glyphicon-trash cursor-pointer "></span></td>');
+            .append('<td><span class="glyphicon glyphicon-pencil cursor-pointer"></span></td>')
+            .append('<td><span class="glyphicon glyphicon-trash cursor-pointer"></span></td>');
        
     });
+    
+    $('#table-records>tbody>tr>td>span.glyphicon-trash').click(trashClicked);
+    $('#table-records>tbody>tr>td>span.glyphicon-pencil').click(editClicked);
 }
 
 function requestRecordData() {
@@ -158,6 +180,22 @@ function requestSoaData() {
             $('#soa-retry').val(data.retry);
             $('#soa-expire').val(data.expire);
             $('#soa-ttl').val(data.ttl);
+        },
+        "json"
+    );
+}
+
+function requestSerial() {
+    var data = {
+        action: "getSerial"
+    };
+    
+    data.domain = location.hash.substring(1);
+    
+    $.post(
+        "api/edit-master.php",
+        JSON.stringify(data),
+        function(data) {
             $('#soa-serial').val(data.serial);
         },
         "json"
@@ -165,5 +203,184 @@ function requestSoaData() {
 }
 
 function saveSoaData() {
+    var data = {
+        action: "saveSoa"
+    };
     
+    data.domain = location.hash.substring(1);
+    
+    data.primary = $('#soa-primary').val();
+    data.email = $('#soa-mail').val();
+    data.refresh = $('#soa-refresh').val();
+    data.retry = $('#soa-retry').val();
+    data.expire = $('#soa-expire').val();
+    data.ttl = $('#soa-ttl').val();
+    
+    $.post(
+        "api/edit-master.php",
+        JSON.stringify(data),
+        function() {
+            requestSerial();
+        },
+        "json"
+    );
+}
+
+function editClicked() {
+    var tableCells = $(this).parent().parent().children('td');
+    var tableRow = $(this).parent().parent();
+    
+    var valueName = tableCells.eq(1).text();
+    tableCells.eq(1).empty();
+    $('<input type="text" class="form-control input-sm">').appendTo(tableCells.eq(1)).val(valueName);
+    
+    var valueType = tableCells.eq(2).text();
+    tableCells.eq(2).empty();
+    $('<select class="form-control" style="width: 70%;"></select>').appendTo(tableCells.eq(2)).select2({
+        data: recordTypes
+    }).val(valueType).trigger("change");
+   
+    var valueContent = tableCells.eq(3).text();
+    tableCells.eq(3).empty();
+    $('<input type="text" class="form-control input-sm">').appendTo(tableCells.eq(3)).val(valueContent);
+    
+    var valuePrio = tableCells.eq(4).text();
+    tableCells.eq(4).empty();
+    $('<input type="text" class="form-control input-sm" size="1">').appendTo(tableCells.eq(4)).val(valuePrio);
+    
+    var valueTtl = tableCells.eq(5).text();
+    tableCells.eq(5).empty();
+    $('<input type="text" class="form-control input-sm" size="3">').appendTo(tableCells.eq(5)).val(valueTtl);
+    
+    tableCells.eq(6).remove();
+    tableCells.eq(7).remove();
+    
+    $(tableRow).append('<td colspan="2"><button class="btn btn-primary btn-sm">Save</button></td>');
+    
+    $(tableRow).find('button').click(saveRecord);
+    
+    enableFilter(false);
+}
+
+function saveRecord() {
+    
+    var tableRow = $(this).parent().parent();
+    
+    var data = {
+        id: tableRow.children('td').eq(0).text(),
+        name: tableRow.children('td').eq(1).children('input').val(),
+        type: tableRow.children('td').eq(2).children('select').val(),
+        content: tableRow.children('td').eq(3).children('input').val(),
+        prio: tableRow.children('td').eq(4).children('input').val(),
+        ttl: tableRow.children('td').eq(5).children('input').val(),
+        action: "saveRecord",
+        domain: location.hash.substring(1)
+    };
+    
+    tableRow.children('td').eq(0).empty().text(data.id);
+    tableRow.children('td').eq(1).empty().text(data.name);
+    tableRow.children('td').eq(2).empty().text(data.type);
+    tableRow.children('td').eq(3).empty().text(data.content);
+    tableRow.children('td').eq(4).empty().text(data.prio);
+    tableRow.children('td').eq(5).empty().text(data.ttl);
+    
+    tableRow.children('td').eq(6).remove();
+    
+    tableRow.append('<td><span class="glyphicon glyphicon-pencil cursor-pointer"></span></td>')
+            .append('<td><span class="glyphicon glyphicon-trash cursor-pointer"></span></td>');
+    tableRow.find('span.glyphicon-trash').click(trashClicked);
+    tableRow.find('span.glyphicon-pencil').click(editClicked);    
+    
+    enableFilter(true);
+    
+    $.post(
+        "api/edit-master.php",
+        JSON.stringify(data),
+        function() {
+            requestSerial();
+        },
+        "json"
+    );
+}
+
+function addRecord() {
+    var data = {
+        name: $('#addName').val(),
+        type: $('#addType').val(),
+        content: $('#addContent').val(),
+        prio: $('#addPrio').val(),
+        ttl: $('#addTtl').val(),
+        action: "addRecord",
+        domain: location.hash.substring(1)
+    };
+    
+    $.post(
+        "api/edit-master.php",
+        JSON.stringify(data),
+        function(dataRecv) {
+            $('<tr></tr>').appendTo('#table-records>tbody')
+                .append('<td>' + dataRecv.newId + '</td>')
+                .append('<td>' + data.name + '</td>')
+                .append('<td>' + data.type + '</td>')
+                .append('<td>' + data.content + '</td>')
+                .append('<td>' + data.prio + '</td>')
+                .append('<td>' + data.ttl + '</td>')
+                .append('<td><span class="glyphicon glyphicon-pencil cursor-pointer"></span></td>')
+                .append('<td><span class="glyphicon glyphicon-trash cursor-pointer"></span></td>')
+                .find('span.glyphicon-trash').click(trashClicked)            
+                .find('span.glyphicon-pencil').click(editClicked);
+    
+            requestSerial();
+        },
+        "json"
+    );
+}
+
+function trashClicked() {
+    var data = {
+        id: $(this).parent().parent().children().eq(0).text(),
+        domain: location.hash.substring(1),
+        action: "removeRecord"
+    };
+    
+    var lineAffected = $(this).parent().parent();
+    
+    $.post(
+        "api/edit-master.php",
+        JSON.stringify(data),
+        function() {
+            lineAffected.remove();
+            requestSerial();
+        },
+        "json"
+    );
+}
+
+function requestDomainName() {
+    var data = {
+        action: "getDomainName",
+        domain: location.hash.substring(1)
+    };
+    
+    $.post(
+        "api/edit-master.php",
+        JSON.stringify(data),
+        function(data) {
+            $('#domain-name').text(data.name);
+            domainName = data.name;
+        },
+        "json"
+    );
+}
+
+function enableFilter(enable) {
+    if(enable) {
+        $('#searchName').prop("disabled", false);
+        $('#searchType').prop("disabled", false);
+        $('#searchContent').prop("disabled", false);
+    } else {
+        $('#searchName').prop("disabled", true);
+        $('#searchType').prop("disabled", true);
+        $('#searchContent').prop("disabled", true);
+    }
 }

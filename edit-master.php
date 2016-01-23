@@ -51,7 +51,7 @@ limitations under the License.
         <div class="container">
             
             <row>
-                <h2 id="domain-name">example.com</h2>
+                <h2 id="domain-name"></h2>
             </row>
             
             <div id="soa" class="container">
@@ -125,45 +125,7 @@ limitations under the License.
                                     <div class="form-group">
                                     <strong>Type</strong> 
                                     <span class="glyphicon glyphicon-sort cursor-pointer"></span>
-                                    <select class="form-control no-shadow" id="searchType" multiple>
-                                        <option value="A" >A</option>
-                                        <option value="AAAA" >AAAA</option>
-                                        <option value="AFSDB" >AFSDB</option>
-                                        <option value="CERT" >CERT</option>
-                                        <option value="CNAME" >CNAME</option>
-                                        <option value="DHCID" >DHCID</option>
-                                        <option value="DLV" >DLV</option>
-                                        <option value="DNSKEY" >DNSKEY</option>
-                                        <option value="DS" >DS</option>
-                                        <option value="EUI48" >EUI48</option>
-                                        <option value="EUI64" >EUI64</option>
-                                        <option value="HINFO" >HINFO</option>
-                                        <option value="IPSECKEY" >IPSECKEY</option>
-                                        <option value="KEY" >KEY</option>
-                                        <option value="KX" >KX</option>
-                                        <option value="LOC" >LOC</option>
-                                        <option value="MINFO" >MINFO</option>
-                                        <option value="MR" >MR</option>
-                                        <option value="MX" >MX</option>
-                                        <option value="NAPTR" >NAPTR</option>
-                                        <option value="NS" >NS</option>
-                                        <option value="NSEC" >NSEC</option>
-                                        <option value="NSEC3" >NSEC3</option>
-                                        <option value="NSEC3PARAM" >NSEC3PARAM</option>
-                                        <option value="OPT" >OPT</option>
-                                        <option value="PTR" >PTR</option>
-                                        <option value="RKEY" >RKEY</option>
-                                        <option value="RP" >RP</option>
-                                        <option value="RRSIG" >RRSIG</option>
-                                        <option value="SOA" >SOA</option>
-                                        <option value="SPF" >SPF</option>
-                                        <option value="SRV" >SRV</option>
-                                        <option value="SSHFP" >SSHFP</option>
-                                        <option value="TLSA" >TLSA</option>
-                                        <option value="TSIG" >TSIG</option>
-                                        <option value="TXT" >TXT</option>
-                                        <option value="WKS" >WKS</option>
-                                    </select>
+                                    <select class="form-control no-shadow" id="searchType" multiple></select>
                                     </div>
                                 </form>
                             </td>
@@ -182,7 +144,15 @@ limitations under the License.
                     </thead>
                     <tbody>
                     </tbody>
-
+                    <tfoot>
+                        <td></td>
+                        <td><input id="addName" type="text" class="form-control input-sm"></td>
+                        <td><select id="addType" class="form-control" style="width: 70%;"></select></td>
+                        <td><input id="addContent" type="text" class="form-control input-sm"></td>
+                        <td><input id="addPrio" type="text" class="form-control input-sm" size="1"></td>
+                        <td><input id="addTtl" type="text" class="form-control input-sm" size="3"></td>
+                        <td colspan="2"><button id="addButton" class="btn btn-success btn-sm">&nbsp;Add&nbsp;</button></td>
+                    </tfoot>
                 </table>
             </div>
         </div>

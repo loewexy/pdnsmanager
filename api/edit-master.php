@@ -20,6 +20,7 @@ require_once '../config/config-default.php';
 require_once '../lib/database.php';
 require_once '../lib/session.php';
 require_once '../lib/soa-mail.php';
+require_once '../lib/update-serial.php';
 
 $input = json_decode(file_get_contents('php://input'));
 
@@ -151,4 +152,130 @@ if(isset($input->action) && $input->action == "getSoa") {
     
 }
 
-echo json_encode($retval);
+//Action for getting SOA
+if(isset($input->action) && $input->action == "getSerial") {
+    $domainId = (int)$input->domain;
+    
+    $stmt = $db->prepare("SELECT content FROM records WHERE type='SOA' AND domain_id=?");
+    $stmt->bind_param("i", $domainId);
+    $stmt->execute();
+    
+    $stmt->bind_result($content);
+    $stmt->fetch();
+    
+    $content = explode(" ", $content);
+    
+    $retval = Array();
+    
+    $retval['serial'] = $content[2];
+}
+
+//Action for saving SOA
+if(isset($input->action) && $input->action == "saveSoa") {
+    $domainId = (int)$input->domain;
+    
+    $db->autocommit(false);
+    $db->begin_transaction();
+    
+    $stmt = $db->prepare("SELECT content FROM records WHERE type='SOA' AND domain_id=?");
+    $stmt->bind_param("i", $domainId);
+    $stmt->execute();
+    $stmt->bind_result($content);
+    $stmt->fetch();
+    $stmt->close();
+    
+    $content = explode(" ", $content);    
+    $serial = $content[2];
+        
+    $newsoa = $input->primary . " ";
+    $newsoa .= mail_to_soa($input->email) . " ";
+    $newsoa .= $serial . " ";
+    $newsoa .= $input->refresh . " ";
+    $newsoa .= $input->retry . " ";
+    $newsoa .= $input->expire . " ";
+    $newsoa .= $input->ttl;
+    
+    $stmt = $db->prepare("UPDATE records SET content=? WHERE type='SOA' AND domain_id=?");
+    $stmt->bind_param("si", $newsoa, $domainId);
+    $stmt->execute();
+    
+    $db->commit();
+    
+    $retval = Array();
+    
+    update_serial($db, $domainId);
+}
+
+//Action for saving Record
+if(isset($input->action) && $input->action == "saveRecord") {
+    $domainId = $input->domain;
+    
+    $stmt = $db->prepare("UPDATE records SET name=?,type=?,content=?,ttl=?,prio=? WHERE id=? AND domain_id=?");
+    $stmt->bind_param("sssiiii",
+                $input->name, $input->type,
+                $input->content, $input->ttl,
+                $input->prio,
+                $input->id, $domainId
+            );
+    $stmt->execute();
+    update_serial($db, $domainId);
+}
+
+//Action for adding Record
+if(isset($input->action) && $input->action == "addRecord") {
+    $domainId = $input->domain;
+    
+    $stmt = $db->prepare("INSERT INTO records (domain_id, name, type, content, prio, ttl) VALUES (?,?,?,?,?,?)");
+    $stmt->bind_param("isssii",
+                $domainId, $input->name,
+                $input->type, $input->content,
+                $input->prio, $input->ttl
+            );
+    $stmt->execute();
+    $stmt->close();
+    
+    $stmt = $db->prepare("SELECT LAST_INSERT_ID()");
+    $stmt->execute();
+    $stmt->bind_result($newId);
+    $stmt->fetch();
+    $stmt->close();
+    
+    $retval = Array();
+    $retval['newId'] = $newId;
+    
+    update_serial($db, $domainId);
+}
+
+//Action for removing Record
+if(isset($input->action) && $input->action == "removeRecord") {
+    $domainId = $input->domain;
+    $recordId = $input->id;
+    
+    $stmt = $db->prepare("DELETE FROM records WHERE id=? AND domain_id=?");
+    $stmt->bind_param("ii", $recordId, $domainId);
+    $stmt->execute();
+    $stmt->close();
+    
+    update_serial($db, $domainId);
+}
+
+//Action for getting domain name
+if(isset($input->action) && $input->action == "getDomainName") {
+    $domainId = $input->domain;
+    
+    $stmt = $db->prepare("SELECT name FROM domains WHERE id=?");
+    $stmt->bind_param("i", $domainId);
+    $stmt->execute();
+    $stmt->bind_result($domainName);
+    $stmt->fetch();
+    $stmt->close();
+    
+    $retval = Array();
+    $retval['name'] = $domainName;
+}
+
+if (isset($retval)) {
+    echo json_encode($retval);
+} else {
+    echo "{}";
+}
