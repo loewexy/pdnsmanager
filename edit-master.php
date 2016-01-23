@@ -146,7 +146,7 @@ limitations under the License.
                     <tbody>
                     </tbody>
                     <tfoot>
-                        <td></td>
+                        <td>New</td>
                         <td><input id="addName" type="text" class="form-control input-sm" data-regex="^([^.]+\.)*[^.]+$"></td>
                         <td><select id="addType" class="form-control" style="width: 70%;"></select></td>
                         <td><input id="addContent" type="text" class="form-control input-sm" data-regex="^.+$"></td>
