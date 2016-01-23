@@ -83,5 +83,18 @@ limitations under the License.
             </table>
         </div>
 
+        <div class="modal fade" id="deleteConfirm" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        Are you shure to <strong>delete</strong> the zone <strong><span id="zoneToDelete"></span></strong>?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        <button id="buttonDelete" type="button" class="btn btn-danger">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </body>
 </html>

@@ -68,6 +68,8 @@ function requestData() {
         restrictions.type = searchType;
     }
     
+    restrictions.action = "getDomains";
+    
     $.post(
         "api/domains.php",
         JSON.stringify(restrictions),
@@ -86,7 +88,8 @@ function recreateTable(data) {
             .append('<td>' + item.id + '</td>')
             .append('<td>' + item.name + '</td>')
             .append('<td>' + item.type + '</td>')
-            .append('<td>' + item.records + '</td>');
+            .append('<td>' + item.records + '</td>')
+            .append('<td><span class="glyphicon glyphicon-trash cursor-pointer"></span></td>');
        
     });
     
@@ -98,4 +101,42 @@ function recreateTable(data) {
             location.assign('edit-master.php#' + id);
         }
     });
+    
+    $('#table-domains>tbody>tr>td>span.glyphicon-trash').click(function() {
+        $(this).parent().parent().unbind();
+        deleteDomain.call(this);
+    });
+}
+
+function deleteDomain() {
+    var deleteId = $(this).parent().parent().children('td').eq(0).text();
+    var deleteZone = $(this).parent().parent().children('td').eq(1).text();
+    var rowToRemove = $(this).parent().parent();
+    
+    $('#zoneToDelete').text(deleteZone);
+    
+    $('#deleteConfirm #buttonDelete').click(function() {
+        deleteDomainWithId(deleteId, function() {
+            $('#deleteConfirm').modal("hide");
+            $(rowToRemove).remove();
+        });
+    });
+    
+    $('#deleteConfirm').modal();
+}
+
+function deleteDomainWithId(id, callback) {
+    var data = {
+        action: "deleteDomain",
+        id: id
+    };
+    
+    $.post(
+        "api/domains.php",
+        JSON.stringify(data),
+        function() {
+            callback();
+        },
+        "json"
+    );
 }
