@@ -324,11 +324,17 @@ function addRecord() {
                 .append('<td>' + data.prio + '</td>')
                 .append('<td>' + data.ttl + '</td>')
                 .append('<td><span class="glyphicon glyphicon-pencil cursor-pointer"></span></td>')
-                .append('<td><span class="glyphicon glyphicon-trash cursor-pointer"></span></td>')
-                .find('span.glyphicon-trash').click(trashClicked)            
-                .find('span.glyphicon-pencil').click(editClicked);
-    
+                .append('<td><span class="glyphicon glyphicon-trash cursor-pointer"></span></td>');
+                
+            $('#table-records>tbody>tr').last().find('span.glyphicon-pencil').click(editClicked);
+            $('#table-records>tbody>tr').last().find('span.glyphicon-trash').click(trashClicked);
             requestSerial();
+            
+            $('#addName').val("");
+            $('#addType').val("A").change();
+            $('#addContent').val("");
+            $('#addPrio').val("");
+            $('#addTtl').val("");
         },
         "json"
     );
