@@ -104,9 +104,10 @@ limitations under the License.
                 </row>
             </div>
             
-            <row class="row vspacer-50"></row>
-            
             <div id="records" class="container">
+                <row>
+                    <h3>Records</h3>
+                </row>
                 <table class="table table-hover" id="table-records">
                     <thead>
                         <tr>
