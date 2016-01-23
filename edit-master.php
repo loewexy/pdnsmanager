@@ -146,11 +146,11 @@ limitations under the License.
                     </tbody>
                     <tfoot>
                         <td></td>
-                        <td><input id="addName" type="text" class="form-control input-sm"></td>
+                        <td><input id="addName" type="text" class="form-control input-sm" data-regex="^([^.]+\.)*[^.]+$"></td>
                         <td><select id="addType" class="form-control" style="width: 70%;"></select></td>
-                        <td><input id="addContent" type="text" class="form-control input-sm"></td>
-                        <td><input id="addPrio" type="text" class="form-control input-sm" size="1"></td>
-                        <td><input id="addTtl" type="text" class="form-control input-sm" size="3"></td>
+                        <td><input id="addContent" type="text" class="form-control input-sm" data-regex="^.+$"></td>
+                        <td><input id="addPrio" type="text" class="form-control input-sm" size="1" data-regex="^[0-9]+$"></td>
+                        <td><input id="addTtl" type="text" class="form-control input-sm" size="3" data-regex="^[0-9]+$"></td>
                         <td colspan="2"><button id="addButton" class="btn btn-success btn-sm">&nbsp;Add&nbsp;</button></td>
                     </tfoot>
                 </table>

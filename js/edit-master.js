@@ -43,14 +43,8 @@ $(document).ready(function() {
         $('#soa button[type=submit]').prop("disabled", false);
     });
     
-    $('#soa form input').bind("paste keyup change", function() {
-        var regex = new RegExp($(this).attr('data-regex'));
-        if(!regex.test($(this).val()) && $(this).val().length > 0) {
-            $(this).parent().addClass("has-error");
-        } else {
-            $(this).parent().removeClass("has-error"); 
-        }
-    });
+    $('#soa form input').bind("paste keyup change", regexValidate);
+    $('#table-records>tfoot input').bind("paste keyup change", regexValidate);
     
     $('#searchType').select2({
         placeholder: "Filter...",
@@ -304,6 +298,10 @@ function saveRecord() {
 }
 
 function addRecord() {
+    if(!validateLine.call(this)) {
+        return;
+    }
+    
     var data = {
         name: $('#addName').val(),
         type: $('#addType').val(),
@@ -383,4 +381,25 @@ function enableFilter(enable) {
         $('#searchType').prop("disabled", true);
         $('#searchContent').prop("disabled", true);
     }
+}
+
+function regexValidate() {
+    var regex = new RegExp($(this).attr('data-regex'));
+    if(!regex.test($(this).val())) {
+        $(this).parent().addClass("has-error");
+    } else {
+        $(this).parent().removeClass("has-error"); 
+    }
+}
+
+function validateLine() {
+    $(this).parent().parent().find('input[data-regex]').change();
+    var errors = 0;
+    $(this).parent().parent().find('input[data-regex]').each(function() {
+       if($(this).parent().hasClass('has-error')) {
+           errors++;
+       } 
+    });
+    
+    return errors <= 0;
 }
