@@ -195,8 +195,8 @@ if(isset($input->action) && $input->action == "saveSoa") {
     $newsoa .= $input->expire . " ";
     $newsoa .= $input->ttl;
     
-    $stmt = $db->prepare("UPDATE records SET content=? WHERE type='SOA' AND domain_id=?");
-    $stmt->bind_param("si", $newsoa, $domainId);
+    $stmt = $db->prepare("UPDATE records SET content=?,ttl=? WHERE type='SOA' AND domain_id=?");
+    $stmt->bind_param("sii", $newsoa, $input->ttl, $domainId);
     $stmt->execute();
     
     $db->commit();
