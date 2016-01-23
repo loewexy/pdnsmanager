@@ -47,6 +47,10 @@ $(document).ready(function() {
     $('#searchType').change(function() {
         requestData();
     });
+    
+    $('#searchType').select2({
+        minimumResultsForSearch: Infinity
+    });
 });
 
 function requestData() {

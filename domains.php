@@ -25,10 +25,13 @@ limitations under the License.
         
         <link href="include/bootstrap/css/bootstrap.min.css" rel="stylesheet">
         <link href="include/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+        <link href="include/select2/select2.min.css" rel="stylesheet">
+        <link href="include/select2/select2-bootstrap.min.css" rel="stylesheet">
         <link href="include/custom.css" rel="stylesheet">
         
         <script src="include/jquery.js"></script>
         <script src="include/bootstrap/js/bootstrap.min.js"></script>
+        <script src="include/select2/select2.min.js"></script>
         
         <script src="js/domains.js"></script>
     </head>
