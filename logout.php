@@ -15,8 +15,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <?php
-    //require_once 'lib/session.php';
-    //session_destroy();
+    require_once 'lib/session.php';
+    session_destroy();
 ?>
 <html>
     <head>
