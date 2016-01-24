@@ -19,7 +19,7 @@ limitations under the License.
 ?>
 <html>
     <head>
-        <title>PDNS Manager - Domains</title>
+        <title>PDNS Manager - Users</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
@@ -33,7 +33,7 @@ limitations under the License.
         <script src="include/bootstrap/js/bootstrap.min.js"></script>
         <script src="include/select2/select2.min.js"></script>
         
-        <script src="js/domains.js"></script>
+        <script src="js/users.js"></script>
     </head>
     <body>
         <nav class="navbar navbar-inverse navbar-static-top">
@@ -42,8 +42,8 @@ limitations under the License.
                     PDNS Manager
                 </div>
                 <ul class="nav navbar-nav">
-                    <li class="active"><a href="domains.php">Domains</a></li>
-                    <?php if($_SESSION['type'] == "admin") echo '<li><a href="users.php">Users</a></li>'; ?>
+                    <li><a href="domains.php">Domains</a></li>
+                    <?php if($_SESSION['type'] == "admin") echo '<li class="active"><a href="users.php">Users</a></li>'; ?>
                     <li><a href="logout.php">Logout</a></li>
                 </ul>
             </div>
@@ -70,12 +70,12 @@ limitations under the License.
                                 <span class="glyphicon glyphicon-sort cursor-pointer cursor-pointer"></span>
                                 <select class="form-control no-shadow" id="searchType">
                                     <option value="none">No filter...</option>
-                                    <option value="MASTER">MASTER</option>
+                                    <option value="admin">Admin</option>
+                                    <option value="user">User</option>
                                 </select>
                                 </div>
                             </form>
                         </td>
-                        <td class="cell-vertical-middle"><strong>Records</strong> <span class="glyphicon glyphicon-sort cursor-pointer"></span></td>
                     </tr>
                 </thead>
                 <tbody>
@@ -83,14 +83,14 @@ limitations under the License.
                 
             </table>
             
-            <a class="btn btn-success" href="add-domain.php">Add</a>
+            <a class="btn btn-success" href="edit-user.php#new">Add</a>
         </div>
 
         <div class="modal fade" id="deleteConfirm" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-body">
-                        Are you sure you want to <strong class="text-danger">delete</strong> the zone <strong><span id="zoneToDelete"></span></strong> including all associated data?
+                        Are you sure you want to <strong class="text-danger">delete</strong> the user <strong><span id="userToDelete"></span></strong> including all associated data?
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
