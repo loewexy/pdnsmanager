@@ -77,6 +77,60 @@ if(isset($input->action) && $input->action == "saveUserChanges") {
     }
 }
 
+if(isset($input->action) && $input->action == "getPermissions") {
+
+    $stmt = $db->prepare("
+        SELECT D.id,D.name 
+        FROM permissions P
+        JOIN domains D ON P.domain=D.id
+        WHERE P.user=?
+    ");
+    
+    $stmt->bind_param("i", $input->id);
+    $stmt->execute();
+
+    $result = $stmt->get_result();
+
+    $retval = Array();
+
+    while($obj = $result->fetch_object()) {
+        $retval[] = $obj;
+    }
+}
+
+if(isset($input->action) && $input->action == "removePermission") {
+
+    $stmt = $db->prepare("DELETE FROM permissions WHERE user=? AND domain=?");
+    
+    $stmt->bind_param("ii", $input->userId, $input->domainId);
+    $stmt->execute();
+}
+
+if(isset($input->action) && $input->action == "searchDomains" && isset($input->term)) {
+    $stmt = $db->prepare("SELECT id,name AS text FROM domains WHERE name LIKE ?  AND id NOT IN(SELECT domain FROM permissions WHERE user=?)");
+
+    $searchTerm = "%" . $input->term . "%";
+    
+    $stmt->bind_param("si", $searchTerm, $input->userId);
+    $stmt->execute();    
+    $result = $stmt->get_result();
+
+    $retval = Array();
+
+    while($obj = $result->fetch_object()) {
+        $retval[] = $obj;
+    }
+}
+
+if(isset($input->action) && $input->action == "addPermissions") {
+    $stmt = $db->prepare("INSERT INTO permissions(user,domain) VALUES (?,?)");
+
+    foreach($input->domains as $domain) {
+        $stmt->bind_param("ii", $input->userId, $domain);
+        $stmt->execute();
+    }
+}
+
 if(isset($retval)) {
     echo json_encode($retval);
 } else {

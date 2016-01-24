@@ -52,7 +52,35 @@ $(document).ready(function() {
         $('#user-password2').attr("placeholder", "Password repeated");
     } else {
         getUserData();
+        requestPermissions();
+        $('#permissions').removeClass("defaulthidden");
     }
+    
+    $('#permissions select#selectAdd').select2({
+        ajax: {
+            url: "api/edit-user.php",
+            dataType: "json",
+            delay: 200,
+            method: "post",
+            data: function(params) {
+                return JSON.stringify({
+                    action: "searchDomains",
+                    term: params.term,
+                    userId: location.hash.substring(1)
+                });
+            },
+            processResults: function (data) {
+                return {
+                    results: data
+                };
+            },
+            minimumInputLength: 1
+        },
+        placeholder: "Search...",
+        minimumInputLength: 1
+    });
+    
+    $('#btnAddPermissions').click(addPermissions);
 });
 
 function regexValidate() {
@@ -130,6 +158,72 @@ function saveUserChanges() {
         "api/edit-user.php",
         JSON.stringify(data),
         null,
+        "json"
+    );
+}
+
+function requestPermissions() {
+    var data = {
+        id: location.hash.substring(1),
+        action: "getPermissions"
+    };
+    
+    $.post(
+        "api/edit-user.php",
+        JSON.stringify(data),
+        function(data) {
+            createTable(data);
+        },
+        "json"
+    );
+}
+
+function createTable(data) {
+    $('#permissions table>tbody').empty();
+    
+    $.each(data, function(index,item) {
+        $('<tr></tr>').appendTo('#permissions table>tbody')
+            .append('<td>' + item.name + '</td>')
+            .append('<td><span class="glyphicon glyphicon-remove cursor-pointer"></span></td>')
+            .data("id", item.id);       
+    });
+    
+    $('#permissions table>tbody>tr>td>span.glyphicon-remove').click(removePermission);
+}
+
+function removePermission() {
+    var data = {
+        domainId: $(this).parent().parent().data("id"),
+        userId: location.hash.substring(1),
+        action: "removePermission" 
+    };
+    
+    var lineToRemove = $(this).parent().parent();
+    
+    $.post(
+        "api/edit-user.php",
+        JSON.stringify(data),
+        function(data) {
+            $(lineToRemove).remove();
+        },
+        "json"
+    );
+}
+
+function addPermissions() {
+    var data = {
+        action: "addPermissions",
+        userId: location.hash.substring(1),
+        domains: $('#permissions select#selectAdd').val()
+    }
+    
+    $.post(
+        "api/edit-user.php",
+        JSON.stringify(data),
+        function(data) {
+            $('#permissions select#selectAdd').val(null).change();
+            requestPermissions();
+        },
         "json"
     );
 }

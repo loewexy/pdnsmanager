@@ -82,6 +82,19 @@ limitations under the License.
                     </form>
                 </div>
                 
+                <div class="col-md-3 col-md-offset-1 defaulthidden" id="permissions">
+                        <h3>Permissions</h3>
+                        
+                        <table class="table table-hover">
+                            <tbody>
+                            </tbody>
+                        </table>
+                        
+                        <label for="selectAdd" class="control-label">Add</label>
+                        <select multiple class="form-control" id="selectAdd"></select>
+                        <div class="vspacer-15"></div>
+                        <button class="btn btn-primary" id="btnAddPermissions">Add</button>
+                </div>
             </row>
             
         </div>
