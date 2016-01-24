@@ -81,13 +81,15 @@ limitations under the License.
                 </tbody>
                 
             </table>
+            
+            <a class="btn btn-success" href="add-domain.php">Add</a>
         </div>
 
         <div class="modal fade" id="deleteConfirm" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-body">
-                        Are you shure to <strong>delete</strong> the zone <strong><span id="zoneToDelete"></span></strong>?
+                        Are you sure you want to <strong class="text-danger">delete</strong> the zone <strong><span id="zoneToDelete"></span></strong> including all associated data?
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
