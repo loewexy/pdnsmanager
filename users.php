@@ -50,7 +50,7 @@ limitations under the License.
         </nav>
         
         <div class="container">
-            <table class="table table-hover" id="table-domains">
+            <table class="table table-hover" id="table-users">
                 <thead>
                     <tr>
                         <td class="cell-vertical-middle"><strong>ID</strong> <span class="glyphicon glyphicon-sort cursor-pointer"></span></td>
