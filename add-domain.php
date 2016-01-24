@@ -57,7 +57,7 @@ limitations under the License.
                     <div class="col-md-3">
                         <div class="form-group">
                             <label for="zone-name" class="control-label">Name</label>
-                            <input type="text" class="form-control" id="zone-name" placeholder="Primary" autocomplete="off" data-regex="^([^.]+\.)*[^.]+$" tabindex="1">
+                            <input type="text" class="form-control" id="zone-name" placeholder="Name" autocomplete="off" data-regex="^([^.]+\.)*[^.]+$" tabindex="1">
                         </div>
                         <div class="form-group">
                             <label for="zone-primary" class="control-label">Primary</label>
