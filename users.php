@@ -44,6 +44,7 @@ limitations under the License.
                 <ul class="nav navbar-nav">
                     <li><a href="domains.php">Domains</a></li>
                     <?php if($_SESSION['type'] == "admin") echo '<li class="active"><a href="users.php">Users</a></li>'; ?>
+                    <li><a href="password.php">Password</a></li>
                     <li><a href="logout.php">Logout</a></li>
                 </ul>
             </div>

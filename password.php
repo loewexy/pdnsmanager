@@ -44,7 +44,7 @@ limitations under the License.
                 <ul class="nav navbar-nav">
                     <li><a href="domains.php">Domains</a></li>
                     <?php if($_SESSION['type'] == "admin") echo '<li><a href="users.php">Users</a></li>'; ?>
-                    <li><a href="password.php">Password</a></li>
+                    <li class="active"><a href="password.php">Password</a></li>
                     <li><a href="logout.php">Logout</a></li>
                 </ul>
             </div>
@@ -53,17 +53,12 @@ limitations under the License.
         <div class="container">
             
             <row>
-                <h2 id="heading">Change user</h2>
+                <h2 id="heading">Change password</h2>
             </row>
             
             <row>
                 <div class="col-md-3">
                     <form>
-                    
-                        <div class="form-group">
-                            <label for="user-name" class="control-label">Name</label>
-                            <input type="text" class="form-control" id="user-name" placeholder="Username" autocomplete="off" data-regex="^[A-Za-z0-9\._-]+$" tabindex="1">
-                        </div>
                         <div class="form-group">
                             <label for="user-password" class="control-label">Password</label>
                             <input type="password" class="form-control" id="user-password" placeholder="(Unchanged)" autocomplete="off" tabindex="2">
@@ -72,29 +67,8 @@ limitations under the License.
                             <label for="user-password2" class="control-label">Password repeated</label>
                             <input type="password" class="form-control" id="user-password2" placeholder="(Unchanged)" autocomplete="off" tabindex="3">
                         </div>
-                        <div class="form-group">
-                            <label for="user-type" class="control-label">Type</label>
-                            <select id="user-type" class="form-control" tabindex="4">
-                                <option value="user">User</option>
-                                <option value="admin">Admin</option>
-                            </select>
-                        </div>
                         <button id="user-button-add" class="btn btn-primary" tabindex="5">Change</button>
                     </form>
-                </div>
-                
-                <div class="col-md-3 col-md-offset-1 defaulthidden" id="permissions">
-                        <h3>Permissions</h3>
-                        
-                        <table class="table table-hover">
-                            <tbody>
-                            </tbody>
-                        </table>
-                        
-                        <label for="selectAdd" class="control-label">Add</label>
-                        <select multiple class="form-control" id="selectAdd"></select>
-                        <div class="vspacer-15"></div>
-                        <button class="btn btn-primary" id="btnAddPermissions">Add</button>
                 </div>
             </row>
             
