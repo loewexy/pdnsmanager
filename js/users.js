@@ -92,8 +92,8 @@ function recreateTable(data) {
        
     });
     
-    $('#table-users>tbody>tr').click(function() {
-        var id = $(this).children('td').first().text();
+    $('#table-users>tbody>tr>td:not(:last-child)').click(function() {
+        var id = $(this).parent().children('td').first().text();
         location.assign('edit-user.php#' + id);
     });
     

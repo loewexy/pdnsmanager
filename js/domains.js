@@ -93,9 +93,9 @@ function recreateTable(data) {
        
     });
     
-    $('#table-domains>tbody>tr').click(function() {
-        var id = $(this).children('td').first().text();
-        var type = $(this).children('td').eq(2).text();
+    $('#table-domains>tbody>tr>td:not(:last-child)').click(function() {
+        var id = $(this).parent().children('td').first().text();
+        var type = $(this).parent().children('td').eq(2).text();
         
         if(type == 'MASTER') {
             location.assign('edit-master.php#' + id);
