@@ -33,7 +33,7 @@ limitations under the License.
         <script src="include/bootstrap/js/bootstrap.min.js"></script>
         <script src="include/select2/select2.min.js"></script>
         
-        <script src="js/edit-user.js"></script>
+        <script src="js/password.js"></script>
     </head>
     <body>
         <nav class="navbar navbar-inverse navbar-static-top">
@@ -61,13 +61,13 @@ limitations under the License.
                     <form>
                         <div class="form-group">
                             <label for="user-password" class="control-label">Password</label>
-                            <input type="password" class="form-control" id="user-password" placeholder="(Unchanged)" autocomplete="off" tabindex="2">
+                            <input type="password" class="form-control" id="user-password" placeholder="Password" autocomplete="off" tabindex="2">
                         </div>
                         <div class="form-group">
                             <label for="user-password2" class="control-label">Password repeated</label>
-                            <input type="password" class="form-control" id="user-password2" placeholder="(Unchanged)" autocomplete="off" tabindex="3">
+                            <input type="password" class="form-control" id="user-password2" placeholder="Password repeated" autocomplete="off" tabindex="3">
                         </div>
-                        <button id="user-button-add" class="btn btn-primary" tabindex="5">Change</button>
+                        <button id="saveChanges" class="btn btn-primary" tabindex="5">Change</button>
                     </form>
                 </div>
             </row>
