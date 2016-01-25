@@ -16,12 +16,8 @@
  * limitations under the License.
  */
 
-$db = new mysqli($config['db_host'], $config['db_user'], $config['db_password']);
+$db = new mysqli($config['db_host'], $config['db_user'], $config['db_password'], $config['db_name'], $config['db_port']);
 
 if ($db->connect_error) {
     die("Connection to database failed");
-}
-
-if(!$db->select_db($config['db_name'])) {
-    die("Database not available");
 }
