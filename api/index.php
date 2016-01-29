@@ -38,8 +38,10 @@ if (password_verify($input->password, $password)) {
     
     $randomSecret = base64_encode(openssl_random_pseudo_bytes(32));
     $_SESSION['secret'] = $randomSecret;
-    
     setcookie("authSecret", $randomSecret, 0, "/", "", false, true);
+    
+    $csrfToken = base64_encode(openssl_random_pseudo_bytes(32));
+    $_SESSION['csrfToken'] = $csrfToken;
 } else {
     $retval['status'] = "fail";
 }

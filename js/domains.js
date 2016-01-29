@@ -54,7 +54,9 @@ $(document).ready(function() {
 });
 
 function requestData() {
-    var restrictions = {};
+    var restrictions = {
+        csrfToken: $('#csrfToken').text()
+    };
     
     restrictions.sort = sort;
     
@@ -128,7 +130,8 @@ function deleteDomain() {
 function deleteDomainWithId(id, callback) {
     var data = {
         action: "deleteDomain",
-        id: id
+        id: id,
+        csrfToken: $('#csrfToken').text()
     };
     
     $.post(

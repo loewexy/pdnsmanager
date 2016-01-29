@@ -46,7 +46,8 @@ function savePassword() {
     
     var data = {
         password: $('#user-password').val(),
-        action: "changePassword"
+        action: "changePassword",
+        csrfToken: $('#csrfToken').text()
     };
     
     $.post(

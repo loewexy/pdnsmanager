@@ -124,7 +124,9 @@ function recreateTable(data) {
 }
 
 function requestRecordData() {
-    var restrictions = {};
+    var restrictions = {
+        csrfToken: $('#csrfToken').text()
+    };
     
     restrictions.sort = sort;
     
@@ -159,7 +161,8 @@ function requestRecordData() {
 
 function requestSoaData() {
     var data = {
-        action: "getSoa"
+        action: "getSoa",
+        csrfToken: $('#csrfToken').text()
     };
     
     data.domain = location.hash.substring(1);
@@ -181,7 +184,8 @@ function requestSoaData() {
 
 function requestSerial() {
     var data = {
-        action: "getSerial"
+        action: "getSerial",
+        csrfToken: $('#csrfToken').text()
     };
     
     data.domain = location.hash.substring(1);
@@ -198,7 +202,8 @@ function requestSerial() {
 
 function saveSoaData() {
     var data = {
-        action: "saveSoa"
+        action: "saveSoa",
+        csrfToken: $('#csrfToken').text()
     };
     
     data.domain = location.hash.substring(1);
@@ -268,7 +273,8 @@ function saveRecord() {
         prio: tableRow.children('td').eq(4).children('input').val(),
         ttl: tableRow.children('td').eq(5).children('input').val(),
         action: "saveRecord",
-        domain: location.hash.substring(1)
+        domain: location.hash.substring(1),
+        csrfToken: $('#csrfToken').text()
     };
     
     tableRow.children('td').eq(0).empty().text(data.id);
@@ -309,7 +315,8 @@ function addRecord() {
         prio: $('#addPrio').val(),
         ttl: $('#addTtl').val(),
         action: "addRecord",
-        domain: location.hash.substring(1)
+        domain: location.hash.substring(1),
+        csrfToken: $('#csrfToken').text()
     };
     
     $.post(
@@ -344,7 +351,8 @@ function trashClicked() {
     var data = {
         id: $(this).parent().parent().children().eq(0).text(),
         domain: location.hash.substring(1),
-        action: "removeRecord"
+        action: "removeRecord",
+        csrfToken: $('#csrfToken').text()
     };
     
     var lineAffected = $(this).parent().parent();
@@ -363,7 +371,8 @@ function trashClicked() {
 function requestDomainName() {
     var data = {
         action: "getDomainName",
-        domain: location.hash.substring(1)
+        domain: location.hash.substring(1),
+        csrfToken: $('#csrfToken').text()
     };
     
     $.post(

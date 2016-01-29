@@ -22,6 +22,11 @@ require_once '../lib/session.php';
 
 $input = json_decode(file_get_contents('php://input'));
 
+if(!isset($input->csrfToken) || $input->csrfToken !== $_SESSION['csrfToken']) {
+    echo "Permission denied!";
+    exit();
+}
+
 if(isset($input->action) && $input->action == "changePassword") {
     $passwordHash = password_hash($input->password, PASSWORD_DEFAULT);
     

@@ -24,6 +24,11 @@ require_once '../lib/update-serial.php';
 
 $input = json_decode(file_get_contents('php://input'));
 
+if(!isset($input->csrfToken) || $input->csrfToken !== $_SESSION['csrfToken']) {
+    echo "Permission denied!";
+    exit();
+}
+
 //Permission check
 if(isset($input->domain)) {
     $permquery = $db->prepare("SELECT * FROM permissions WHERE user=? AND domain=?");

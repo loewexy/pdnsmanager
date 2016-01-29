@@ -97,7 +97,7 @@ limitations under the License.
             </row>
             
         </div>
-
+        <?php echo '<span class="hidden" id="csrfToken">' . $_SESSION['csrfToken'] . '</span>'; ?> 
     </body>
 </html>
 

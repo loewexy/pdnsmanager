@@ -111,7 +111,8 @@ function addUser() {
         name: $('#user-name').val(),
         password: $('#user-password').val(),
         type: $('#user-type').val(),
-        action: "addUser"
+        action: "addUser",
+        csrfToken: $('#csrfToken').text()
     };
     
     $.post(
@@ -128,7 +129,8 @@ function addUser() {
 function getUserData() {
     var data = {
         id: location.hash.substring(1),
-        action: "getUserData"
+        action: "getUserData",
+        csrfToken: $('#csrfToken').text()
     };
     
     $.post(
@@ -147,7 +149,8 @@ function saveUserChanges() {
         id: location.hash.substring(1),
         name: $('#user-name').val(),
         type: $('#user-type').val(),
-        action: "saveUserChanges"
+        action: "saveUserChanges",
+        csrfToken: $('#csrfToken').text()
     };
     
     if($('#user-password').val().length > 0) {
@@ -165,7 +168,8 @@ function saveUserChanges() {
 function requestPermissions() {
     var data = {
         id: location.hash.substring(1),
-        action: "getPermissions"
+        action: "getPermissions",
+        csrfToken: $('#csrfToken').text()
     };
     
     $.post(
@@ -195,7 +199,8 @@ function removePermission() {
     var data = {
         domainId: $(this).parent().parent().data("id"),
         userId: location.hash.substring(1),
-        action: "removePermission" 
+        action: "removePermission",
+        csrfToken: $('#csrfToken').text()
     };
     
     var lineToRemove = $(this).parent().parent();
@@ -214,7 +219,8 @@ function addPermissions() {
     var data = {
         action: "addPermissions",
         userId: location.hash.substring(1),
-        domains: $('#permissions select#selectAdd').val()
+        domains: $('#permissions select#selectAdd').val(),
+        csrfToken: $('#csrfToken').text()
     }
     
     $.post(

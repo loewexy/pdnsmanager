@@ -62,7 +62,8 @@ function saveData(callback) {
         retry: $('#zone-retry').val(),
         expire: $('#zone-expire').val(),
         ttl: $('#zone-ttl').val(),
-        action: "addDomain"
+        action: "addDomain",
+        csrfToken: $('#csrfToken').text()
     };
     
     $.post(
