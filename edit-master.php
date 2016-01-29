@@ -15,6 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <?php
+    require_once 'lib/headers.php';
     require_once 'lib/session.php';
 ?>
 <html>
@@ -150,7 +151,7 @@ limitations under the License.
                     <tfoot>
                         <td>New</td>
                         <td><input id="addName" type="text" class="form-control input-sm" data-regex="^([^.]+\.)*[^.]+$"></td>
-                        <td><select id="addType" class="form-control" style="width: 70%;"></select></td>
+                        <td><select id="addType" class="form-control select-narrow-70"></select></td>
                         <td><input id="addContent" type="text" class="form-control input-sm" data-regex="^.+$"></td>
                         <td><input id="addPrio" type="text" class="form-control input-sm" size="1" data-regex="^[0-9]+$"></td>
                         <td><input id="addTtl" type="text" class="form-control input-sm" size="3" data-regex="^[0-9]+$"></td>

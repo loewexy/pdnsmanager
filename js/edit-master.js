@@ -230,7 +230,7 @@ function editClicked() {
     
     var valueType = tableCells.eq(2).text();
     tableCells.eq(2).empty();
-    $('<select class="form-control" style="width: 70%;"></select>').appendTo(tableCells.eq(2)).select2({
+    $('<select class="form-control select-narrow-70"></select>').appendTo(tableCells.eq(2)).select2({
         data: recordTypes
     }).val(valueType).trigger("change");
    
