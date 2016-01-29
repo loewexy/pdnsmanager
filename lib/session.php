@@ -18,7 +18,14 @@
 
 session_start();
 
-if(!isset($_SESSION['id'])) {
+
+if(
+    !isset($_SESSION['id']) ||
+    !isset($_SESSION['secret']) ||
+    !isset($_COOKIE['authSecret']) ||
+    $_SESSION['secret'] !== $_COOKIE['authSecret']
+) {
     header('Location: index.php');
+    session_destroy();
     exit();
 }

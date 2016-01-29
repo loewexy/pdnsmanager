@@ -17,6 +17,7 @@ limitations under the License.
 <?php
     require_once 'lib/session.php';
     session_destroy();
+    setcookie("authSecret", "", 1, "/", "", false, true);
 ?>
 <html>
     <head>

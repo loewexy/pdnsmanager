@@ -35,6 +35,11 @@ if (password_verify($input->password, $password)) {
     
     $_SESSION['id'] = $id;
     $_SESSION['type'] = $type;
+    
+    $randomSecret = base64_encode(openssl_random_pseudo_bytes(32));
+    $_SESSION['secret'] = $randomSecret;
+    
+    setcookie("authSecret", $randomSecret, 0, "/", "", false, true);
 } else {
     $retval['status'] = "fail";
 }
