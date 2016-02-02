@@ -24,11 +24,6 @@ if(file_exists("../config/config-user.php")) {
 //Get input
 $input = json_decode(file_get_contents('php://input'));
 
-if(!isset($input->csrfToken) || $input->csrfToken !== $_SESSION['csrfToken']) {
-    echo "Permission denied!";
-    exit();
-}
-
 //Database command
 $sql = "
 CREATE TABLE IF NOT EXISTS domains (
