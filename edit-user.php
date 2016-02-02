@@ -20,7 +20,7 @@ limitations under the License.
 ?>
 <html>
     <head>
-        <title>PDNS Manager - Domains</title>
+        <title>PDNS Manager - Users</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
