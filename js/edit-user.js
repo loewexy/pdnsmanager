@@ -66,7 +66,8 @@ $(document).ready(function() {
                 return JSON.stringify({
                     action: "searchDomains",
                     term: params.term,
-                    userId: location.hash.substring(1)
+                    userId: location.hash.substring(1),
+                    csrfToken: $('#csrfToken').text()
                 });
             },
             processResults: function (data) {
