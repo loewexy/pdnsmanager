@@ -115,12 +115,14 @@ function recreateTable(data) {
             .append('<td>' + item.priority + '</td>')
             .append('<td>' + item.ttl + '</td>')
             .append('<td><span class="glyphicon glyphicon-pencil cursor-pointer"></span></td>')
-            .append('<td><span class="glyphicon glyphicon-trash cursor-pointer"></span></td>');
+            .append('<td><span class="glyphicon glyphicon-trash cursor-pointer"></span></td>')
+            .append('<td><span class="glyphicon glyphicon-share cursor-pointer"></span></td>');
        
     });
     
     $('#table-records>tbody>tr>td>span.glyphicon-trash').click(trashClicked);
     $('#table-records>tbody>tr>td>span.glyphicon-pencil').click(editClicked);
+    $('#table-records>tbody>tr>td>span.glyphicon-share').click(remoteClicked);
 }
 
 function requestRecordData() {
@@ -253,8 +255,9 @@ function editClicked() {
     
     tableCells.eq(6).remove();
     tableCells.eq(7).remove();
+    tableCells.eq(8).remove();
     
-    $(tableRow).append('<td colspan="2"><button class="btn btn-primary btn-sm">Save</button></td>');
+    $(tableRow).append('<td colspan="3"><button class="btn btn-primary btn-sm">Save</button></td>');
     
     $(tableRow).find('button').click(saveRecord);
     
@@ -287,9 +290,11 @@ function saveRecord() {
     tableRow.children('td').eq(6).remove();
     
     tableRow.append('<td><span class="glyphicon glyphicon-pencil cursor-pointer"></span></td>')
-            .append('<td><span class="glyphicon glyphicon-trash cursor-pointer"></span></td>');
+            .append('<td><span class="glyphicon glyphicon-trash cursor-pointer"></span></td>')
+            .append('<td><span class="glyphicon glyphicon-share cursor-pointer"></span></td>');
     tableRow.find('span.glyphicon-trash').click(trashClicked);
-    tableRow.find('span.glyphicon-pencil').click(editClicked);    
+    tableRow.find('span.glyphicon-pencil').click(editClicked);
+    tableRow.find('span.glyphicon-share').click(remoteClicked); 
     
     enableFilter(true);
     
@@ -331,10 +336,12 @@ function addRecord() {
                 .append('<td>' + data.prio + '</td>')
                 .append('<td>' + data.ttl + '</td>')
                 .append('<td><span class="glyphicon glyphicon-pencil cursor-pointer"></span></td>')
-                .append('<td><span class="glyphicon glyphicon-trash cursor-pointer"></span></td>');
+                .append('<td><span class="glyphicon glyphicon-trash cursor-pointer"></span></td>')
+                .append('<td><span class="glyphicon glyphicon-share cursor-pointer"></span></td>');
                 
             $('#table-records>tbody>tr').last().find('span.glyphicon-pencil').click(editClicked);
             $('#table-records>tbody>tr').last().find('span.glyphicon-trash').click(trashClicked);
+            $('#table-records>tbody>tr').last().find('span.glyphicon-share').click(remoteClicked);
             requestSerial();
             
             $('#addName').val("");
@@ -417,4 +424,9 @@ function validateLine() {
     });
     
     return errors <= 0;
+}
+
+function remoteClicked() {
+    var recordId = $(this).parent().siblings().eq(0).text();
+    location.assign("edit-remote.php#" + recordId);
 }

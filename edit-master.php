@@ -155,7 +155,7 @@ limitations under the License.
                         <td><input id="addContent" type="text" class="form-control input-sm" data-regex="^.+$"></td>
                         <td><input id="addPrio" type="text" class="form-control input-sm" size="1" data-regex="^[0-9]+$"></td>
                         <td><input id="addTtl" type="text" class="form-control input-sm" size="3" data-regex="^[0-9]+$"></td>
-                        <td colspan="2"><button id="addButton" class="btn btn-success btn-sm">&nbsp;Add&nbsp;</button></td>
+                        <td colspan="3"><button id="addButton" class="btn btn-success btn-sm">&nbsp;Add&nbsp;</button></td>
                     </tfoot>
                 </table>
             </div>
