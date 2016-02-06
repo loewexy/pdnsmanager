@@ -20,13 +20,13 @@ limitations under the License.
     require_once 'lib/database.php';
     require_once 'lib/checkversion.php';
     
-    if(!checkVersion($db)) {
-        Header("Location: upgrade.php");
+    if(checkVersion($db)) {
+        Header("Location: index.php");
     }
 ?>
 <html>
     <head>
-        <title>PDNS Manager</title>
+        <title>PDNS Manager - Upgrade</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
@@ -37,7 +37,7 @@ limitations under the License.
         <script src="include/jquery.js"></script>
         <script src="include/bootstrap/js/bootstrap.min.js"></script>
         
-        <script src="js/index.js"></script>
+        <script src="js/upgrade.js"></script>
     </head>
     <body>
         <nav class="navbar navbar-inverse navbar-static-top">
@@ -46,30 +46,38 @@ limitations under the License.
                     PDNS Manager
                 </div>
                 <ul class="nav navbar-nav">
+                    <li><a href="#">Upgrade</a></li>
                 </ul>
             </div>
         </nav>
         
         <div class="container">
-            <div class="row vspacer-60"></div>
-            <div class="row">
-                <div class="col-md-3 col-md-offset-6">
-                    <div class="alert alert-danger defaulthidden" id="alertLoginFailed" role="alert">
-                        Username and/or password wrong!
-                    </div>
-                    <form id="formLogin">
-                        <div class="form-group">
-                            <label class="control-label" for="inputUser">Username</label>
-                            <input type="text" class="form-control" id="inputUser" placeholder="Username">
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label" for="inputPassword">Password</label>
-                            <input type="password" class="form-control" id="inputPassword" placeholder="Password">
-                        </div>
-                        <button id="buttonSubmit" type="submit" class="btn btn-primary">Login</button>
-                    </form>
-                </div>
+            
+            <row>
+                <h2>Upgrade PDNS Manager</h2>
+            </row>
+
+            <row>
+                An upgrade for your PDNS Manager database is available and must be installed!                
+            </row>
+            
+            <div class="row vspacer-20"></div>
+            
+            <div class="col-md-6">
+                <row class="row" id="row-button-start">
+                    <button id="button-start" class="btn btn-primary">Start</button>
+                </row>
+
+                <row class="row" id="status">
+
+                </row>
+
+                <row class="row defaulthidden" id="row-button-home">
+                    <a href="index.php" class="btn btn-primary">Login</a>
+                </row>
             </div>
         </div>
+
     </body>
 </html>
+
