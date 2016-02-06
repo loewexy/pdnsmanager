@@ -23,4 +23,7 @@ $config['db_password'] = "";
 $config['db_port'] = 3306;
 $config['db_name'] = "pdnsmanager";
 
+//Remote update
+$config['nonce_lifetime'] = 15;
+
 include 'config-user.php';
