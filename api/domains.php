@@ -108,6 +108,11 @@ if(isset($input->action) && $input->action == "deleteDomain") {
     $stmt->execute();
     $stmt->close();
     
+    $stmt = $db->prepare("DELETE FROM remote WHERE record IN (SELECT id FROM records WHERE domain_id=?)");
+    $stmt->bind_param("i", $domainId);
+    $stmt->execute();
+    $stmt->close();
+    
     $stmt = $db->prepare("DELETE FROM records WHERE domain_id=?");
     $stmt->bind_param("i", $domainId);
     $stmt->execute();
