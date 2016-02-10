@@ -17,7 +17,7 @@
  */
 
 function getExpectedVersion() {
-    return 1;
+    return 2;
 }
 
 function checkVersion($db) {

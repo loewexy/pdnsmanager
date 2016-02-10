@@ -60,6 +60,9 @@ CREATE TABLE IF NOT EXISTS records (
   KEY domain_id (domain_id)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
+ALTER TABLE records
+  ADD CONSTRAINT records_ibfk_1 FOREIGN KEY (domain_id) REFERENCES domains (id) ON DELETE CASCADE;
+
 CREATE TABLE IF NOT EXISTS user (
   id int(11) NOT NULL AUTO_INCREMENT,
   name varchar(50) NOT NULL,
@@ -69,8 +72,9 @@ CREATE TABLE IF NOT EXISTS user (
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 ALTER TABLE permissions
-  ADD CONSTRAINT permissions_ibfk_2 FOREIGN KEY (domain) REFERENCES domains (id),
-  ADD CONSTRAINT permissions_ibfk_1 FOREIGN KEY (user) REFERENCES user (id);
+  ADD CONSTRAINT permissions_ibfk_1 FOREIGN KEY (domain) REFERENCES domains (id) ON DELETE CASCADE;
+ALTER TABLE permissions
+  ADD CONSTRAINT permissions_ibfk_2 FOREIGN KEY (user) REFERENCES user (id) ON DELETE CASCADE;
 
 CREATE TABLE IF NOT EXISTS remote (
     id int(11) NOT NULL AUTO_INCREMENT,
@@ -83,8 +87,8 @@ CREATE TABLE IF NOT EXISTS remote (
     KEY record (record)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
-ALTER TABLE `remote`
-    ADD CONSTRAINT `remote_ibfk_1` FOREIGN KEY (`record`) REFERENCES `records` (`id`);
+ALTER TABLE remote
+    ADD CONSTRAINT remote_ibfk_1 FOREIGN KEY (record) REFERENCES records (id) ON DELETE CASCADE;
 
 CREATE TABLE IF NOT EXISTS options (
     name varchar(255) NOT NULL,
@@ -92,7 +96,7 @@ CREATE TABLE IF NOT EXISTS options (
     PRIMARY KEY (name)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
-INSERT INTO options(name,value) VALUES ('schema_version', 1);
+INSERT INTO options(name,value) VALUES ('schema_version', 2);
 
 ";
 
