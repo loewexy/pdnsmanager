@@ -81,8 +81,6 @@ $(document).ready(function() {
         requestRecordData();
     });
     
-    $('#addButton').click(addRecord);
-    
     requestRecordData();
     requestSoaData();
     requestSerial();
@@ -231,9 +229,13 @@ function editClicked() {
     var tableCells = $(this).parent().parent().children('td');
     var tableRow = $(this).parent().parent();
     
+    var valueExtractRegex = new RegExp('\.?' + domainName + "$");
     var valueName = tableCells.eq(1).text();
+    valueName = valueName.replace(valueExtractRegex, "");
     tableCells.eq(1).empty();
-    $('<input type="text" class="form-control input-sm">').appendTo(tableCells.eq(1)).val(valueName);
+    var inputGroupName = $('<div class="input-group"></div>').appendTo(tableCells.eq(1));
+    $('<input type="text" class="form-control input-sm">').appendTo(inputGroupName).val(valueName);
+    $('<span class="input-group-addon"></span>').appendTo(inputGroupName).text("." + domainName);
     
     var valueType = tableCells.eq(2).text();
     tableCells.eq(2).empty();
@@ -270,7 +272,7 @@ function saveRecord() {
     
     var data = {
         id: tableRow.children('td').eq(0).text(),
-        name: tableRow.children('td').eq(1).children('input').val(),
+        name: tableRow.children('td').eq(1).find('input').val(),
         type: tableRow.children('td').eq(2).children('select').val(),
         content: tableRow.children('td').eq(3).children('input').val(),
         prio: tableRow.children('td').eq(4).children('input').val(),
@@ -279,6 +281,12 @@ function saveRecord() {
         domain: location.hash.substring(1),
         csrfToken: $('#csrfToken').text()
     };
+    
+    if(data.name.length > 0) {
+        data.name = data.name + "." + domainName;
+    } else {
+        data.name = domainName;
+    }
     
     tableRow.children('td').eq(0).empty().text(data.id);
     tableRow.children('td').eq(1).empty().text(data.name);
@@ -314,7 +322,6 @@ function addRecord() {
     }
     
     var data = {
-        name: $('#addName').val(),
         type: $('#addType').val(),
         content: $('#addContent').val(),
         prio: $('#addPrio').val(),
@@ -323,6 +330,12 @@ function addRecord() {
         domain: location.hash.substring(1),
         csrfToken: $('#csrfToken').text()
     };
+    
+    if($('#addName').val().length > 0) {
+        data.name = $('#addName').val() + "." + domainName;
+    } else {
+        data.name = domainName;
+    }
     
     $.post(
         "api/edit-master.php",
@@ -387,7 +400,9 @@ function requestDomainName() {
         JSON.stringify(data),
         function(data) {
             $('#domain-name').text(data.name);
+            $('#add-domain-name').text("." + data.name);
             domainName = data.name;
+            $('#addButton').unbind().click(addRecord);
         },
         "json"
     );

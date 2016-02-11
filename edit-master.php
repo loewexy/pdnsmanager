@@ -150,7 +150,12 @@ limitations under the License.
                     </tbody>
                     <tfoot>
                         <td>New</td>
-                        <td><input id="addName" type="text" class="form-control input-sm" data-regex="^([^.]+\.)*[^.]+$"></td>
+                        <td>
+                            <div class="input-group">
+                                <input id="addName" type="text" class="form-control input-sm" data-regex="^([^.]+\.)*[^.]*$">
+                                <span class="input-group-addon" id="add-domain-name"></span>
+                            </div>
+                        </td>
                         <td><select id="addType" class="form-control select-narrow-70"></select></td>
                         <td><input id="addContent" type="text" class="form-control input-sm" data-regex="^.+$"></td>
                         <td><input id="addPrio" type="text" class="form-control input-sm" size="1" data-regex="^[0-9]+$"></td>
