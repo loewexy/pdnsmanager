@@ -54,6 +54,8 @@ CREATE TABLE IF NOT EXISTS records (
   ttl int(11) DEFAULT NULL,
   prio int(11) NOT NULL DEFAULT '0',
   change_date int(11) DEFAULT NULL,
+  disabled TINYINT(1) DEFAULT 0,
+  auth TINYINT(1) DEFAULT 1,
   PRIMARY KEY (id),
   KEY rec_name_index (name),
   KEY nametype_index (name,type),
@@ -96,8 +98,15 @@ CREATE TABLE IF NOT EXISTS options (
     PRIMARY KEY (name)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
-INSERT INTO options(name,value) VALUES ('schema_version', 2);
+INSERT INTO options(name,value) VALUES ('schema_version', 3);
 
+CREATE TABLE domainmetadata (
+    id INT AUTO_INCREMENT,
+    domain_id INT NOT NULL,
+    kind VARCHAR(32),
+    content TEXT,
+    PRIMARY KEY (id)
+) Engine=InnoDB;
 ";
 
 

@@ -83,6 +83,25 @@ if(isset($input->action) && $input->action == "requestUpgrade") {
         $db->multi_query($sql);
         while ($db->next_result()) {;}
     }
+    if($currentVersion < 3) {
+        $sql = "
+            CREATE TABLE domainmetadata (
+                id INT AUTO_INCREMENT,
+                domain_id INT NOT NULL,
+                kind VARCHAR(32),
+                content TEXT,
+                PRIMARY KEY (id)
+            ) Engine=InnoDB;
+            
+            ALTER TABLE records ADD disabled TINYINT(1) DEFAULT 0;
+            ALTER TABLE records ADD auth TINYINT(1) DEFAULT 1;
+            
+            UPDATE options SET value=3 WHERE name='schema_version';
+        ";
+        
+        $db->multi_query($sql);
+        while ($db->next_result()) {;}
+    }
     
     $retval['status'] = "success";
 }
