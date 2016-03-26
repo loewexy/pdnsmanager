@@ -21,43 +21,48 @@ require_once '../lib/database.php';
 require_once '../lib/update-serial.php';
 
 if(filter_input(INPUT_SERVER, "REQUEST_METHOD") == "GET") {
-    $input_domain = filter_input(INPUT_GET, "domain");
-    $input_id = filter_input(INPUT_GET, "id");
-    $input_password = filter_input(INPUT_GET, "password");
-    $input_content = filter_input(INPUT_GET, "content");
-    
-    $stmt = $db->prepare("SELECT security,record FROM remote WHERE type='password' AND id=?");
-    $stmt->bind_param("i", $input_id);
-    $stmt->execute();
-    $stmt->bind_result($passwordHash, $record);
-    $stmt->fetch();
-    $stmt->close();
-    
-    if(!password_verify($input_password, $passwordHash)) {
-        $return['status'] = "error";
-        $return['error'] = "Permission denied";
+    if(filter_input(INPUT_GET, "action") == "updateRecord") {
+        $input_domain = filter_input(INPUT_GET, "domain");
+        $input_id = filter_input(INPUT_GET, "id");
+        $input_password = filter_input(INPUT_GET, "password");
+        $input_content = filter_input(INPUT_GET, "content");
+
+        $stmt = $db->prepare("SELECT security,record FROM remote WHERE type='password' AND id=?");
+        $stmt->bind_param("i", $input_id);
+        $stmt->execute();
+        $stmt->bind_result($passwordHash, $record);
+        $stmt->fetch();
+        $stmt->close();
+
+        if(!password_verify($input_password, $passwordHash)) {
+            $return['status'] = "error";
+            $return['error'] = "Permission denied";
+            echo json_encode($return);
+            exit();
+        }
+
+        $stmt = $db->prepare("UPDATE records SET content=? WHERE name=? AND id=?");
+        $stmt->bind_param("ssi", $input_content, $input_domain, $record);
+        $stmt->execute();
+        $stmt->close();
+
+        $stmt = $db->prepare("SELECT domain_id FROM records WHERE id=?");
+        $stmt->bind_param("i",$record);
+        $stmt->execute();
+        $stmt->bind_result($domain_id);
+        $stmt->fetch();
+        $stmt->close();
+
+        update_serial($db, $domain_id);
+
+        $return['status'] = "success";
+        echo json_encode($return);
+        exit();
+    } else if(filter_input(INPUT_GET, "action") == "getIp") {
+        $return['ip'] = filter_input(INPUT_SERVER, "REMOTE_ADDR");
         echo json_encode($return);
         exit();
     }
-    
-    $stmt = $db->prepare("UPDATE records SET content=? WHERE name=? AND id=?");
-    $stmt->bind_param("ssi", $input_content, $input_domain, $record);
-    $stmt->execute();
-    $stmt->close();
-    
-    $stmt = $db->prepare("SELECT domain_id FROM records WHERE id=?");
-    $stmt->bind_param("i",$record);
-    $stmt->execute();
-    $stmt->bind_result($domain_id);
-    $stmt->fetch();
-    $stmt->close();
-    
-    update_serial($db, $domain_id);
-    
-    $return['status'] = "success";
-    echo json_encode($return);
-    exit();
-    
 } else if(filter_input(INPUT_SERVER, "REQUEST_METHOD") == "POST") {
     $input = json_decode(file_get_contents('php://input'));
     
