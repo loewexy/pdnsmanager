@@ -234,7 +234,7 @@ function editClicked() {
     valueName = valueName.replace(valueExtractRegex, "");
     tableCells.eq(1).empty();
     var inputGroupName = $('<div class="input-group"></div>').appendTo(tableCells.eq(1));
-    $('<input type="text" class="form-control input-sm">').appendTo(inputGroupName).val(valueName);
+    $('<input type="text" class="form-control input-sm" data-regex="^([^.]+\.)*[^.]*$">').appendTo(inputGroupName).val(valueName);
     $('<span class="input-group-addon"></span>').appendTo(inputGroupName).text("." + domainName);
     
     var valueType = tableCells.eq(2).text();
@@ -245,15 +245,15 @@ function editClicked() {
    
     var valueContent = tableCells.eq(3).text();
     tableCells.eq(3).empty();
-    $('<input type="text" class="form-control input-sm">').appendTo(tableCells.eq(3)).val(valueContent);
+    $('<input type="text" class="form-control input-sm" data-regex="^.+$">').appendTo(tableCells.eq(3)).val(valueContent);
     
     var valuePrio = tableCells.eq(4).text();
     tableCells.eq(4).empty();
-    $('<input type="text" class="form-control input-sm" size="1">').appendTo(tableCells.eq(4)).val(valuePrio);
+    $('<input type="text" class="form-control input-sm" size="1" data-regex="^[0-9]+$">').appendTo(tableCells.eq(4)).val(valuePrio);
     
     var valueTtl = tableCells.eq(5).text();
     tableCells.eq(5).empty();
-    $('<input type="text" class="form-control input-sm" size="3">').appendTo(tableCells.eq(5)).val(valueTtl);
+    $('<input type="text" class="form-control input-sm" size="3" data-regex="^[0-9]+$">').appendTo(tableCells.eq(5)).val(valueTtl);
     
     tableCells.eq(6).remove();
     tableCells.eq(7).remove();
@@ -264,11 +264,17 @@ function editClicked() {
     $(tableRow).find('button').click(saveRecord);
     
     enableFilter(false);
+    
+    $(tableRow).find("input").bind("paste keyup change", regexValidate);
 }
 
 function saveRecord() {
     
     var tableRow = $(this).parent().parent();
+    
+    if(!validateLine.call(this)) {
+        return;
+    }
     
     var data = {
         id: tableRow.children('td').eq(0).text(),
