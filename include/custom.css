@@ -13,6 +13,11 @@
 
 .cursor-pointer {cursor: pointer; }
 
+.wrap-all-words {
+    word-wrap: break-word;
+    max-width: 350px;
+}
+
 .no-shadow { 
     box-shadow: none!important;
     border-color: #CCC!important;
