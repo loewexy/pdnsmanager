@@ -80,7 +80,7 @@ limitations under the License.
                         <td class="cell-vertical-middle"><strong>Records</strong> <span class="glyphicon glyphicon-sort cursor-pointer"></span></td>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="cursor-pointer">
                 </tbody>
                 
             </table>

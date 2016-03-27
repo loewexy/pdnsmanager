@@ -80,7 +80,7 @@ limitations under the License.
                         </td>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="cursor-pointer">
                 </tbody>
                 
             </table>
