@@ -103,6 +103,7 @@ function resetFields() {
 function addPassword() {
     if($('#data-password-password').val() != $('#data-password-password2').val() || $('#data-password-password').val().length <= 0) {
         $('#data-password-password2').parent().addClass("has-error");
+        shake($('#data-password-confirm'));
         return;
     }
 
@@ -128,6 +129,7 @@ function addPassword() {
 function addKey() {
     if($('#data-key-key').val().length <= 0) {
         $('#data-key-key').parent().addClass("has-error");
+        shake($('#data-key-confirm'));
         return;
     }
 
@@ -265,4 +267,20 @@ function changeKey() {
         },
         "json"
     );
+}
+
+function shake(element){                                                                                                                                                                                            
+    var interval = 50;                                                                                                 
+    var distance = 5;                                                                                                  
+    var times = 6;                                                                                                      
+
+    $(element).css('position','relative');                                                                                  
+
+    for(var iter=0;iter<(times+1);iter++){                                                                              
+        $(element).animate({ 
+            left:((iter%2===0 ? distance : distance*-1))
+            },interval);                     
+    }                                                                                                             
+
+    $(element).animate({ left: 0},interval);                                                                                
 }

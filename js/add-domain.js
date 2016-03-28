@@ -22,6 +22,8 @@ $(document).ready(function() {
             saveData(function(id) {
                 location.assign("edit-master.php#" + id);
             });
+        } else {
+            shake($('#zone-button-add'));
         }
     });
     
@@ -74,4 +76,20 @@ function saveData(callback) {
         },
         "json"
     );
+}
+
+function shake(element){                                                                                                                                                                                            
+    var interval = 50;                                                                                                 
+    var distance = 5;                                                                                                  
+    var times = 6;                                                                                                      
+
+    $(element).css('position','relative');                                                                                  
+
+    for(var iter=0;iter<(times+1);iter++){                                                                              
+        $(element).animate({ 
+            left:((iter%2===0 ? distance : distance*-1))
+            },interval);                     
+    }                                                                                                             
+
+    $(element).animate({ left: 0},interval);                                                                                
 }

@@ -99,12 +99,15 @@ function addUser() {
     if($('#user-password').val().length <= 0) {
         $('#user-password').parent().addClass("has-error");
         $('#user-password2').parent().addClass("has-error");
+        shake($('#user-button-add'));
     }
     
     if($('#user-name').parent().hasClass("has-error")) {
+        shake($('#user-button-add'));
         return;
     }
     if($('#user-password2').parent().hasClass("has-error")) {
+        shake($('#user-button-add'));
         return;
     }    
     
@@ -146,6 +149,16 @@ function getUserData() {
 }
 
 function saveUserChanges() {
+    
+    if($('#user-name').parent().hasClass("has-error")) {
+        shake($('#user-button-add'));
+        return;
+    }
+    if($('#user-password2').parent().hasClass("has-error")) {
+        shake($('#user-button-add'));
+        return;
+    }
+    
     var data = {
         id: location.hash.substring(1),
         name: $('#user-name').val(),
@@ -233,4 +246,20 @@ function addPermissions() {
         },
         "json"
     );
+}
+
+function shake(element){                                                                                                                                                                                            
+    var interval = 50;                                                                                                 
+    var distance = 5;                                                                                                  
+    var times = 6;                                                                                                      
+
+    $(element).css('position','relative');                                                                                  
+
+    for(var iter=0;iter<(times+1);iter++){                                                                              
+        $(element).animate({ 
+            left:((iter%2===0 ? distance : distance*-1))
+            },interval);                     
+    }                                                                                                             
+
+    $(element).animate({ left: 0},interval);                                                                                
 }

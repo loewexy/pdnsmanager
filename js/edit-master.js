@@ -36,6 +36,8 @@ $(document).ready(function() {
         if(validateSoaData()) {
             saveSoaData();
             $('#soa button[type=submit]').prop("disabled", true);
+        } else {
+            shake($('#soa button[type=submit]'));
         }
     });
     
@@ -273,6 +275,7 @@ function saveRecord() {
     var tableRow = $(this).parent().parent();
     
     if(!validateLine.call(this)) {
+        shake($(this));
         return;
     }
     
@@ -324,6 +327,7 @@ function saveRecord() {
 
 function addRecord() {
     if(!validateLine.call(this)) {
+        shake($('#addButton'));
         return;
     }
     
@@ -450,4 +454,20 @@ function validateLine() {
 function remoteClicked() {
     var recordId = $(this).parent().siblings().eq(0).text();
     location.assign("edit-remote.php#" + recordId);
+}
+
+function shake(element){                                                                                                                                                                                            
+    var interval = 50;                                                                                                 
+    var distance = 5;                                                                                                  
+    var times = 6;                                                                                                      
+
+    $(element).css('position','relative');                                                                                  
+
+    for(var iter=0;iter<(times+1);iter++){                                                                              
+        $(element).animate({ 
+            left:((iter%2===0 ? distance : distance*-1))
+            },interval);                     
+    }                                                                                                             
+
+    $(element).animate({ left: 0},interval);                                                                                
 }
