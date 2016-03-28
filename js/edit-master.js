@@ -331,11 +331,17 @@ function addRecord() {
         return;
     }
     
+    var prio = $('#addPrio').val();
+    if(prio.length === 0) prio = 0;
+    
+    var ttl = $('#addTtl').val();
+    if(ttl.length === 0) ttl = 86400;
+    
     var data = {
         type: $('#addType').val(),
         content: $('#addContent').val(),
-        prio: $('#addPrio').val(),
-        ttl: $('#addTtl').val(),
+        prio: prio,
+        ttl: ttl,
         action: "addRecord",
         domain: location.hash.substring(1),
         csrfToken: $('#csrfToken').text()

@@ -158,8 +158,8 @@ limitations under the License.
                         </td>
                         <td><select id="addType" class="form-control select-narrow-70"></select></td>
                         <td><input id="addContent" type="text" class="form-control input-sm" data-regex="^.+$"></td>
-                        <td><input id="addPrio" type="text" class="form-control input-sm" size="1" data-regex="^[0-9]+$"></td>
-                        <td><input id="addTtl" type="text" class="form-control input-sm" size="3" data-regex="^[0-9]+$"></td>
+                        <td><input id="addPrio" type="text" class="form-control input-sm" placeholder="0" size="1" data-regex="^[0-9]*$"></td>
+                        <td><input id="addTtl" type="text" class="form-control input-sm" placeholder="86400" size="3" data-regex="^[0-9]*$"></td>
                         <td colspan="3"><button id="addButton" class="btn btn-success btn-sm">&nbsp;Add&nbsp;</button></td>
                     </tfoot>
                 </table>
