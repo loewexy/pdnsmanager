@@ -146,7 +146,7 @@ limitations under the License.
                             <td class="cell-vertical-middle"><strong>TTL</strong> <span class="glyphicon glyphicon-sort cursor-pointer"></span></td>
                         </tr>
                     </thead>
-                    <tbody class="cursor-pointer">
+                    <tbody>
                     </tbody>
                     <tfoot>
                         <td>New</td>
