@@ -59,7 +59,13 @@ if(filter_input(INPUT_SERVER, "REQUEST_METHOD") == "GET") {
         echo json_encode($return);
         exit();
     } else if(filter_input(INPUT_GET, "action") == "getIp") {
-        $return['ip'] = filter_input(INPUT_SERVER, "REMOTE_ADDR");
+		// If we are behind a proxy, return the proxies IP address
+		if(filter_input(INPUT_SERVER, "HTTP_X_FORWARDED_FOR") != null){
+			$return['ip'] = filter_input(INPUT_SERVER, "HTTP_X_FORWARDED_FOR");
+		}
+		else {
+			$return['ip'] = filter_input(INPUT_SERVER, "REMOTE_ADDR");
+		}
         echo json_encode($return);
         exit();
     }
