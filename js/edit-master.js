@@ -26,7 +26,7 @@ var recordTypes = [
     "DLV","DNSKEY","DS","EUI48","EUI64","HINFO",
     "IPSECKEY","KEY","KX","LOC","MINFO","MR",
     "MX","NAPTR","NS","NSEC","NSEC3","NSEC3PARAM",
-    "OPT","PTR","RKEY","RP","RRSIG","SOA","SPF",
+    "OPT","PTR","RKEY","RP","RRSIG","SPF",
     "SRV","SSHFP","TLSA","TSIG","TXT","WKS"
 ];
 
