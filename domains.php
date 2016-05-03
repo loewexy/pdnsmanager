@@ -85,7 +85,14 @@ limitations under the License.
                 
             </table>
             
-            <?php if($_SESSION['type'] == "admin") echo '<a class="btn btn-success" href="add-domain.php">Add</a>'; ?>   
+            <?php 
+                if($_SESSION['type'] == "admin") {
+                    echo '<div class="row">';
+                    echo '<a class="btn btn-success" href="add-domain.php#MASTER">Add MASTER</a>';
+                    echo '<a class="btn btn-primary margin-left-20" href="add-domain.php#NATIVE">Add NATIVE</a>';
+                    echo '</div>';
+                }
+            ?>   
         </div>
 
         <div class="modal fade" id="deleteConfirm" tabindex="-1" role="dialog">

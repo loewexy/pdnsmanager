@@ -64,6 +64,7 @@ function saveData(callback) {
         retry: $('#zone-retry').val(),
         expire: $('#zone-expire').val(),
         ttl: $('#zone-ttl').val(),
+        type: window.location.hash.substring(1),
         action: "addDomain",
         csrfToken: $('#csrfToken').text()
     };

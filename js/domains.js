@@ -101,6 +101,8 @@ function recreateTable(data) {
         
         if(type == 'MASTER') {
             location.assign('edit-master.php#' + id);
+        } else if(type == 'NATIVE') {
+            location.assign('edit-master.php#' + id);
         }
     });
     

@@ -23,6 +23,8 @@ require_once '../lib/soa-mail.php';
 
 $input = json_decode(file_get_contents('php://input'));
 
+error_log($input->type);
+
 if(!isset($input->csrfToken) || $input->csrfToken !== $_SESSION['csrfToken']) {
     echo "Permission denied!";
     exit();
@@ -47,8 +49,8 @@ if(isset($input->action) && $input->action == "addDomain") {
     
     $db->autocommit(false);
     
-    $stmt = $db->prepare("INSERT INTO domains(name,type) VALUES (?,'MASTER')");
-    $stmt->bind_param("s", $input->name);
+    $stmt = $db->prepare("INSERT INTO domains(name,type) VALUES (?,?)");
+    $stmt->bind_param("ss", $input->name, $input->type);
     $stmt->execute();
     $stmt->close();
     
