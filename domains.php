@@ -50,7 +50,7 @@ limitations under the License.
                 </ul>
             </div>
         </nav>
-        
+
         <div class="container">
             <table class="table table-hover" id="table-domains">
                 <thead>
@@ -82,12 +82,31 @@ limitations under the License.
                 </thead>
                 <tbody class="cursor-pointer">
                 </tbody>
-                
             </table>
+            
+            <div id="pagination" class="text-center">
+              <ul class="pagination">
+                <li>
+                  <a href="#" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                  </a>
+                </li>
+                <li><a href="#">1</a></li>
+                <li><a href="#">2</a></li>
+                <li><a href="#">3</a></li>
+                <li><a href="#">4</a></li>
+                <li><a href="#">5</a></li>
+                <li>
+                  <a href="#" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
             
             <?php 
                 if($_SESSION['type'] == "admin") {
-                    echo '<div class="row">';
+                    echo '<div class="row text-center">';
                     echo '<a class="btn btn-success" href="add-domain.php#MASTER">Add MASTER</a>';
                     echo '<a class="btn btn-primary margin-left-20" href="add-domain.php#NATIVE">Add NATIVE</a>';
                     echo '</div>';
@@ -108,6 +127,8 @@ limitations under the License.
                 </div>
             </div>
         </div>
-        <?php echo '<span class="hidden" id="csrfToken">' . $_SESSION['csrfToken'] . '</span>'; ?> 
+
+        <?php echo '<span class="hidden" id="csrfToken">' . $_SESSION['csrfToken'] . '</span>'; ?>
+
     </body>
 </html>

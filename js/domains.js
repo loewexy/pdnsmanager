@@ -39,15 +39,15 @@ $(document).ready(function() {
         }
         requestData();
     });
-    
+
     $('#searchName').bind("paste keyup", function() {
         requestData();
     });
-    
+
     $('#searchType').change(function() {
         requestData();
     });
-    
+
     $('#searchType').select2({
         minimumResultsForSearch: Infinity
     });
@@ -55,23 +55,23 @@ $(document).ready(function() {
 
 function requestData() {
     var restrictions = {
-        csrfToken: $('#csrfToken').text()
+        csrfToken: $('#csrfToken').text(),
     };
-    
+
     restrictions.sort = sort;
-    
+
     var searchName = $('#searchName').val();
     if(searchName.length > 0) {
         restrictions.name = searchName;
     }
-    
+
     var searchType = $('#searchType').val();
     if(searchType != "none") {
         restrictions.type = searchType;
     }
-    
+
     restrictions.action = "getDomains";
-    
+
     $.post(
         "api/domains.php",
         JSON.stringify(restrictions),
@@ -84,6 +84,7 @@ function requestData() {
 
 function recreateTable(data) {
     $('#table-domains>tbody').empty();
+    $('#pagination').empty();
     
     $.each(data, function(index,item) {
        $('<tr></tr>').appendTo('#table-domains>tbody')

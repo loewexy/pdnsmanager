@@ -29,37 +29,15 @@ if(!isset($input->csrfToken) || $input->csrfToken !== $_SESSION['csrfToken']) {
 
 if(isset($input->action) && $input->action == "getDomains") {
 
+    // Here we get the number of matching records
     $sql = "
-        SELECT D.id,D.name,D.type,count(R.domain_id) AS records
+        SELECT COUNT(*) AS anzahl
         FROM domains D
-        LEFT OUTER JOIN records R ON D.id = R.domain_id
         LEFT OUTER JOIN permissions P ON D.id = P.domain
-        WHERE (P.user=? OR ?)
-        GROUP BY D.id
-        HAVING
+        WHERE (P.user=? OR ?) AND 
         (D.name LIKE ? OR ?) AND
         (D.type=? OR ?)
     ";
-
-    if(isset($input->sort->field) && $input->sort->field != "") {
-        if($input->sort->field == "id") {
-            $sql .= "ORDER BY id";
-        } else if($input->sort->field == "name") {
-            $sql .= "ORDER BY name";
-        } else if($input->sort->field == "type") {
-            $sql .= "ORDER BY type";
-        } else if($input->sort->field == "records") {
-            $sql .= "ORDER BY records";
-        }
-
-        if(isset($input->sort->order)) {
-            if($input->sort->order == 0) {
-                $sql .= " DESC";
-            } else if($input->sort->order == 1) {
-                $sql .= " ASC";
-            }
-        }
-    }
 
     $stmt = $db->prepare($sql);
 
@@ -91,10 +69,86 @@ if(isset($input->action) && $input->action == "getDomains") {
 
     $result = $stmt->get_result();
 
+    // This is the object containing the number of rows
+    $obj = $result->fetch_object();
+    
+    // Initialize the return value
     $retval = Array();
+    
+    $retval['pages']['current'] = 1;
+    $retval['pages']['total'] =  $obj->anzahl / $config['domain_rows'];
+
+
+    // Now the real search is done on the database
+    $sql = "
+        SELECT D.id,D.name,D.type,count(R.domain_id) AS records
+        FROM domains D
+        LEFT OUTER JOIN records R ON D.id = R.domain_id
+        LEFT OUTER JOIN permissions P ON D.id = P.domain
+        WHERE (P.user=? OR ?)
+        GROUP BY D.id
+        HAVING
+        (D.name LIKE ? OR ?) AND
+        (D.type=? OR ?)
+    ";
+
+    if(isset($input->sort->field) && $input->sort->field != "") {
+        if($input->sort->field == "id") {
+            $sql .= "ORDER BY id";
+        } else if($input->sort->field == "name") {
+            $sql .= "ORDER BY name";
+        } else if($input->sort->field == "type") {
+            $sql .= "ORDER BY type";
+        } else if($input->sort->field == "records") {
+            $sql .= "ORDER BY records";
+        }
+
+        if(isset($input->sort->order)) {
+            if($input->sort->order == 0) {
+                $sql .= " DESC";
+            } else if($input->sort->order == 1) {
+                $sql .= " ASC";
+            }
+        }
+    }
+    
+    /*
+     * Now the number of entries gets limited to the domainRows config value
+     */
+    $sql .= " LIMIT " . $config['domain_rows'];
+
+    $stmt = $db->prepare($sql);
+
+    if(isset($input->name)) {
+        $name_filter = "%" . $input->name . "%";
+        $name_filter_used = 0;
+    } else {
+        $name_filter = "";
+        $name_filter_used = 1;
+    }
+
+    $id_filter = $_SESSION['id'];
+    $id_filter_used = (int)($_SESSION['type'] == "admin" ? 1 : 0);
+
+    if(isset($input->type)) {
+        $type_filter = $input->type;
+        $type_filter_used = 0;
+    } else {
+        $type_filter = "";
+        $type_filter_used = 1;
+    }
+
+    $stmt->bind_param("sisiii",
+            $id_filter, $id_filter_used,
+            $name_filter, $name_filter_used,
+            $type_filter, $type_filter_used
+    );
+    $stmt->execute();
+
+    $result = $stmt->get_result();
 
     while($obj = $result->fetch_object()) {
-        $retval[] = $obj;
+        $retval['data'][] = $obj;
     }
 }
 

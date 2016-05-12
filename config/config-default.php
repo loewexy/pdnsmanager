@@ -26,4 +26,7 @@ $config['db_name'] = "pdnsmanager";
 //Remote update
 $config['nonce_lifetime'] = 15;
 
+//Number of rows in domain overview
+$config['domain_rows'] = 100;
+
 include 'config-user.php';
