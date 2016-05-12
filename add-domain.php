@@ -67,7 +67,7 @@ limitations under the License.
                         </div>
                         <div class="form-group">
                             <label for="zone-mail" class="control-label">Email</label>
-                            <input type="text" class="form-control" id="zone-mail" placeholder="Email" autocomplete="off" data-regex="^.+\@.+\.[^.]+$" tabindex="3">
+                            <input type="text" class="form-control" id="zone-mail" placeholder="Email" autocomplete="off" data-regex="^.+@[^.]+(\.[^.]+)*$" tabindex="3">
                         </div>
                         <button id="zone-button-add" class="btn btn-primary" tabindex="8">Add</button>
                     </div>

@@ -23,8 +23,6 @@ require_once '../lib/soa-mail.php';
 
 $input = json_decode(file_get_contents('php://input'));
 
-error_log($input->type);
-
 if(!isset($input->csrfToken) || $input->csrfToken !== $_SESSION['csrfToken']) {
     echo "Permission denied!";
     exit();
