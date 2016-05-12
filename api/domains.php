@@ -75,8 +75,8 @@ if(isset($input->action) && $input->action == "getDomains") {
     // Initialize the return value
     $retval = Array();
     
-    $retval['pages']['current'] = 1;
-    $retval['pages']['total'] =  $obj->anzahl / $config['domain_rows'];
+    $retval['pages']['current'] = 4000;
+    $retval['pages']['total'] =  ceil($obj->anzahl / $config['domain_rows']);
 
 
     // Now the real search is done on the database

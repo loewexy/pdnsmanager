@@ -76,15 +76,56 @@ function requestData() {
         "api/domains.php",
         JSON.stringify(restrictions),
         function(data) {
-            recreateTable(data);
+            recreateTable(data.data);
+            recreatePagination(data.pages)
         },
         "json"
     );
 }
 
+function recreatePagination(data) {
+    $('#pagination').empty();
+    
+    if(data.total === 1) {
+        $('#pagination-wrapper').hide();
+        return;
+    }
+    
+    if(data.current > 1) {
+        $('<li><a href="#"><span class="glyphicon glyphicon-chevron-left"></span></a></li>').appendTo('#pagination').data("page", data.current - 1).click(paginationClicked);
+    }
+    
+    $('<li><span>1</span></li>').appendTo('#pagination').data("page", 1).click(paginationClicked);
+    
+    if(data.current > 4) {
+        $('<li class="disabled"><span>&hellip;</span></li>').appendTo('#pagination');
+    }
+    
+    for(var i = data.current - 2; i <= data.current + 2; i++) {
+        if(i > 1 && i < data.total) {
+            if(data.current === i) {
+                $('<li class="active"><span>' + i + '</span></li>').appendTo('#pagination');
+            } else {
+                $('<li><span>' + i + '</span></li>').appendTo('#pagination').data("page", i).click(paginationClicked);
+            }
+        }
+    }
+    
+    if(data.current < data.total - 3) {
+        $('<li class="disabled"><span>&hellip;</span></li>').appendTo('#pagination');
+    }
+    
+    $('<li><span>' + data.total + '</span></li>').appendTo('#pagination').data("page", data.total).click(paginationClicked);
+    
+    if(data.current < data.total) {
+        $('<li><a href="#"><span class="glyphicon glyphicon-chevron-right"></span></a></li>').appendTo('#pagination').data("page", data.current + 1).click(paginationClicked);
+    }
+    
+    $('#pagination-wrapper').show();
+}
+
 function recreateTable(data) {
     $('#table-domains>tbody').empty();
-    $('#pagination').empty();
     
     $.each(data, function(index,item) {
        $('<tr></tr>').appendTo('#table-domains>tbody')
@@ -145,4 +186,8 @@ function deleteDomainWithId(id, callback) {
         },
         "json"
     );
+}
+
+function paginationClicked() {
+    alert($(this).data("page"));
 }
