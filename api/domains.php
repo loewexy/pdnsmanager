@@ -28,7 +28,12 @@ if(!isset($input->csrfToken) || $input->csrfToken !== $_SESSION['csrfToken']) {
 }
 
 if(isset($input->action) && $input->action == "getDomains") {
-
+    // Check if the requested page is a number
+    if(!(is_int($input->page) && $input->page > 0)) {
+        echo "Requested page must be a positive number!";
+        exit();
+    }
+    
     // Here we get the number of matching records
     $sql = "
         SELECT COUNT(*) AS anzahl
@@ -75,7 +80,7 @@ if(isset($input->action) && $input->action == "getDomains") {
     // Initialize the return value
     $retval = Array();
     
-    $retval['pages']['current'] = 4000;
+    $retval['pages']['current'] = $input->page;
     $retval['pages']['total'] =  ceil($obj->anzahl / $config['domain_rows']);
 
 
@@ -113,10 +118,15 @@ if(isset($input->action) && $input->action == "getDomains") {
     }
     
     /*
-     * Now the number of entries gets limited to the domainRows config value
+     * Now the number of entries gets limited to the domainRows config value.
+     * SQL LIMIT is used for that:
+     * LIMIT lower, upper
+     * Note that LIMIT 0,4 returns the first five rows!
      */
-    $sql .= " LIMIT " . $config['domain_rows'];
-
+    $lower_limit = ($config['domain_rows'] * ($input->page - 1));
+    
+    $sql .= " LIMIT " . $lower_limit . ", " . $config['domain_rows'];
+    
     $stmt = $db->prepare($sql);
 
     if(isset($input->name)) {

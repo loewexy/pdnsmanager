@@ -20,7 +20,8 @@ var sort = {
 }
 
 $(document).ready(function() {
-    requestData();
+    // When the site is loaded, always show the first page
+    requestData(1);
     
     $('#table-domains>thead>tr>td span').click(function() {
         var field = $(this).siblings('strong').text().toLowerCase();
@@ -53,7 +54,7 @@ $(document).ready(function() {
     });
 });
 
-function requestData() {
+function requestData(page) {
     var restrictions = {
         csrfToken: $('#csrfToken').text(),
     };
@@ -71,6 +72,7 @@ function requestData() {
     }
 
     restrictions.action = "getDomains";
+    restrictions.page = page;
 
     $.post(
         "api/domains.php",
@@ -189,5 +191,5 @@ function deleteDomainWithId(id, callback) {
 }
 
 function paginationClicked() {
-    alert($(this).data("page"));
+    requestData($(this).data("page"));
 }
