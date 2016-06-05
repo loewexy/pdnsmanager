@@ -91,7 +91,7 @@ if(isset($input->action) && $input->action == "getDomains") {
         LEFT OUTER JOIN records R ON D.id = R.domain_id
         LEFT OUTER JOIN permissions P ON D.id = P.domain
         WHERE (P.user=? OR ?)
-        GROUP BY D.id
+        GROUP BY D.id, D.name, D.type
         HAVING
         (D.name LIKE ? OR ?) AND
         (D.type=? OR ?)
