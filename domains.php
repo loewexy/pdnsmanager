@@ -84,7 +84,7 @@ limitations under the License.
                 </tbody>
             </table>
            <nav id="pagination-wrapper" class="text-center defaulthidden">
-                <ul id="pagination" class="pagination">
+                <ul id="pagination" class="pagination cursor-pointer">
 
                 </ul>
             </nav>
