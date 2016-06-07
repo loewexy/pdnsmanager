@@ -29,7 +29,7 @@ if(!isset($input->csrfToken) || $input->csrfToken !== $_SESSION['csrfToken']) {
 
 if(isset($input->action) && $input->action == "getDomains") {
     // Check if the requested page is a number
-    if(!(is_int($input->page) && $input->page > 0)) {
+    if(!(isset($input->page) && is_int($input->page) && $input->page > 0)) {
         echo "Requested page must be a positive number!";
         exit();
     }
