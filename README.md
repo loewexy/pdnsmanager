@@ -1,7 +1,7 @@
 # PDNS Manager
 
 [PDNS Manager](https://pdnsmanager.lmitsystems.de) is a simple yet powerful free administration tool for the
-Powerdns authoritative nameserver. It currently only supports master zones.
+Powerdns authoritative nameserver. It supports master and native zones.
 
 PNDS Manager was developed from scratch to achieve a user-friendly
 and pretty looking interface.
