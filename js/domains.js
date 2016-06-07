@@ -20,8 +20,7 @@ var sort = {
 }
 
 $(document).ready(function() {
-    // When the site is loaded, always show the first page
-    requestData(1);
+    requestData();
     
     $('#table-domains>thead>tr>td span').click(function() {
         var field = $(this).siblings('strong').text().toLowerCase();
@@ -55,6 +54,10 @@ $(document).ready(function() {
 });
 
 function requestData(page) {
+    if(typeof(page) !== 'number' || page <= 0) {
+        page = 1;
+    }
+        
     var restrictions = {
         csrfToken: $('#csrfToken').text(),
     };
