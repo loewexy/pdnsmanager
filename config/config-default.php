@@ -29,4 +29,6 @@ $config['nonce_lifetime'] = 15;
 //Number of rows in domain overview
 $config['domain_rows'] = 15;
 
+ini_set("mysqli.default_socket", "/var/run/mysqld/mysqld.sock");
+
 include 'config-user.php';
