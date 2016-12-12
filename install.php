@@ -64,7 +64,14 @@ limitations under the License.
                 <form>
                     <div class="container col-md-3">
                         <h3>Database</h3>
-                        
+                        <div class="form-group">
+                            <label for="dbType" class="control-label">Type</label>
+							<select class="form-control" name=dbType">
+								<option value="mysql" selected>MySQL</option>
+								<option value="pgsql">PgSQL</option>
+							</select>
+                            <input type="text" class="form-control" id="dbHost" placeholder="Host" autocomplete="off">
+                        </div>
                         <div class="form-group">
                             <label for="dbHost" class="control-label">Host</label>
                             <input type="text" class="form-control" id="dbHost" placeholder="Host" autocomplete="off">

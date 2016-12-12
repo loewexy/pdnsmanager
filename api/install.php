@@ -25,7 +25,7 @@ if(file_exists("../config/config-user.php")) {
 $input = json_decode(file_get_contents('php://input'));
 
 //Database command
-$sql = "
+$sql["mysql"] = "
 CREATE TABLE IF NOT EXISTS domains (
   id int(11) NOT NULL AUTO_INCREMENT,
   name varchar(255) NOT NULL,
@@ -109,23 +109,163 @@ CREATE TABLE domainmetadata (
 ) Engine=InnoDB;
 ";
 
+$sql["pgsql"]="
+CREATE TABLE IF NOT EXISTS domains (
+  id                    SERIAL PRIMARY KEY,
+  name                  VARCHAR(255) NOT NULL,
+  master                VARCHAR(128) DEFAULT NULL,
+  last_check            INT DEFAULT NULL,
+  type                  VARCHAR(6) NOT NULL,
+  notified_serial       INT DEFAULT NULL,
+  account               VARCHAR(40) DEFAULT NULL,
+  CONSTRAINT c_lowercase_name CHECK (((name)::TEXT = LOWER((name)::TEXT)))
+);
 
-$db = @new mysqli($input->host, $input->user, $input->password, $input->database, $input->port);
+CREATE UNIQUE INDEX IF NOT EXISTS name_index ON domains(name);
 
-    
-if($db->connect_error) {
+CREATE TABLE IF NOT EXISTS records (
+  id                    SERIAL PRIMARY KEY,
+  domain_id             INT DEFAULT NULL,
+  name                  VARCHAR(255) DEFAULT NULL,
+  type                  VARCHAR(10) DEFAULT NULL,
+  content               VARCHAR(65535) DEFAULT NULL,
+  ttl                   INT DEFAULT NULL,
+  prio                  INT DEFAULT NULL,
+  change_date           INT DEFAULT NULL,
+  disabled              BOOL DEFAULT 'f',
+  ordername             VARCHAR(255),
+  auth                  BOOL DEFAULT 't',
+  CONSTRAINT domain_exists
+  FOREIGN KEY(domain_id) REFERENCES domains(id)
+  ON DELETE CASCADE,
+  CONSTRAINT c_lowercase_name CHECK (((name)::TEXT = LOWER((name)::TEXT)))
+);
+
+CREATE INDEX IF NOT EXISTS rec_name_index ON records(name);
+CREATE INDEX IF NOT EXISTS nametype_index ON records(name,type);
+CREATE INDEX IF NOT EXISTS domain_id ON records(domain_id);
+CREATE INDEX IF NOT EXISTS recordorder ON records (domain_id, ordername text_pattern_ops);
+
+
+
+CREATE TABLE IF NOT EXISTS user (
+  id 				SERIAL PRIMARY KEY,
+  name				varchar(50) NOT NULL,
+  password			varchar(200) NOT NULL,
+  type				varchar(20) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS permissions (
+  user				INT NOT NULL,
+  domain			INT NOT NULL,
+  PRIMARY KEY (user,domain),
+  CONSTRAINT domain_exists
+  FOREIGN KEY(domain_id) REFERENCES domains(id)
+  ON DELETE CASCADE,
+  CONSTRAINT user_exists
+  FOREIGN KEY(user) REFERENCES user(id)
+  ON DELETE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS perm_domain_index ON permissions(domain);
+
+CREATE TABLE IF NOT EXISTS remote (
+  id 				SERIAL PRIMARY KEY,
+  record			INT NOT NULL,
+  description		varchar(255) NOT NULL,
+  type			varchar(20) NOT NULL,
+  security		varchar(2000) NOT NULL,
+  nonce			varchar(255) DEFAULT NULL,
+  CONSTRAINT record_exists
+  FOREIGN KEY(record_id) REFERENCES records(id)
+  ON DELETE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS rem_record_index ON remote(record);
+
+CREATE TABLE IF NOT EXISTS options (
+    name varchar(255) NOT NULL,
+    value varchar(2000) DEFAULT NULL,
+    PRIMARY KEY (name)
+);
+
+INSERT INTO options(name,value) VALUES ('schema_version', 4);
+
+CREATE TABLE IF NOT EXISTS supermasters (
+  ip                    INET NOT NULL,
+  nameserver            VARCHAR(255) NOT NULL,
+  account               VARCHAR(40) NOT NULL,
+  PRIMARY KEY(ip, nameserver)
+);
+
+
+CREATE TABLE IF NOT EXISTS comments (
+  id                    SERIAL PRIMARY KEY,
+  domain_id             INT NOT NULL,
+  name                  VARCHAR(255) NOT NULL,
+  type                  VARCHAR(10) NOT NULL,
+  modified_at           INT NOT NULL,
+  account               VARCHAR(40) DEFAULT NULL,
+  comment               VARCHAR(65535) NOT NULL,
+  CONSTRAINT domain_exists
+  FOREIGN KEY(domain_id) REFERENCES domains(id)
+  ON DELETE CASCADE,
+  CONSTRAINT c_lowercase_name CHECK (((name)::TEXT = LOWER((name)::TEXT)))
+);
+
+CREATE INDEX IF NOT EXISTS comments_domain_id_idx ON comments (domain_id);
+CREATE INDEX IF NOT EXISTS comments_name_type_idx ON comments (name, type);
+CREATE INDEX IF NOT EXISTS comments_order_idx ON comments (domain_id, modified_at);
+
+
+CREATE TABLE IF NOT EXISTS domainmetadata (
+  id                    SERIAL PRIMARY KEY,
+  domain_id             INT REFERENCES domains(id) ON DELETE CASCADE,
+  kind                  VARCHAR(32),
+  content               TEXT
+);
+
+CREATE INDEX IF NOT EXISTS domainidmetaindex ON domainmetadata(domain_id);
+
+
+CREATE TABLE IF NOT EXISTS cryptokeys (
+  id                    SERIAL PRIMARY KEY,
+  domain_id             INT REFERENCES domains(id) ON DELETE CASCADE,
+  flags                 INT NOT NULL,
+  active                BOOL,
+  content               TEXT
+);
+
+CREATE INDEX IF NOT EXISTS domainidindex ON cryptokeys(domain_id);
+
+
+CREATE TABLE IF NOT EXISTS tsigkeys (
+  id                    SERIAL PRIMARY KEY,
+  name                  VARCHAR(255),
+  algorithm             VARCHAR(50),
+  secret                VARCHAR(255),
+  CONSTRAINT c_lowercase_name CHECK (((name)::TEXT = LOWER((name)::TEXT)))
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS namealgoindex ON tsigkeys(name, algorithm);
+";
+try {
+	$db = new PDO("$input->type:dbname=$input->database;host=$input->host;port=$input->port", $input->user, $input->password); ;
+}
+catch (PDOException $e) {
     $retval['status'] = "error";
-    $retval['message'] = $db->connect_error;
-} else {
+    $retval['message'] = $e;
+}
+if (!isset($retval)) {
     $passwordHash = password_hash($input->userPassword, PASSWORD_DEFAULT);
     
-    $db->multi_query($sql);
-    while ($db->next_result()) {;}
+    $stmt = $db->query($sql[$input->type]);
+    while ($stmt->nextRowset()) {;}
     
-    $stmt = $db->prepare("INSERT INTO user(name,password,type) VALUES (?,?,'admin')");
-    $stmt->bind_param("ss", $input->userName, $passwordHash);
+    $stmt = $db->prepare("INSERT INTO user(name,password,type) VALUES (:user,:hash,'admin')");
+	$stmt->bindValue(':user', $input->userName, PDO::PARAM_STR);
+	$stmt->bindValue(':hash', $passwordHash, PDO::PARAM_STR);
     $stmt->execute();
-    $stmt->close();
     
     $configFile = Array();
     
@@ -135,12 +275,12 @@ if($db->connect_error) {
     $configFile[] = '$config[\'db_password\'] = \'' . addslashes($input->password) . "';";
     $configFile[] = '$config[\'db_name\'] = \'' . addslashes($input->database) . "';";
     $configFile[] = '$config[\'db_port\'] = ' . addslashes($input->port) . ";";
-    
+    $configFile[] = '$config[\'db_type\'] = ' . addslashes($input->type) . ";";
+		
     file_put_contents("../config/config-user.php", implode("\n", $configFile));
     
     $retval['status'] = "success";
 }
-
 
 if(isset($retval)) {
     echo json_encode($retval);
