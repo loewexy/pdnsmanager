@@ -35,32 +35,34 @@ if(!isset($_SESSION['type']) || $_SESSION['type'] != "admin") {
 
 if(isset($input->action) && $input->action == "addDomain") {
     $soaData = Array();
-    $soaData[] = $input->primary;
-    $soaData[] = mail_to_soa($input->mail);
+    $soaData[] = trim($input->primary);
+    $soaData[] = trim(mail_to_soa($input->mail));
     $soaData[] = date("Ymd") . "00";
     $soaData[] = $input->refresh;
     $soaData[] = $input->retry;
     $soaData[] = $input->expire;
     $soaData[] = $input->ttl;
     
+	$domainsName = trim($input->name);
+	
     $soaContent = implode(" ", $soaData);
     
     $db->beginTransaction();
     
     $stmt = $db->prepare("INSERT INTO domains(name,type) VALUES (:name,:type)");
-	$stmt->bindValue(':name', $input->name, PDO::PARAM_STR);
+	$stmt->bindValue(':name', $domainsName, PDO::PARAM_STR);
 	$stmt->bindValue(':type', $input->type, PDO::PARAM_STR);
     $stmt->execute();
     
     $stmt = $db->prepare("SELECT MAX(id) FROM domains WHERE name=:name AND type=:type");
-	$stmt->bindValue(':name', $input->name, PDO::PARAM_STR);
+	$stmt->bindValue(':name', $domainsName, PDO::PARAM_STR);
 	$stmt->bindValue(':type', $input->type, PDO::PARAM_STR);
     $stmt->execute();
 	$newDomainId = $stmt->fetchColumn();
     
     $stmt = $db->prepare("INSERT INTO records(domain_id,name,type,content,ttl) VALUES (:domain_id,:name,'SOA',:content,:ttl)");
 	$stmt->bindValue(':domain_id', $newDomainId, PDO::PARAM_INT);
-	$stmt->bindValue(':name', $input->name, PDO::PARAM_STR);
+	$stmt->bindValue(':name', $domainsName, PDO::PARAM_STR);
 	$stmt->bindValue(':content', $soaContent, PDO::PARAM_STR);
 	$stmt->bindValue(':ttl', $input->ttl, PDO::PARAM_INT);
     $stmt->execute();

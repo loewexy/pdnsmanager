@@ -184,8 +184,8 @@ if(isset($input->action) && $input->action == "saveSoa") {
     $content = explode(" ", $content);    
     $serial = $content[2];
         
-    $newsoa = $input->primary . " ";
-    $newsoa .= mail_to_soa($input->email) . " ";
+    $newsoa = trim($input->primary) . " ";
+    $newsoa .= trim(mail_to_soa($input->email)) . " ";
     $newsoa .= $serial . " ";
     $newsoa .= $input->refresh . " ";
     $newsoa .= $input->retry . " ";
@@ -208,11 +208,13 @@ if(isset($input->action) && $input->action == "saveSoa") {
 //Action for saving Record
 if(isset($input->action) && $input->action == "saveRecord") {
     $domainId = $input->domain;
-    
+    $recordName = trim($input->name);
+	$recordContent = trim($input->content);
+	
     $stmt = $db->prepare("UPDATE records SET name=:name,type=:type,content=:content,ttl=:ttl,prio=:prio WHERE id=:id AND domain_id=:domain_id");
-	$stmt->bindValue(':name', $input->name, PDO::PARAM_STR);
+	$stmt->bindValue(':name', $recordName, PDO::PARAM_STR);
 	$stmt->bindValue(':type', $input->type, PDO::PARAM_STR);
-	$stmt->bindValue(':content', $input->content, PDO::PARAM_STR);
+	$stmt->bindValue(':content', $recordContent, PDO::PARAM_STR);
 	$stmt->bindValue(':ttl', $input->ttl, PDO::PARAM_INT);
 	$stmt->bindValue(':prio', $input->prio, PDO::PARAM_INT);
 	$stmt->bindValue(':id', $input->id, PDO::PARAM_INT);
@@ -224,22 +226,25 @@ if(isset($input->action) && $input->action == "saveRecord") {
 //Action for adding Record
 if(isset($input->action) && $input->action == "addRecord") {
     $domainId = $input->domain;
+	$recordName = trim($input->name);
+	$recordContent = trim($input->content);
+	
     $db->beginTransaction();
 	
     $stmt = $db->prepare("INSERT INTO records (domain_id, name, type, content, prio, ttl) VALUES (:domain_id,:name,:type,:content,:prio,:ttl)");
 	$stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
-	$stmt->bindValue(':name', $input->name, PDO::PARAM_STR);
+	$stmt->bindValue(':name', $recordName, PDO::PARAM_STR);
 	$stmt->bindValue(':type', $input->type, PDO::PARAM_STR);
-	$stmt->bindValue(':content', $input->content, PDO::PARAM_STR);
+	$stmt->bindValue(':content', $recordContent, PDO::PARAM_STR);
 	$stmt->bindValue(':ttl', $input->ttl, PDO::PARAM_INT);
 	$stmt->bindValue(':prio', $input->prio, PDO::PARAM_INT);
     $stmt->execute();
 	
     $stmt = $db->prepare("SELECT MAX(id) FROM records WHERE domain_id=:domain_id AND name=:name AND type=:type AND content=:content AND prio=:prio AND ttl=:ttl");
 	$stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
-	$stmt->bindValue(':name', $input->name, PDO::PARAM_STR);
+	$stmt->bindValue(':name', $recordName, PDO::PARAM_STR);
 	$stmt->bindValue(':type', $input->type, PDO::PARAM_STR);
-	$stmt->bindValue(':content', $input->content, PDO::PARAM_STR);
+	$stmt->bindValue(':content', $recordContent, PDO::PARAM_STR);
 	$stmt->bindValue(':ttl', $input->ttl, PDO::PARAM_INT);
 	$stmt->bindValue(':prio', $input->prio, PDO::PARAM_INT);
     $stmt->execute();
