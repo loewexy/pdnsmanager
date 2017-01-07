@@ -70,7 +70,8 @@ CREATE TABLE IF NOT EXISTS user (
   name varchar(50) NOT NULL,
   password varchar(200) NOT NULL,
   type varchar(20) NOT NULL,
-  PRIMARY KEY (id)
+  PRIMARY KEY (id),
+  UNIQUE KEY user_name_index (name)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 ALTER TABLE permissions
@@ -158,7 +159,7 @@ CREATE TABLE IF NOT EXISTS domains (
   name                  VARCHAR(255) NOT NULL,
   master                VARCHAR(128) DEFAULT NULL,
   last_check            INT DEFAULT NULL,
-  type                  VARCHAR(6) NOT NULL,
+  \"type\"                  VARCHAR(6) NOT NULL,
   notified_serial       INT DEFAULT NULL,
   account               VARCHAR(40) DEFAULT NULL,
   CONSTRAINT c_lowercase_name CHECK (((name)::TEXT = LOWER((name)::TEXT)))
@@ -170,7 +171,7 @@ CREATE TABLE IF NOT EXISTS records (
   id                    SERIAL PRIMARY KEY,
   domain_id             INT DEFAULT NULL,
   name                  VARCHAR(255) DEFAULT NULL,
-  type                  VARCHAR(10) DEFAULT NULL,
+  \"type\"                  VARCHAR(10) DEFAULT NULL,
   content               VARCHAR(65535) DEFAULT NULL,
   ttl                   INT DEFAULT NULL,
   prio                  INT DEFAULT NULL,
@@ -189,22 +190,24 @@ CREATE INDEX IF NOT EXISTS nametype_index ON records(name,type);
 CREATE INDEX IF NOT EXISTS domain_id ON records(domain_id);
 CREATE INDEX IF NOT EXISTS recordorder ON records (domain_id, ordername text_pattern_ops);
 
-CREATE TABLE IF NOT EXISTS user (
+CREATE TABLE IF NOT EXISTS \"user\" (
   id 				SERIAL PRIMARY KEY,
   name				varchar(50) NOT NULL,
   password			varchar(200) NOT NULL,
-  type				varchar(20) NOT NULL
+  \"type\"				varchar(20) NOT NULL
 );
 
+CREATE UNIQUE INDEX IF NOT EXISTS user_name_index ON \"user\"(name);
+
 CREATE TABLE IF NOT EXISTS permissions (
-  user				INT NOT NULL,
-  domain			INT NOT NULL,
-  PRIMARY KEY (user,domain),
+  \"user\"				INT NOT NULL,
+  \"domain\"			INT NOT NULL,
+  PRIMARY KEY (\"user\",domain),
   CONSTRAINT domain_exists
-  FOREIGN KEY(domain_id) REFERENCES domains(id)
+  FOREIGN KEY(domain) REFERENCES domains(id)
   ON DELETE CASCADE,
   CONSTRAINT user_exists
-  FOREIGN KEY(user) REFERENCES user(id)
+  FOREIGN KEY(\"user\") REFERENCES \"user\"(id)
   ON DELETE CASCADE
 );
 
@@ -214,11 +217,11 @@ CREATE TABLE IF NOT EXISTS remote (
   id 				SERIAL PRIMARY KEY,
   record			INT NOT NULL,
   description		varchar(255) NOT NULL,
-  type			varchar(20) NOT NULL,
-  security		varchar(2000) NOT NULL,
-  nonce			varchar(255) DEFAULT NULL,
+  \"type\"				varchar(20) NOT NULL,
+  \"security\"			varchar(2000) NOT NULL,
+  nonce				varchar(255) DEFAULT NULL,
   CONSTRAINT record_exists
-  FOREIGN KEY(record_id) REFERENCES records(id)
+  FOREIGN KEY(record) REFERENCES records(id)
   ON DELETE CASCADE
 );
 
@@ -244,7 +247,7 @@ CREATE TABLE IF NOT EXISTS comments (
   id                    SERIAL PRIMARY KEY,
   domain_id             INT NOT NULL,
   name                  VARCHAR(255) NOT NULL,
-  type                  VARCHAR(10) NOT NULL,
+  \"type\"                  VARCHAR(10) NOT NULL,
   modified_at           INT NOT NULL,
   account               VARCHAR(40) DEFAULT NULL,
   comment               VARCHAR(65535) NOT NULL,
@@ -297,36 +300,47 @@ catch (PDOException $e) {
     $retval['status'] = "error";
     $retval['message'] = serialize($e);
 }
+
+$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
 if (!isset($retval)) {
     $passwordHash = password_hash($input->userPassword, PASSWORD_DEFAULT);
-    
-    $stmt = $db->query($sql[$input->type]);
-    while ($stmt->nextRowset()) {;}
-    
-    $stmt = $db->prepare("INSERT INTO user(name,password,type) VALUES (:user,:hash,'admin')");
+	
+	$queries = explode(";", $sql[$input->type]);
+	
+	$db->beginTransaction();
+	
+	foreach ($queries as $query) {
+		if (preg_replace('/\s+/', '', $query) != '') {
+			$db->exec($query);
+		}
+	}
+	
+	$db->commit();
+	
+	$stmt = $db->prepare("INSERT INTO \"user\"(name,password,type) VALUES (:user,:hash,'admin')");
 	$stmt->bindValue(':user', $input->userName, PDO::PARAM_STR);
 	$stmt->bindValue(':hash', $passwordHash, PDO::PARAM_STR);
-    $stmt->execute();
-    
-    $configFile = Array();
-    
-    $configFile[] = '<?php';
-    $configFile[] = '$config[\'db_host\'] = \'' . addslashes($input->host) . "';";
-    $configFile[] = '$config[\'db_user\'] = \'' . addslashes($input->user) . "';";
-    $configFile[] = '$config[\'db_password\'] = \'' . addslashes($input->password) . "';";
-    $configFile[] = '$config[\'db_name\'] = \'' . addslashes($input->database) . "';";
-    $configFile[] = '$config[\'db_port\'] = ' . addslashes($input->port) . ";";
-    $configFile[] = '$config[\'db_type\'] = \'' . addslashes($input->type) . "';";
+	$stmt->execute();
 	
+	$configFile = Array();
+	
+	$configFile[] = '<?php';
+	$configFile[] = '$config[\'db_host\'] = \'' . addslashes($input->host) . "';";
+	$configFile[] = '$config[\'db_user\'] = \'' . addslashes($input->user) . "';";
+	$configFile[] = '$config[\'db_password\'] = \'' . addslashes($input->password) . "';";
+	$configFile[] = '$config[\'db_name\'] = \'' . addslashes($input->database) . "';";
+	$configFile[] = '$config[\'db_port\'] = ' . addslashes($input->port) . ";";
+	$configFile[] = '$config[\'db_type\'] = \'' . addslashes($input->type) . "';";
+	
+	$retval['status'] = "success";
 	try {
-		file_put_contents("../config/config-user.php", implode("\n", $configFile));
-		$retval['status'] = "success";
+		file_put_contents("../config/config-user.php", implode("\n", $configFile));	
 	}
 	catch (Exception $e) {
 		$retval['status'] = "error";
 		$retval['message'] = serialize($e);
 	}
-	
 }
 
 if(isset($retval)) {

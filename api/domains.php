@@ -39,7 +39,7 @@ if(isset($input->action) && $input->action == "getDomains") {
         SELECT COUNT(*) AS anzahl
         FROM domains D
         LEFT OUTER JOIN permissions P ON D.id = P.domain
-        WHERE (P.user=:user1 OR :user2) AND 
+        WHERE (P.\"user\"=:user1 OR :user2) AND 
         (D.name LIKE :name1 OR :name2) AND
         (D.type=:type1 OR :type2)
     ";
@@ -91,7 +91,7 @@ if(isset($input->action) && $input->action == "getDomains") {
         FROM domains D
         LEFT OUTER JOIN records R ON D.id = R.domain_id
         LEFT OUTER JOIN permissions P ON D.id = P.domain
-        WHERE (P.user=:user1 OR :user2)
+        WHERE (P.\"user\"=:user1 OR :user2)
         GROUP BY D.id, D.name, D.type
         HAVING
         (D.name LIKE :name1 OR :name2) AND
@@ -120,13 +120,13 @@ if(isset($input->action) && $input->action == "getDomains") {
     
     /*
      * Now the number of entries gets limited to the domainRows config value.
-     * SQL LIMIT is used for that:
-     * LIMIT lower, upper
-     * Note that LIMIT 0,4 returns the first five rows!
+     * SQL LIMIT and OFFSET is used for that:
+     * LIMIT upper OFFSET lower
+     * Note that LIMIT 5 OFFSET 0 returns the first five rows!
      */
     $lower_limit = ($config['domain_rows'] * ($input->page - 1));
     
-    $sql .= " LIMIT " . $lower_limit . ", " . $config['domain_rows'];
+    $sql .= " LIMIT " . $config['domain_rows'] . " OFFSET " . $lower_limit;
     
     $stmt = $db->prepare($sql);
 
@@ -156,7 +156,7 @@ if(isset($input->action) && $input->action == "getDomains") {
 	$stmt->bindValue(':type1', $type_filter, PDO::PARAM_INT);
 	$stmt->bindValue(':type2', $type_filter_used, PDO::PARAM_INT);
     $stmt->execute();
-
+	
     while($obj = $stmt->fetchObject()) {
         $retval['data'][] = $obj;
     }

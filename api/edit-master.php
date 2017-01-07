@@ -31,7 +31,7 @@ if(!isset($input->csrfToken) || $input->csrfToken !== $_SESSION['csrfToken']) {
 
 //Permission check
 if(isset($input->domain)) {
-	$permquery = $db->prepare("SELECT COUNT(*) FROM permissions WHERE user=:user AND domain=:domain");
+	$permquery = $db->prepare("SELECT COUNT(*) FROM permissions WHERE \"user\"=:user AND domain=:domain");
 	$permquery->bindValue(':user', $_SESSION['id'], PDO::PARAM_INT);
 	$permquery->bindValue(':domain', $input->domain, PDO::PARAM_INT);
     $permquery->execute();

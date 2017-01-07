@@ -29,7 +29,7 @@ if(!isset($input->csrfToken) || $input->csrfToken !== $_SESSION['csrfToken']) {
 
 //Permission check
 if(isset($input->record)) {
-    $permquery = $db->prepare("SELECT COUNT(*) FROM records JOIN permissions ON records.domain_id=permissions.domain WHERE user=:user AND records.id=:id");
+    $permquery = $db->prepare("SELECT COUNT(*) FROM records JOIN permissions ON records.domain_id=permissions.domain WHERE \"user\"=:user AND records.id=:id");
 	$permquery->bindValue(':user', $_SESSION['id'], PDO::PARAM_INT);
 	$permquery->bindValue(':id', $input->record, PDO::PARAM_INT);
     $permquery->execute();

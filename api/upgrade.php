@@ -55,8 +55,17 @@ if(isset($input->action) && $input->action == "requestUpgrade") {
             INSERT INTO options(name,value) VALUES ('schema_version', 1);
         ";
         $sql["pgsql"] = "INSERT INTO options(name,value) VALUES ('schema_version', 1);";
-		$stmt = $db->query($sql[$dbType]);
-		while ($stmt->nextRowset()) {;}
+		$queries = explode(";", $sql[$dbType]);
+		
+		$db->beginTransaction();
+		
+		foreach ($queries as $query) {
+			if (preg_replace('/\s+/', '', $query) != '') {
+				$db->exec($query);
+			}
+		}
+
+		$db->commit();
     }
     if($currentVersion < 2) {
         $sql["mysql"] = "
@@ -80,8 +89,18 @@ if(isset($input->action) && $input->action == "requestUpgrade") {
             UPDATE options SET value=2 WHERE name='schema_version';
         ";
         $sql["pgsql"] = "UPDATE options SET value=2 WHERE name='schema_version';";
-		$stmt = $db->query($sql[$dbType]);
-		while ($stmt->nextRowset()) {;}
+		$queries = explode(";", $sql[$dbType]);
+		
+		$db->beginTransaction();
+		
+		foreach ($queries as $query) {
+			if (preg_replace('/\s+/', '', $query) != '') {
+				$db->exec($query);
+			}
+		}
+
+		$db->commit();
+	
     }
     if($currentVersion < 3) {
         $sql["mysql"] = "
@@ -99,8 +118,17 @@ if(isset($input->action) && $input->action == "requestUpgrade") {
             UPDATE options SET value=3 WHERE name='schema_version';
         ";
         $sql["pgsql"] = "UPDATE options SET value=3 WHERE name='schema_version';";
-		$stmt = $db->query($sql[$dbType]);
-		while ($stmt->nextRowset()) {;}
+		$queries = explode(";", $sql[$dbType]);
+		
+		$db->beginTransaction();
+		
+		foreach ($queries as $query) {
+			if (preg_replace('/\s+/', '', $query) != '') {
+				$db->exec($query);
+			}
+		}
+
+		$db->commit();
 		
     }
     if($currentVersion < 4) {
@@ -146,11 +174,22 @@ if(isset($input->action) && $input->action == "requestUpgrade") {
 			  UNIQUE KEY namealgoindex (name, algorithm)
 			) Engine=InnoDB  DEFAULT CHARSET=latin1;
 			
+			ALTER TABLE user ADD UNIQUE KEY user_name_index (name);
+			
 			UPDATE options SET value=4 WHERE name='schema_version';
         ";
         $sql["pgsql"] = "UPDATE options SET value=4 WHERE name='schema_version';";
-		$stmt = $db->query($sql[$dbType]);
-		while ($stmt->nextRowset()) {;}
+		$queries = explode(";", $sql[$dbType]);
+		
+		$db->beginTransaction();
+		
+		foreach ($queries as $query) {
+			if (preg_replace('/\s+/', '', $query) != '') {
+				$db->exec($query);
+			}
+		}
+
+		$db->commit();
     }
     $retval['status'] = "success";
 }
