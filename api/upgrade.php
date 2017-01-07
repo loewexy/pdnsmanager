@@ -31,7 +31,7 @@ if(isset($input->action) && $input->action == "requestUpgrade") {
     $currentVersion = getVersion($db);
     
     if($currentVersion < 1) {
-        $sql = "
+        $sql["mysql"] = "
             CREATE TABLE IF NOT EXISTS remote (
                 id int(11) NOT NULL AUTO_INCREMENT,
                 record int(11) NOT NULL,
@@ -54,12 +54,12 @@ if(isset($input->action) && $input->action == "requestUpgrade") {
             
             INSERT INTO options(name,value) VALUES ('schema_version', 1);
         ";
-        
-        $db->multi_query($sql);
-        while ($db->next_result()) {;}
+        $sql["pgsql"] = "";
+		$stmt = $db->query($sql[$config['db_type']]);
+		while ($stmt->nextRowset()) {;}
     }
     if($currentVersion < 2) {
-        $sql = "
+        $sql["mysql"] = "
             ALTER TABLE permissions
               DROP FOREIGN KEY permissions_ibfk_1;
             ALTER TABLE permissions
@@ -79,12 +79,12 @@ if(isset($input->action) && $input->action == "requestUpgrade") {
               
             UPDATE options SET value=2 WHERE name='schema_version';
         ";
-        
-        $db->multi_query($sql);
-        while ($db->next_result()) {;}
+        $sql["pgsql"] = "";
+		$stmt = $db->query($sql[$config['db_type']]);
+		while ($stmt->nextRowset()) {;}
     }
     if($currentVersion < 3) {
-        $sql = "
+        $sql["mysql"] = "
             CREATE TABLE domainmetadata (
                 id INT AUTO_INCREMENT,
                 domain_id INT NOT NULL,
@@ -98,11 +98,59 @@ if(isset($input->action) && $input->action == "requestUpgrade") {
             
             UPDATE options SET value=3 WHERE name='schema_version';
         ";
-        
-        $db->multi_query($sql);
-        while ($db->next_result()) {;}
+        $sql["pgsql"] = "";
+		$stmt = $db->query($sql[$config['db_type']]);
+		while ($stmt->nextRowset()) {;}
     }
-    
+    if($currentVersion < 4) {
+        $sql["mysql"] = "
+			CREATE TABLE IF NOT EXISTS supermasters (
+			  ip                    VARCHAR(64) NOT NULL,
+			  nameserver            VARCHAR(255) NOT NULL,
+			  account               VARCHAR(40) NOT NULL,
+			  PRIMARY KEY (ip, nameserver)
+			) Engine=InnoDB  DEFAULT CHARSET=latin1;
+
+
+			CREATE TABLE IF NOT EXISTS comments (
+			  id                    INT AUTO_INCREMENT,
+			  domain_id             INT NOT NULL,
+			  name                  VARCHAR(255) NOT NULL,
+			  type                  VARCHAR(10) NOT NULL,
+			  modified_at           INT NOT NULL,
+			  account               VARCHAR(40) NOT NULL,
+			  comment               VARCHAR(64000) NOT NULL,
+			  PRIMARY KEY (id),
+			  KEY comments_domain_id_idx (domain_id),
+			  KEY comments_name_type_idx (name,type),
+			  KEY comments_order_idx (domain_id, modified_at)
+			) Engine=InnoDB  DEFAULT CHARSET=latin1;
+
+			CREATE TABLE IF NOT EXISTS cryptokeys (
+			  id                    INT AUTO_INCREMENT,
+			  domain_id             INT NOT NULL,
+			  flags                 INT NOT NULL,
+			  active                BOOL,
+			  content               TEXT,
+			  PRIMARY KEY(id),
+			  KEY domainidindex (domain_id)
+			) Engine=InnoDB  DEFAULT CHARSET=latin1;
+
+			CREATE TABLE IF NOT EXISTS tsigkeys (
+			  id                    INT AUTO_INCREMENT,
+			  name                  VARCHAR(255),
+			  algorithm             VARCHAR(50),
+			  secret                VARCHAR(255),
+			  PRIMARY KEY (id),
+			  UNIQUE KEY namealgoindex (name, algorithm)
+			) Engine=InnoDB  DEFAULT CHARSET=latin1;
+			
+			UPDATE options SET value=4 WHERE name='schema_version';
+        ";
+        $sql["pgsql"] = "";
+		$stmt = $db->query($sql[$config['db_type']]);
+		while ($stmt->nextRowset()) {;}
+    }
     $retval['status'] = "success";
 }
 

@@ -45,23 +45,25 @@ if(isset($input->action) && $input->action == "addDomain") {
     
     $soaContent = implode(" ", $soaData);
     
-    $db->autocommit(false);
+    $db->beginTransaction();
     
-    $stmt = $db->prepare("INSERT INTO domains(name,type) VALUES (?,?)");
-    $stmt->bind_param("ss", $input->name, $input->type);
+    $stmt = $db->prepare("INSERT INTO domains(name,type) VALUES (:name,:type)");
+	$stmt->bindValue(':name', $input->name, PDO::PARAM_STR);
+	$stmt->bindValue(':type', $input->type, PDO::PARAM_STR);
     $stmt->execute();
-    $stmt->close();
     
-    $stmt = $db->prepare("SELECT LAST_INSERT_ID()");
+    $stmt = $db->prepare("SELECT id FROM domains WHERE name=:name AND type=:type LIMIT 1");
+	$stmt->bindValue(':name', $input->name, PDO::PARAM_STR);
+	$stmt->bindValue(':type', $input->type, PDO::PARAM_STR);
     $stmt->execute();
-    $stmt->bind_result($newDomainId);
-    $stmt->fetch();
-    $stmt->close();
+	$newDomainId = $stmt->fetchColumn();
     
-    $stmt = $db->prepare("INSERT INTO records(domain_id,name,type,content,ttl) VALUES (?,?,'SOA',?,?)");
-    $stmt->bind_param("issi", $newDomainId, $input->name, $soaContent, $input->ttl);
+    $stmt = $db->prepare("INSERT INTO records(domain_id,name,type,content,ttl) VALUES (:domain_id,:name,'SOA',:content,:ttl)");
+	$stmt->bindValue(':domain_id', $newDomainId, PDO::PARAM_INT);
+	$stmt->bindValue(':name', $input->name, PDO::PARAM_STR);
+	$stmt->bindValue(':content', $soaContent, PDO::PARAM_STR);
+	$stmt->bindValue(':ttl', $input->ttl, PDO::PARAM_INT);
     $stmt->execute();
-    $stmt->close();
     
     $db->commit();
     

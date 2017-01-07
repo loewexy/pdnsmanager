@@ -24,6 +24,12 @@ $config['db_password'] = "";
 $config['db_port'] = 3306;
 $config['db_name'] = "pdnsmanager";
 
+//HTTP API Settings
+$config['api_functionality'] = true;
+$config['api_host'] = "localhost"
+$config['api_port'] = 8080;
+$config['api_key'] = "";
+
 //Remote update
 $config['nonce_lifetime'] = 15;
 

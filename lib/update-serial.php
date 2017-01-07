@@ -18,16 +18,13 @@
 
 function update_serial($db, $domainId) {
 
-    $db->autocommit(false);
-    $db->begin_transaction();
+    $db->beginTransaction();
     
-    $stmt = $db->prepare("SELECT content FROM records WHERE type='SOA' AND domain_id=?");
-    $stmt->bind_param("i", $domainId);
+    $stmt = $db->prepare("SELECT content FROM records WHERE type='SOA' AND domain_id=:domain_id LIMIT 1");
+    $stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
     $stmt->execute();
-    $stmt->bind_result($content);
-    $stmt->fetch();
-    $stmt->close();
-    
+    $content = $stmt->fetchColumn();
+	
     $content = explode(" ", $content);    
     
     $serial = $content[2];
@@ -50,8 +47,9 @@ function update_serial($db, $domainId) {
     
     $newsoa = implode(" ", $content);
     
-    $stmt = $db->prepare("UPDATE records SET content=? WHERE type='SOA' AND domain_id=?");
-    $stmt->bind_param("si", $newsoa, $domainId);
+    $stmt = $db->prepare("UPDATE records SET content=:content WHERE type='SOA' AND domain_id=:domain_id");
+	$stmt->bindValue(':content', $newsoa, PDO::PARAM_STR);
+    $stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
     $stmt->execute();
     
     $db->commit();

@@ -98,15 +98,58 @@ CREATE TABLE IF NOT EXISTS options (
     PRIMARY KEY (name)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
-INSERT INTO options(name,value) VALUES ('schema_version', 3);
+INSERT INTO options(name,value) VALUES ('schema_version', 4);
 
-CREATE TABLE domainmetadata (
-    id INT AUTO_INCREMENT,
-    domain_id INT NOT NULL,
-    kind VARCHAR(32),
-    content TEXT,
-    PRIMARY KEY (id)
-) Engine=InnoDB;
+CREATE TABLE IF NOT EXISTS supermasters (
+  ip                    VARCHAR(64) NOT NULL,
+  nameserver            VARCHAR(255) NOT NULL,
+  account               VARCHAR(40) NOT NULL,
+  PRIMARY KEY (ip, nameserver)
+) Engine=InnoDB  DEFAULT CHARSET=latin1;
+
+
+CREATE TABLE IF NOT EXISTS comments (
+  id                    INT AUTO_INCREMENT,
+  domain_id             INT NOT NULL,
+  name                  VARCHAR(255) NOT NULL,
+  type                  VARCHAR(10) NOT NULL,
+  modified_at           INT NOT NULL,
+  account               VARCHAR(40) NOT NULL,
+  comment               VARCHAR(64000) NOT NULL,
+  PRIMARY KEY (id),
+  KEY comments_domain_id_idx (domain_id),
+  KEY comments_name_type_idx (name,type),
+  KEY comments_order_idx (domain_id, modified_at)
+) Engine=InnoDB  DEFAULT CHARSET=latin1;
+
+CREATE TABLE IF NOT EXISTS domainmetadata (
+  id                    INT AUTO_INCREMENT,
+  domain_id             INT NOT NULL,
+  kind                  VARCHAR(32),
+  content               TEXT,
+  PRIMARY KEY (id),
+  KEY domainmetadata_idx (domain_id, kind)
+) Engine=InnoDB  DEFAULT CHARSET=latin1;
+
+
+CREATE TABLE IF NOT EXISTS cryptokeys (
+  id                    INT AUTO_INCREMENT,
+  domain_id             INT NOT NULL,
+  flags                 INT NOT NULL,
+  active                BOOL,
+  content               TEXT,
+  PRIMARY KEY(id),
+  KEY domainidindex (domain_id)
+) Engine=InnoDB  DEFAULT CHARSET=latin1;
+
+CREATE TABLE IF NOT EXISTS tsigkeys (
+  id                    INT AUTO_INCREMENT,
+  name                  VARCHAR(255),
+  algorithm             VARCHAR(50),
+  secret                VARCHAR(255),
+  PRIMARY KEY (id),
+  UNIQUE KEY namealgoindex (name, algorithm)
+) Engine=InnoDB  DEFAULT CHARSET=latin1;
 ";
 
 $sql["pgsql"]="
@@ -145,8 +188,6 @@ CREATE INDEX IF NOT EXISTS rec_name_index ON records(name);
 CREATE INDEX IF NOT EXISTS nametype_index ON records(name,type);
 CREATE INDEX IF NOT EXISTS domain_id ON records(domain_id);
 CREATE INDEX IF NOT EXISTS recordorder ON records (domain_id, ordername text_pattern_ops);
-
-
 
 CREATE TABLE IF NOT EXISTS user (
   id 				SERIAL PRIMARY KEY,
@@ -250,7 +291,7 @@ CREATE TABLE IF NOT EXISTS tsigkeys (
 CREATE UNIQUE INDEX IF NOT EXISTS namealgoindex ON tsigkeys(name, algorithm);
 ";
 try {
-	$db = new PDO("$input->type:dbname=$input->database;host=$input->host;port=$input->port", $input->user, $input->password); ;
+	$db = new PDO("$input->type:dbname=$input->database;host=$input->host;port=$input->port", $input->user, $input->password);
 }
 catch (PDOException $e) {
     $retval['status'] = "error";

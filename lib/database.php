@@ -16,8 +16,9 @@
  * limitations under the License.
  */
 
-$db = new mysqli($config['db_host'], $config['db_user'], $config['db_password'], $config['db_name'], $config['db_port']);
-
-if ($db->connect_error) {
+try {
+	$db = new PDO("$config['db_type']:dbname=$config['db_name'];host=$config['db_host'];port=$config['db_port']", $config['db_user'], $config['db_password']);
+}
+catch (PDOException $e) {
     die("Connection to database failed");
 }

@@ -17,7 +17,7 @@
  */
 
 function getExpectedVersion() {
-    return 3;
+    return 4;
 }
 
 function checkVersion($db) {
@@ -29,19 +29,14 @@ function checkVersion($db) {
 }
 
 function getVersion($db) {
-    $stmt = $db->prepare("SHOW TABLES LIKE 'options'");
-    $stmt->execute();
-    $stmt->store_result();
-    if($stmt->num_rows() < 1) {
+	
+    try {
+		$stmt = $db->prepare("SELECT value FROM options WHERE name='schema_version' LIMIT 1");
+		$stmt->execute();
+		$version = $stmt->fetchColumn();
+    } catch (Exception $e) {
         return 0;
     }
-    $stmt->close();
-    
-    $stmt = $db->prepare("SELECT value FROM options WHERE name='schema_version'");
-    $stmt->execute();
-    $stmt->bind_result($version);
-    $stmt->fetch();
-    $stmt->close();
     
     return $version;    
 }
