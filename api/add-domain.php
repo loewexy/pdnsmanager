@@ -35,15 +35,15 @@ if(!isset($_SESSION['type']) || $_SESSION['type'] != "admin") {
 
 if(isset($input->action) && $input->action == "addDomain") {
     $soaData = Array();
-    $soaData[] = trim($input->primary);
-    $soaData[] = trim(mail_to_soa($input->mail));
+    $soaData[] = strtolower(preg_replace('/\s+/', '', $input->primary));
+    $soaData[] = strtolower(mail_to_soa(preg_replace('/\s+/', '', $input->mail)));
     $soaData[] = date("Ymd") . "00";
     $soaData[] = $input->refresh;
     $soaData[] = $input->retry;
     $soaData[] = $input->expire;
     $soaData[] = $input->ttl;
     
-	$domainsName = trim($input->name);
+	$domainsName = strtolower(preg_replace('/\s+/', '', $input->name));
 	
     $soaContent = implode(" ", $soaData);
     

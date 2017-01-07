@@ -40,7 +40,7 @@ if(isset($input->action) && $input->action == "getDomains") {
         FROM domains D
         LEFT OUTER JOIN permissions P ON D.id = P.domain
         WHERE (P.user=:user1 OR :user2) AND 
-        (D.name LIKE :name1 OR name2) AND
+        (D.name LIKE :name1 OR :name2) AND
         (D.type=:type1 OR :type2)
     ";
 
@@ -74,6 +74,10 @@ if(isset($input->action) && $input->action == "getDomains") {
     $stmt->execute();
 	$result = $stmt->fetchColumn();
     
+	if ($result == 0) {
+		$result = 1;
+	}
+	
     // Initialize the return value
     $retval = Array();
     

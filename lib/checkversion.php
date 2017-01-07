@@ -30,13 +30,11 @@ function checkVersion($db) {
 
 function getVersion($db) {
 	
-    try {
-		$stmt = $db->prepare("SELECT value FROM options WHERE name='schema_version' LIMIT 1");
-		$stmt->execute();
-		$version = $stmt->fetchColumn();
-    } catch (Exception $e) {
-        return 0;
+	$stmt = $db->prepare("SELECT value FROM options WHERE name='schema_version' LIMIT 1");
+	$stmt->execute();
+	$version = $stmt->fetchColumn();
+    if (!$version) {
+		$version = 0;
     }
-    
     return $version;    
 }

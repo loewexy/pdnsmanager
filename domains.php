@@ -73,6 +73,8 @@ limitations under the License.
                                 <select class="form-control no-shadow" id="searchType">
                                     <option value="none">No filter...</option>
                                     <option value="MASTER">MASTER</option>
+									<option value="NATIVE">NATIVE</option>
+									<option value="SLAVE">SLAVE</option>
                                 </select>
                                 </div>
                             </form>
@@ -92,8 +94,9 @@ limitations under the License.
             <?php 
                 if($_SESSION['type'] == "admin") {
                     echo '<div class="row text-center">';
-                    echo '<a class="btn btn-success" href="add-domain.php#MASTER">Add MASTER</a>';
-                    echo '<a class="btn btn-primary margin-left-20" href="add-domain.php#NATIVE">Add NATIVE</a>';
+                    echo '<a class="btn btn-primary" href="add-domain.php#NATIVE">Add NATIVE</a>';
+                    echo '<a class="btn btn-success margin-left-20" href="add-domain.php#MASTER">Add MASTER</a>';
+                    echo '<a class="btn btn-success margin-left-20" href="add-domain.php#SLAVE">Add SLAVE</a>';
                     echo '</div>';
                 }
             ?>   

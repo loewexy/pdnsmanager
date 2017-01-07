@@ -295,7 +295,7 @@ try {
 }
 catch (PDOException $e) {
     $retval['status'] = "error";
-    $retval['message'] = $e;
+    $retval['message'] = serialize($e);
 }
 if (!isset($retval)) {
     $passwordHash = password_hash($input->userPassword, PASSWORD_DEFAULT);
@@ -316,11 +316,17 @@ if (!isset($retval)) {
     $configFile[] = '$config[\'db_password\'] = \'' . addslashes($input->password) . "';";
     $configFile[] = '$config[\'db_name\'] = \'' . addslashes($input->database) . "';";
     $configFile[] = '$config[\'db_port\'] = ' . addslashes($input->port) . ";";
-    $configFile[] = '$config[\'db_type\'] = ' . addslashes($input->type) . ";";
-		
-    file_put_contents("../config/config-user.php", implode("\n", $configFile));
-    
-    $retval['status'] = "success";
+    $configFile[] = '$config[\'db_type\'] = \'' . addslashes($input->type) . "';";
+	
+	try {
+		file_put_contents("../config/config-user.php", implode("\n", $configFile));
+		$retval['status'] = "success";
+	}
+	catch (Exception $e) {
+		$retval['status'] = "error";
+		$retval['message'] = serialize($e);
+	}
+	
 }
 
 if(isset($retval)) {

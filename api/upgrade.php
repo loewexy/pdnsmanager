@@ -29,7 +29,7 @@ if(isset($input->action) && $input->action == "getVersions") {
 
 if(isset($input->action) && $input->action == "requestUpgrade") {
     $currentVersion = getVersion($db);
-    
+    $dbType = $config['db_type'];
     if($currentVersion < 1) {
         $sql["mysql"] = "
             CREATE TABLE IF NOT EXISTS remote (
@@ -54,8 +54,8 @@ if(isset($input->action) && $input->action == "requestUpgrade") {
             
             INSERT INTO options(name,value) VALUES ('schema_version', 1);
         ";
-        $sql["pgsql"] = "";
-		$stmt = $db->query($sql[$config['db_type']]);
+        $sql["pgsql"] = "INSERT INTO options(name,value) VALUES ('schema_version', 1);";
+		$stmt = $db->query($sql[$dbType]);
 		while ($stmt->nextRowset()) {;}
     }
     if($currentVersion < 2) {
@@ -79,13 +79,13 @@ if(isset($input->action) && $input->action == "requestUpgrade") {
               
             UPDATE options SET value=2 WHERE name='schema_version';
         ";
-        $sql["pgsql"] = "";
-		$stmt = $db->query($sql[$config['db_type']]);
+        $sql["pgsql"] = "UPDATE options SET value=2 WHERE name='schema_version';";
+		$stmt = $db->query($sql[$dbType]);
 		while ($stmt->nextRowset()) {;}
     }
     if($currentVersion < 3) {
         $sql["mysql"] = "
-            CREATE TABLE domainmetadata (
+            CREATE TABLE IF NOT EXISTS domainmetadata (
                 id INT AUTO_INCREMENT,
                 domain_id INT NOT NULL,
                 kind VARCHAR(32),
@@ -98,9 +98,10 @@ if(isset($input->action) && $input->action == "requestUpgrade") {
             
             UPDATE options SET value=3 WHERE name='schema_version';
         ";
-        $sql["pgsql"] = "";
-		$stmt = $db->query($sql[$config['db_type']]);
+        $sql["pgsql"] = "UPDATE options SET value=3 WHERE name='schema_version';";
+		$stmt = $db->query($sql[$dbType]);
 		while ($stmt->nextRowset()) {;}
+		
     }
     if($currentVersion < 4) {
         $sql["mysql"] = "
@@ -147,8 +148,8 @@ if(isset($input->action) && $input->action == "requestUpgrade") {
 			
 			UPDATE options SET value=4 WHERE name='schema_version';
         ";
-        $sql["pgsql"] = "";
-		$stmt = $db->query($sql[$config['db_type']]);
+        $sql["pgsql"] = "UPDATE options SET value=4 WHERE name='schema_version';";
+		$stmt = $db->query($sql[$dbType]);
 		while ($stmt->nextRowset()) {;}
     }
     $retval['status'] = "success";

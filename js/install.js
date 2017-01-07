@@ -52,7 +52,7 @@ function checkSettings() {
         port: $('#dbPort').val(),
         userName: $('#adminName').val(),
         userPassword: $('#adminPassword').val(),
-        type:  $('#dbType').val()
+        type: $('#dbType').val()
     };
     
     $.post(

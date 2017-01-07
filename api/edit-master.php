@@ -142,7 +142,7 @@ if(isset($input->action) && $input->action == "getSoa") {
     
     $retval = Array();
     
-    $retval['primary'] = preg_replace('/\\.$/', "", $content[0]);
+    $retval['primary'] = $content[0];
     $retval['email'] = soa_to_mail($content[1]);
     $retval['serial'] = $content[2];
     $retval['refresh'] = $content[3];
@@ -184,8 +184,8 @@ if(isset($input->action) && $input->action == "saveSoa") {
     $content = explode(" ", $content);    
     $serial = $content[2];
         
-    $newsoa = trim($input->primary) . " ";
-    $newsoa .= trim(mail_to_soa($input->email)) . " ";
+    $newsoa = strtolower(preg_replace('/\s+/', '', $input->primary)) . " ";
+    $newsoa .= strtolower(mail_to_soa(preg_replace('/\s+/', '', $input->email))) . " ";
     $newsoa .= $serial . " ";
     $newsoa .= $input->refresh . " ";
     $newsoa .= $input->retry . " ";
@@ -208,7 +208,7 @@ if(isset($input->action) && $input->action == "saveSoa") {
 //Action for saving Record
 if(isset($input->action) && $input->action == "saveRecord") {
     $domainId = $input->domain;
-    $recordName = trim($input->name);
+    $recordName = strtolower(preg_replace('/\s+/', '', $input->name));
 	$recordContent = trim($input->content);
 	
     $stmt = $db->prepare("UPDATE records SET name=:name,type=:type,content=:content,ttl=:ttl,prio=:prio WHERE id=:id AND domain_id=:domain_id");
@@ -226,7 +226,7 @@ if(isset($input->action) && $input->action == "saveRecord") {
 //Action for adding Record
 if(isset($input->action) && $input->action == "addRecord") {
     $domainId = $input->domain;
-	$recordName = trim($input->name);
+	$recordName = strtolower(preg_replace('/\s+/', '', $input->name));
 	$recordContent = trim($input->content);
 	
     $db->beginTransaction();
