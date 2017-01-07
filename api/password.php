@@ -30,10 +30,10 @@ if(!isset($input->csrfToken) || $input->csrfToken !== $_SESSION['csrfToken']) {
 if(isset($input->action) && $input->action == "changePassword") {
     $passwordHash = password_hash($input->password, PASSWORD_DEFAULT);
     
-    $stmt = $db->prepare("UPDATE user SET password=? WHERE id=?");
-    $stmt->bind_param("si", $passwordHash, $_SESSION['id']);
+    $stmt = $db->prepare("UPDATE user SET password=:password WHERE id=:id");
+	$stmt->bindValue(':password', $passwordHash, PDO::PARAM_STR);
+	$stmt->bindValue(':id', $_SESSION['id'], PDO::PARAM_INT);
     $stmt->execute();
-    $stmt->close();
 }
 
 if(isset($retval)) {

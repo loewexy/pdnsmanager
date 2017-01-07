@@ -27,12 +27,12 @@ if(filter_input(INPUT_SERVER, "REQUEST_METHOD") == "GET") {
         $input_password = filter_input(INPUT_GET, "password");
         $input_content = filter_input(INPUT_GET, "content");
 
-        $stmt = $db->prepare("SELECT security,record FROM remote WHERE type='password' AND id=?");
-        $stmt->bind_param("i", $input_id);
+        $stmt = $db->prepare("SELECT security,record FROM remote WHERE type='password' AND id=:id LIMIT 1");
+		$stmt->bindValue(':id', $input_id, PDO::PARAM_INT);
         $stmt->execute();
-        $stmt->bind_result($passwordHash, $record);
-        $stmt->fetch();
-        $stmt->close();
+		$stmt->bindColumn('security', $passwordHash);
+		$stmt->bindColumn('record', $record);
+		$stmt->fetch(PDO::FETCH_BOUND);
 
         if(!password_verify($input_password, $passwordHash)) {
             $return['status'] = "error";
@@ -41,17 +41,16 @@ if(filter_input(INPUT_SERVER, "REQUEST_METHOD") == "GET") {
             exit();
         }
 
-        $stmt = $db->prepare("UPDATE records SET content=? WHERE name=? AND id=?");
-        $stmt->bind_param("ssi", $input_content, $input_domain, $record);
+        $stmt = $db->prepare("UPDATE records SET content=:content WHERE name=:name AND id=:id");
+		$stmt->bindValue(':content', $input_content, PDO::PARAM_STR);
+		$stmt->bindValue(':name', $input_domain, PDO::PARAM_STR);
+		$stmt->bindValue(':id', $record, PDO::PARAM_INT);
         $stmt->execute();
-        $stmt->close();
 
-        $stmt = $db->prepare("SELECT domain_id FROM records WHERE id=?");
-        $stmt->bind_param("i",$record);
+        $stmt = $db->prepare("SELECT domain_id FROM records WHERE id=:id LIMIT 1");
+        $stmt->bindValue(':id', $record, PDO::PARAM_INT);
         $stmt->execute();
-        $stmt->bind_result($domain_id);
-        $stmt->fetch();
-        $stmt->close();
+		$domain_id = $stmt->fetchColumn();
 
         update_serial($db, $domain_id);
 
@@ -74,12 +73,12 @@ if(filter_input(INPUT_SERVER, "REQUEST_METHOD") == "GET") {
     $input = json_decode(file_get_contents('php://input'));
     
     if(isset($input->domain) && isset($input->id) && isset($input->content)) {
-        $stmt = $db->prepare("SELECT E.name,E.id FROM remote R JOIN records E ON R.record = E.id WHERE R.id=?");
-        $stmt->bind_param("i", $input->id);
+        $stmt = $db->prepare("SELECT E.name,E.id FROM remote R JOIN records E ON R.record = E.id WHERE R.id=:id LIMIT 1");
+		$stmt->bindValue(':id', $input->id, PDO::PARAM_INT);
         $stmt->execute();
-        $stmt->bind_result($domainName, $record);
-        $stmt->fetch();
-        $stmt->close();
+		$stmt->bindColumn('E.name', $domainName);
+		$stmt->bindColumn('E.id', $record);
+        $stmt->fetch(PDO::FETCH_BOUND);
 
         if($domainName != $input->domain) {
             $return['status'] = "error";
@@ -92,21 +91,21 @@ if(filter_input(INPUT_SERVER, "REQUEST_METHOD") == "GET") {
             $newNonce = base64_encode(openssl_random_pseudo_bytes(32));
             $dbNonce = $newNonce . ":" . time();
             
-            $stmt = $db->prepare("UPDATE remote SET nonce=? WHERE id=?");
-            $stmt->bind_param("si", $dbNonce, $input->id);
+            $stmt = $db->prepare("UPDATE remote SET nonce=:nonce WHERE id=:id");
+			$stmt->bindValue(':nonce', $dbNonce, PDO::PARAM_STR);
+			$stmt->bindValue(':id', $input->id, PDO::PARAM_INT);
             $stmt->execute();
-            $stmt->close();
             
             $return['nonce'] = $newNonce;
             echo json_encode($return);
             exit();
         } else if(isset($_GET['editRecord'])) {
-            $stmt = $db->prepare("SELECT security,nonce FROM remote WHERE id=?");
-            $stmt->bind_param("i", $input->id);
+            $stmt = $db->prepare("SELECT security,nonce FROM remote WHERE id=:id LIMIT 1");
+            $stmt->bindValue(':id', $input->id, PDO::PARAM_INT);
             $stmt->execute();
-            $stmt->bind_result($pubkey, $dbNonce);
-            $stmt->fetch();
-            $stmt->close();
+			$stmt->bindColumn('security', $pubkey);
+			$stmt->bindColumn('nonce', $dbNonce);
+			$stmt->fetch(PDO::FETCH_BOUND);
             
             $nonce = explode(":", $dbNonce);
             
@@ -127,17 +126,16 @@ if(filter_input(INPUT_SERVER, "REQUEST_METHOD") == "GET") {
                 exit();
             }
             
-            $stmt = $db->prepare("UPDATE records SET content=? WHERE name=? AND id=?");
-            $stmt->bind_param("ssi", $input->content, $input->domain, $record);
+            $stmt = $db->prepare("UPDATE records SET content=:content WHERE name=:name AND id=:id");
+			$stmt->bindValue(':content', $input->content, PDO::PARAM_STR);
+			$stmt->bindValue(':name', $input->domain, PDO::PARAM_STR);
+			$stmt->bindValue(':id', $record, PDO::PARAM_INT);
             $stmt->execute();
-            $stmt->close();
 
-            $stmt = $db->prepare("SELECT domain_id FROM records WHERE id=?");
-            $stmt->bind_param("i",$record);
+            $stmt = $db->prepare("SELECT domain_id FROM records WHERE id=:id LIMIT 1");
+            $stmt->bindValue(':id', $record, PDO::PARAM_INT);
             $stmt->execute();
-            $stmt->bind_result($domain_id);
-            $stmt->fetch();
-            $stmt->close();
+            $domain_id = $stmt->fetchColumn();
 
             update_serial($db, $domain_id);
 

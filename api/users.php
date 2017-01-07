@@ -38,8 +38,8 @@ if(isset($input->action) && $input->action == "getUsers") {
         SELECT id,name,type
         FROM user
         WHERE
-            (name LIKE ? OR ?) AND
-            (type=? OR ?)
+            (name LIKE :name1 OR :name2) AND
+            (type=:type1 OR :type2)
     ";
 
     if(isset($input->sort->field) && $input->sort->field != "") {
@@ -78,17 +78,15 @@ if(isset($input->action) && $input->action == "getUsers") {
         $type_filter_used = 1;
     }
 
-    $stmt->bind_param("sisi",
-            $name_filter, $name_filter_used,
-            $type_filter, $type_filter_used
-    );
+	$stmt->bindValue(':name1', $name_filter, PDO::PARAM_STR);
+	$stmt->bindValue(':name2', $name_filter_used, PDO::PARAM_INT);
+	$stmt->bindValue(':type1', $type_filter, PDO::PARAM_INT);
+	$stmt->bindValue(':type2', $type_filter_used, PDO::PARAM_INT);
     $stmt->execute();
-
-    $result = $stmt->get_result();
 
     $retval = Array();
 
-    while($obj = $result->fetch_object()) {
+    while($obj = $stmt->fetchObject()) {
         $retval[] = $obj;
     }
 }
@@ -96,17 +94,15 @@ if(isset($input->action) && $input->action == "getUsers") {
 if(isset($input->action) && $input->action == "deleteUser") {
     $userId = $input->id;
     
-    $db->autocommit(false);
+    $db->beginTransaction();
     
-    $stmt = $db->prepare("DELETE FROM permissions WHERE user=?");
-    $stmt->bind_param("i", $userId);
+    $stmt = $db->prepare("DELETE FROM permissions WHERE user=:userid");
+	$stmt->bindValue(':userid', $userId, PDO::PARAM_INT);
     $stmt->execute();
-    $stmt->close();
     
-    $stmt = $db->prepare("DELETE FROM user WHERE id=?");
-    $stmt->bind_param("i", $userId);
+    $stmt = $db->prepare("DELETE FROM user WHERE id=:id");
+	$stmt->bindValue(':id', $userId, PDO::PARAM_INT);
     $stmt->execute();
-    $stmt->close();
     
     $db->commit();
 }

@@ -39,9 +39,9 @@ if(isset($input->action) && $input->action == "getDomains") {
         SELECT COUNT(*) AS anzahl
         FROM domains D
         LEFT OUTER JOIN permissions P ON D.id = P.domain
-        WHERE (P.user=? OR ?) AND 
-        (D.name LIKE ? OR ?) AND
-        (D.type=? OR ?)
+        WHERE (P.user=:user1 OR :user2) AND 
+        (D.name LIKE :name1 OR name2) AND
+        (D.type=:type1 OR :type2)
     ";
 
     $stmt = $db->prepare($sql);
@@ -65,23 +65,20 @@ if(isset($input->action) && $input->action == "getDomains") {
         $type_filter_used = 1;
     }
 
-    $stmt->bind_param("sisiii",
-            $id_filter, $id_filter_used,
-            $name_filter, $name_filter_used,
-            $type_filter, $type_filter_used
-    );
+	$stmt->bindValue(':user1', $id_filter, PDO::PARAM_STR);
+	$stmt->bindValue(':user2', $id_filter_used, PDO::PARAM_INT);
+	$stmt->bindValue(':name1', $name_filter, PDO::PARAM_STR);
+	$stmt->bindValue(':name2', $name_filter_used, PDO::PARAM_INT);
+	$stmt->bindValue(':type1', $type_filter, PDO::PARAM_INT);
+	$stmt->bindValue(':type2', $type_filter_used, PDO::PARAM_INT);
     $stmt->execute();
-
-    $result = $stmt->get_result();
-
-    // This is the object containing the number of rows
-    $obj = $result->fetch_object();
+	$result = $stmt->fetchColumn();
     
     // Initialize the return value
     $retval = Array();
     
     $retval['pages']['current'] = $input->page;
-    $retval['pages']['total'] =  ceil($obj->anzahl / $config['domain_rows']);
+    $retval['pages']['total'] =  ceil($result / $config['domain_rows']);
 
 
     // Now the real search is done on the database
@@ -90,11 +87,11 @@ if(isset($input->action) && $input->action == "getDomains") {
         FROM domains D
         LEFT OUTER JOIN records R ON D.id = R.domain_id
         LEFT OUTER JOIN permissions P ON D.id = P.domain
-        WHERE (P.user=? OR ?)
+        WHERE (P.user=:user1 OR :user2)
         GROUP BY D.id, D.name, D.type
         HAVING
-        (D.name LIKE ? OR ?) AND
-        (D.type=? OR ?)
+        (D.name LIKE :name1 OR :name2) AND
+        (D.type=:type1 OR :type2)
     ";
 
     if(isset($input->sort->field) && $input->sort->field != "") {
@@ -148,16 +145,15 @@ if(isset($input->action) && $input->action == "getDomains") {
         $type_filter_used = 1;
     }
 
-    $stmt->bind_param("sisiii",
-            $id_filter, $id_filter_used,
-            $name_filter, $name_filter_used,
-            $type_filter, $type_filter_used
-    );
+	$stmt->bindValue(':user1', $id_filter, PDO::PARAM_STR);
+	$stmt->bindValue(':user2', $id_filter_used, PDO::PARAM_INT);
+	$stmt->bindValue(':name1', $name_filter, PDO::PARAM_STR);
+	$stmt->bindValue(':name2', $name_filter_used, PDO::PARAM_INT);
+	$stmt->bindValue(':type1', $type_filter, PDO::PARAM_INT);
+	$stmt->bindValue(':type2', $type_filter_used, PDO::PARAM_INT);
     $stmt->execute();
 
-    $result = $stmt->get_result();
-
-    while($obj = $result->fetch_object()) {
+    while($obj = $stmt->fetchObject()) {
         $retval['data'][] = $obj;
     }
 }
@@ -165,27 +161,23 @@ if(isset($input->action) && $input->action == "getDomains") {
 if(isset($input->action) && $input->action == "deleteDomain") {
     $domainId = $input->id;
     
-    $db->autocommit(false);
+    $db->beginTransaction();
     
-    $stmt = $db->prepare("DELETE FROM permissions WHERE domain=?");
-    $stmt->bind_param("i", $domainId);
+    $stmt = $db->prepare("DELETE FROM permissions WHERE domain=:domain_id");
+	$stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
     $stmt->execute();
-    $stmt->close();
     
-    $stmt = $db->prepare("DELETE FROM remote WHERE record IN (SELECT id FROM records WHERE domain_id=?)");
-    $stmt->bind_param("i", $domainId);
+    $stmt = $db->prepare("DELETE FROM remote WHERE record IN (SELECT id FROM records WHERE domain_id=:domain_id)");
+    $stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
     $stmt->execute();
-    $stmt->close();
     
-    $stmt = $db->prepare("DELETE FROM records WHERE domain_id=?");
-    $stmt->bind_param("i", $domainId);
+    $stmt = $db->prepare("DELETE FROM records WHERE domain_id=:domain_id");
+    $stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
     $stmt->execute();
-    $stmt->close();
     
-    $stmt = $db->prepare("DELETE FROM domains WHERE id=?");
-    $stmt->bind_param("i", $domainId);
+    $stmt = $db->prepare("DELETE FROM domains WHERE id=:domain_id");
+    $stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
     $stmt->execute();
-    $stmt->close();
     
     $db->commit();
 }

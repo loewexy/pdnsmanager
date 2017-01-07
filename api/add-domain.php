@@ -52,7 +52,7 @@ if(isset($input->action) && $input->action == "addDomain") {
 	$stmt->bindValue(':type', $input->type, PDO::PARAM_STR);
     $stmt->execute();
     
-    $stmt = $db->prepare("SELECT id FROM domains WHERE name=:name AND type=:type LIMIT 1");
+    $stmt = $db->prepare("SELECT MAX(id) FROM domains WHERE name=:name AND type=:type");
 	$stmt->bindValue(':name', $input->name, PDO::PARAM_STR);
 	$stmt->bindValue(':type', $input->type, PDO::PARAM_STR);
     $stmt->execute();

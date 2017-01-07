@@ -21,12 +21,13 @@ require_once '../lib/database.php';
 
 $input = json_decode(file_get_contents('php://input'));
 
-$sql = $db->prepare("SELECT id,password,type FROM user WHERE name=?");
-$sql->bind_param("s", $input->user);
+$sql = $db->prepare("SELECT id,password,type FROM user WHERE name=:name LIMIT 1");
+$stmt->bindValue(':name', $input->user, PDO::PARAM_STR);
 $sql->execute();
-
-$sql->bind_result($id, $password, $type);
-$sql->fetch();
+$stmt->bindColumn('id', $id);
+$stmt->bindColumn('password', $password);
+$stmt->bindColumn('type', $type);
+$stmt->fetch(PDO::FETCH_BOUND);
 
 if (password_verify($input->password, $password)) {
     $retval['status'] = "success";
