@@ -207,6 +207,7 @@ CREATE TABLE IF NOT EXISTS permissions (
 );
 
 CREATE INDEX IF NOT EXISTS perm_domain_index ON permissions(domain);
+CREATE INDEX IF NOT EXISTS perm_userid_index ON permissions(userid);
 
 CREATE TABLE IF NOT EXISTS remote (
   id 				SERIAL PRIMARY KEY,

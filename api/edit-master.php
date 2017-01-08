@@ -176,7 +176,7 @@ if(isset($input->action) && $input->action == "saveSoa") {
     
 	$db->beginTransaction();
     
-    $stmt = $db->prepare("SELECT content FROM records WHERE type='SOA' AND domain_id=:domain_id");
+    $stmt = $db->prepare("SELECT content FROM records WHERE type='SOA' AND domain_id=:domain_id LIMIT 1");
 	$stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
     $stmt->execute();
 	$content = $stmt->fetchColumn();;
