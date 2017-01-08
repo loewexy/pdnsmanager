@@ -21,7 +21,7 @@ require_once '../lib/database.php';
 
 $input = json_decode(file_get_contents('php://input'));
 
-$stmt = $db->prepare("SELECT id,password,type FROM \"user\" WHERE name=:name LIMIT 1");
+$stmt = $db->prepare("SELECT id,password,type FROM users WHERE name=:name LIMIT 1");
 $stmt->bindValue(':name', $input->user, PDO::PARAM_STR);
 $stmt->execute();
 $stmt->bindColumn('id', $id);

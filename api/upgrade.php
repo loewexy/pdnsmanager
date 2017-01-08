@@ -174,8 +174,58 @@ if(isset($input->action) && $input->action == "requestUpgrade") {
 			  UNIQUE KEY namealgoindex (name, algorithm)
 			) Engine=InnoDB  DEFAULT CHARSET=latin1;
 			
-			ALTER TABLE user ADD UNIQUE KEY user_name_index (name);
+			DELETE FROM permissions
+			  WHERE user IN (
+				SELECT id FROM user
+				  LEFT OUTER JOIN (
+					SELECT MIN(U.id) AS minid, U.name
+					  FROM user AS U
+					  GROUP BY U.name
+				) as KeepRows ON user.id = KeepRows.minid
+			  WHERE KeepRows.minid IS NULL
+			  );
+
+			ALTER TABLE permissions ADD userid INT NOT NULL;
 			
+			UPDATE permissions SET userid = user;
+			
+			ALTER TABLE permissions DROP FOREIGN KEY permissions_ibfk_2;
+			
+			ALTER TABLE permissions DROP user;
+			
+			CREATE TABLE IF NOT EXISTS users (
+			  id int(11) NOT NULL,
+			  name varchar(50) NOT NULL,
+			  password varchar(200) NOT NULL,
+			  type varchar(20) NOT NULL,
+			  PRIMARY KEY (id)
+			) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+			
+			INSERT INTO users (id, name, password, type) SELECT id, name, password, type FROM user;
+			
+			DELETE FROM users
+			  WHERE users.id IN (
+				SELECT user.id FROM user
+				  LEFT OUTER JOIN (
+					SELECT MIN(U.id) AS minid, U.name
+					  FROM user AS U
+					  GROUP BY U.name
+				) as KeepRows ON user.id = KeepRows.minid
+			  WHERE KeepRows.minid IS NULL
+			  );
+			
+			ALTER TABLE users ADD CONSTRAINT UNIQUE KEY user_name_index (name);
+			
+			ALTER TABLE users MODIFY COLUMN id int(11) NOT NULL AUTO_INCREMENT;
+			
+			ALTER TABLE permissions ADD CONSTRAINT permissions_ibfk_2 FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE;
+			
+			DROP TABLE user;
+
+			UPDATE domains SET name=LOWER(name);
+			
+			UPDATE records SET name=LOWER(name);
+
 			UPDATE options SET value=4 WHERE name='schema_version';
         ";
         $sql["pgsql"] = "UPDATE options SET value=4 WHERE name='schema_version';";

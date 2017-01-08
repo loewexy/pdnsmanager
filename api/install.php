@@ -38,13 +38,6 @@ CREATE TABLE IF NOT EXISTS domains (
   UNIQUE KEY name_index (name)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
-CREATE TABLE IF NOT EXISTS permissions (
-  user int(11) NOT NULL,
-  domain int(11) NOT NULL,
-  PRIMARY KEY (user,domain),
-  KEY domain (domain)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
 CREATE TABLE IF NOT EXISTS records (
   id int(11) NOT NULL AUTO_INCREMENT,
   domain_id int(11) DEFAULT NULL,
@@ -59,13 +52,11 @@ CREATE TABLE IF NOT EXISTS records (
   PRIMARY KEY (id),
   KEY rec_name_index (name),
   KEY nametype_index (name,type),
-  KEY domain_id (domain_id)
+  KEY domain_id (domain_id),
+  CONSTRAINT records_ibfk_1 FOREIGN KEY (domain_id) REFERENCES domains (id) ON DELETE CASCADE
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
-ALTER TABLE records
-  ADD CONSTRAINT records_ibfk_1 FOREIGN KEY (domain_id) REFERENCES domains (id) ON DELETE CASCADE;
-
-CREATE TABLE IF NOT EXISTS user (
+CREATE TABLE IF NOT EXISTS users (
   id int(11) NOT NULL AUTO_INCREMENT,
   name varchar(50) NOT NULL,
   password varchar(200) NOT NULL,
@@ -74,10 +65,14 @@ CREATE TABLE IF NOT EXISTS user (
   UNIQUE KEY user_name_index (name)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
-ALTER TABLE permissions
-  ADD CONSTRAINT permissions_ibfk_1 FOREIGN KEY (domain) REFERENCES domains (id) ON DELETE CASCADE;
-ALTER TABLE permissions
-  ADD CONSTRAINT permissions_ibfk_2 FOREIGN KEY (user) REFERENCES user (id) ON DELETE CASCADE;
+CREATE TABLE IF NOT EXISTS permissions (
+  userid int(11) NOT NULL,
+  domain int(11) NOT NULL,
+  PRIMARY KEY (userid,domain),
+  KEY domain (domain),
+  CONSTRAINT permissions_ibfk_1 FOREIGN KEY (domain) REFERENCES domains (id) ON DELETE CASCADE,
+  CONSTRAINT permissions_ibfk_2 FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS remote (
     id int(11) NOT NULL AUTO_INCREMENT,
@@ -87,17 +82,17 @@ CREATE TABLE IF NOT EXISTS remote (
     security varchar(2000) NOT NULL,
     nonce varchar(255) DEFAULT NULL,
     PRIMARY KEY (id),
-    KEY record (record)
+    KEY record (record),
+	CONSTRAINT remote_ibfk_1 FOREIGN KEY (record) REFERENCES records (id) ON DELETE CASCADE
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
-
-ALTER TABLE remote
-    ADD CONSTRAINT remote_ibfk_1 FOREIGN KEY (record) REFERENCES records (id) ON DELETE CASCADE;
 
 CREATE TABLE IF NOT EXISTS options (
     name varchar(255) NOT NULL,
     value varchar(2000) DEFAULT NULL,
     PRIMARY KEY (name)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+
+DELETE FROM options where name='schema_version';
 
 INSERT INTO options(name,value) VALUES ('schema_version', 4);
 
@@ -159,7 +154,7 @@ CREATE TABLE IF NOT EXISTS domains (
   name                  VARCHAR(255) NOT NULL,
   master                VARCHAR(128) DEFAULT NULL,
   last_check            INT DEFAULT NULL,
-  \"type\"                  VARCHAR(6) NOT NULL,
+  type                  VARCHAR(6) NOT NULL,
   notified_serial       INT DEFAULT NULL,
   account               VARCHAR(40) DEFAULT NULL,
   CONSTRAINT c_lowercase_name CHECK (((name)::TEXT = LOWER((name)::TEXT)))
@@ -171,7 +166,7 @@ CREATE TABLE IF NOT EXISTS records (
   id                    SERIAL PRIMARY KEY,
   domain_id             INT DEFAULT NULL,
   name                  VARCHAR(255) DEFAULT NULL,
-  \"type\"                  VARCHAR(10) DEFAULT NULL,
+  type                  VARCHAR(10) DEFAULT NULL,
   content               VARCHAR(65535) DEFAULT NULL,
   ttl                   INT DEFAULT NULL,
   prio                  INT DEFAULT NULL,
@@ -190,24 +185,24 @@ CREATE INDEX IF NOT EXISTS nametype_index ON records(name,type);
 CREATE INDEX IF NOT EXISTS domain_id ON records(domain_id);
 CREATE INDEX IF NOT EXISTS recordorder ON records (domain_id, ordername text_pattern_ops);
 
-CREATE TABLE IF NOT EXISTS \"user\" (
+CREATE TABLE IF NOT EXISTS users (
   id 				SERIAL PRIMARY KEY,
   name				varchar(50) NOT NULL,
   password			varchar(200) NOT NULL,
-  \"type\"				varchar(20) NOT NULL
+  type				varchar(20) NOT NULL
 );
 
-CREATE UNIQUE INDEX IF NOT EXISTS user_name_index ON \"user\"(name);
+CREATE UNIQUE INDEX IF NOT EXISTS user_name_index ON users(name);
 
 CREATE TABLE IF NOT EXISTS permissions (
-  \"user\"				INT NOT NULL,
-  \"domain\"			INT NOT NULL,
-  PRIMARY KEY (\"user\",domain),
+  userid				INT NOT NULL,
+  domain			INT NOT NULL,
+  PRIMARY KEY (userid,domain),
   CONSTRAINT domain_exists
   FOREIGN KEY(domain) REFERENCES domains(id)
   ON DELETE CASCADE,
   CONSTRAINT user_exists
-  FOREIGN KEY(\"user\") REFERENCES \"user\"(id)
+  FOREIGN KEY(userid) REFERENCES users(id)
   ON DELETE CASCADE
 );
 
@@ -217,8 +212,8 @@ CREATE TABLE IF NOT EXISTS remote (
   id 				SERIAL PRIMARY KEY,
   record			INT NOT NULL,
   description		varchar(255) NOT NULL,
-  \"type\"				varchar(20) NOT NULL,
-  \"security\"			varchar(2000) NOT NULL,
+  type				varchar(20) NOT NULL,
+  security			varchar(2000) NOT NULL,
   nonce				varchar(255) DEFAULT NULL,
   CONSTRAINT record_exists
   FOREIGN KEY(record) REFERENCES records(id)
@@ -232,6 +227,8 @@ CREATE TABLE IF NOT EXISTS options (
     value varchar(2000) DEFAULT NULL,
     PRIMARY KEY (name)
 );
+
+DELETE FROM options where name='schema_version';
 
 INSERT INTO options(name,value) VALUES ('schema_version', 4);
 
@@ -247,7 +244,7 @@ CREATE TABLE IF NOT EXISTS comments (
   id                    SERIAL PRIMARY KEY,
   domain_id             INT NOT NULL,
   name                  VARCHAR(255) NOT NULL,
-  \"type\"                  VARCHAR(10) NOT NULL,
+  type                  VARCHAR(10) NOT NULL,
   modified_at           INT NOT NULL,
   account               VARCHAR(40) DEFAULT NULL,
   comment               VARCHAR(65535) NOT NULL,
@@ -318,7 +315,7 @@ if (!isset($retval)) {
 	
 	$db->commit();
 	
-	$stmt = $db->prepare("INSERT INTO \"user\"(name,password,type) VALUES (:user,:hash,'admin')");
+	$stmt = $db->prepare("INSERT INTO users(name,password,type) VALUES (:user,:hash,'admin')");
 	$stmt->bindValue(':user', $input->userName, PDO::PARAM_STR);
 	$stmt->bindValue(':hash', $passwordHash, PDO::PARAM_STR);
 	$stmt->execute();

@@ -39,7 +39,7 @@ if(isset($input->action) && $input->action == "getDomains") {
         SELECT COUNT(*) AS anzahl
         FROM domains D
         LEFT OUTER JOIN permissions P ON D.id = P.domain
-        WHERE (P.\"user\"=:user1 OR :user2) AND 
+        WHERE (P.userid=:user1 OR :user2) AND 
         (D.name LIKE :name1 OR :name2) AND
         (D.type=:type1 OR :type2)
     ";
@@ -91,7 +91,7 @@ if(isset($input->action) && $input->action == "getDomains") {
         FROM domains D
         LEFT OUTER JOIN records R ON D.id = R.domain_id
         LEFT OUTER JOIN permissions P ON D.id = P.domain
-        WHERE (P.\"user\"=:user1 OR :user2)
+        WHERE (P.userid=:user1 OR :user2)
         GROUP BY D.id, D.name, D.type
         HAVING
         (D.name LIKE :name1 OR :name2) AND

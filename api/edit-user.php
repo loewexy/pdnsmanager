@@ -37,14 +37,14 @@ if(isset($input->action) && $input->action == "addUser") {
     
     $db->beginTransaction();
     
-    $stmt = $db->prepare("INSERT INTO \"user\"(name,password,type) VALUES (:name,:password,:type)");
+    $stmt = $db->prepare("INSERT INTO users(name,password,type) VALUES (:name,:password,:type)");
 	
 	$stmt->bindValue(':name', $input->name, PDO::PARAM_STR);
 	$stmt->bindValue(':password', $passwordHash, PDO::PARAM_STR);
 	$stmt->bindValue(':type', $input->type, PDO::PARAM_STR);
     $stmt->execute();
     
-	$stmt = $db->prepare("SELECT MAX(id) FROM \"user\" WHERE name=:name AND password=:password AND type=:type");
+	$stmt = $db->prepare("SELECT MAX(id) FROM users WHERE name=:name AND password=:password AND type=:type");
 	$stmt->bindValue(':name', $input->name, PDO::PARAM_STR);
 	$stmt->bindValue(':password', $passwordHash, PDO::PARAM_STR);
 	$stmt->bindValue(':type', $input->type, PDO::PARAM_STR);
@@ -58,7 +58,7 @@ if(isset($input->action) && $input->action == "addUser") {
 }
 
 if(isset($input->action) && $input->action == "getUserData") {
-    $stmt = $db->prepare("SELECT name,type FROM \"user\" WHERE id=:id LIMIT 1");
+    $stmt = $db->prepare("SELECT name,type FROM users WHERE id=:id LIMIT 1");
 	$stmt->bindValue(':id', $input->id, PDO::PARAM_INT);
     $stmt->execute();
 	$stmt->bindColumn('name', $userName);
@@ -73,14 +73,14 @@ if(isset($input->action) && $input->action == "getUserData") {
 if(isset($input->action) && $input->action == "saveUserChanges") {
     if(isset($input->password)) {
         $passwordHash = password_hash($input->password, PASSWORD_DEFAULT);
-        $stmt = $db->prepare("UPDATE \"user\" SET name=:name,password=:password,type=:type WHERE id=:id");
+        $stmt = $db->prepare("UPDATE users SET name=:name,password=:password,type=:type WHERE id=:id");
 		$stmt->bindValue(':name', $input->name, PDO::PARAM_STR);
 		$stmt->bindValue(':password', $passwordHash, PDO::PARAM_STR);
 		$stmt->bindValue(':type', $input->type, PDO::PARAM_STR);
 		$stmt->bindValue(':id', $input->id, PDO::PARAM_INT);
         $stmt->execute();
     } else {
-        $stmt = $db->prepare("UPDATE \"user\" SET name=:name,type=:type WHERE id=:id");
+        $stmt = $db->prepare("UPDATE users SET name=:name,type=:type WHERE id=:id");
 		$stmt->bindValue(':name', $input->name, PDO::PARAM_STR);
 		$stmt->bindValue(':type', $input->type, PDO::PARAM_STR);
 		$stmt->bindValue(':id', $input->id, PDO::PARAM_INT);
@@ -94,7 +94,7 @@ if(isset($input->action) && $input->action == "getPermissions") {
         SELECT D.id,D.name 
         FROM permissions P
         JOIN domains D ON P.domain=D.id
-        WHERE P.\"user\"=:user
+        WHERE P.userid=:user
     ");
     
     $stmt->bindValue(':user', $input->id, PDO::PARAM_INT);
@@ -109,7 +109,7 @@ if(isset($input->action) && $input->action == "getPermissions") {
 
 if(isset($input->action) && $input->action == "removePermission") {
 
-    $stmt = $db->prepare("DELETE FROM permissions WHERE \"user\"=:user AND domain=:domain");
+    $stmt = $db->prepare("DELETE FROM permissions WHERE userid=:user AND domain=:domain");
     
 	$stmt->bindValue(':user', $input->userId, PDO::PARAM_INT);
 	$stmt->bindValue(':domain', $input->domainId, PDO::PARAM_INT);
@@ -117,7 +117,7 @@ if(isset($input->action) && $input->action == "removePermission") {
 }
 
 if(isset($input->action) && $input->action == "searchDomains" && isset($input->term)) {
-    $stmt = $db->prepare("SELECT id,name AS text FROM domains WHERE name LIKE :name  AND id NOT IN(SELECT domain FROM permissions WHERE \"user\"=:user)");
+    $stmt = $db->prepare("SELECT id,name AS text FROM domains WHERE name LIKE :name  AND id NOT IN(SELECT domain FROM permissions WHERE userid=:user)");
 
     $searchTerm = "%" . $input->term . "%";
     
@@ -133,7 +133,7 @@ if(isset($input->action) && $input->action == "searchDomains" && isset($input->t
 }
 
 if(isset($input->action) && $input->action == "addPermissions") {
-    $stmt = $db->prepare("INSERT INTO permissions(\"user\",domain) VALUES (:user,:domain)");
+    $stmt = $db->prepare("INSERT INTO permissions(userid,domain) VALUES (:user,:domain)");
 
     foreach($input->domains as $domain) {
 		$stmt->bindValue(':user', $input->userId, PDO::PARAM_INT);

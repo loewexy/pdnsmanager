@@ -36,7 +36,7 @@ if(isset($input->action) && $input->action == "getUsers") {
 
     $sql = "
         SELECT id,name,type
-        FROM \"user\"
+        FROM users
         WHERE
             (name LIKE :name1 OR :name2) AND
             (type=:type1 OR :type2)
@@ -96,11 +96,11 @@ if(isset($input->action) && $input->action == "deleteUser") {
     
     $db->beginTransaction();
     
-    $stmt = $db->prepare("DELETE FROM permissions WHERE \"user\"=:userid");
+    $stmt = $db->prepare("DELETE FROM permissions WHERE userid=:userid");
 	$stmt->bindValue(':userid', $userId, PDO::PARAM_INT);
     $stmt->execute();
     
-    $stmt = $db->prepare("DELETE FROM \"user\" WHERE id=:id");
+    $stmt = $db->prepare("DELETE FROM users WHERE id=:id");
 	$stmt->bindValue(':id', $userId, PDO::PARAM_INT);
     $stmt->execute();
     
