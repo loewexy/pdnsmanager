@@ -96,7 +96,6 @@ limitations under the License.
                     echo '<div class="row text-center">';
                     echo '<a class="btn btn-primary" href="add-domain.php#NATIVE">Add NATIVE</a>';
                     echo '<a class="btn btn-success margin-left-20" href="add-domain.php#MASTER">Add MASTER</a>';
-                    echo '<a class="btn btn-success margin-left-20" href="add-domain.php#SLAVE">Add SLAVE</a>';
                     echo '</div>';
                 }
             ?>   
