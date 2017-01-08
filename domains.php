@@ -74,7 +74,6 @@ limitations under the License.
                                     <option value="none">No filter...</option>
                                     <option value="MASTER">MASTER</option>
 									<option value="NATIVE">NATIVE</option>
-									<option value="SLAVE">SLAVE</option>
                                 </select>
                                 </div>
                             </form>
