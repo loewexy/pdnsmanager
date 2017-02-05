@@ -28,11 +28,11 @@ if(filter_input(INPUT_SERVER, "REQUEST_METHOD") == "GET") {
         $input_content = filter_input(INPUT_GET, "content");
 
         $stmt = $db->prepare("SELECT security,record FROM remote WHERE type='password' AND id=:id LIMIT 1");
-		$stmt->bindValue(':id', $input_id, PDO::PARAM_INT);
+        $stmt->bindValue(':id', $input_id, PDO::PARAM_INT);
         $stmt->execute();
-		$stmt->bindColumn('security', $passwordHash);
-		$stmt->bindColumn('record', $record);
-		$stmt->fetch(PDO::FETCH_BOUND);
+        $stmt->bindColumn('security', $passwordHash);
+        $stmt->bindColumn('record', $record);
+        $stmt->fetch(PDO::FETCH_BOUND);
 
         if(!password_verify($input_password, $passwordHash)) {
             $return['status'] = "error";
@@ -42,15 +42,15 @@ if(filter_input(INPUT_SERVER, "REQUEST_METHOD") == "GET") {
         }
 
         $stmt = $db->prepare("UPDATE records SET content=:content WHERE name=:name AND id=:id");
-		$stmt->bindValue(':content', $input_content, PDO::PARAM_STR);
-		$stmt->bindValue(':name', $input_domain, PDO::PARAM_STR);
-		$stmt->bindValue(':id', $record, PDO::PARAM_INT);
+        $stmt->bindValue(':content', $input_content, PDO::PARAM_STR);
+        $stmt->bindValue(':name', $input_domain, PDO::PARAM_STR);
+        $stmt->bindValue(':id', $record, PDO::PARAM_INT);
         $stmt->execute();
 
         $stmt = $db->prepare("SELECT domain_id FROM records WHERE id=:id LIMIT 1");
         $stmt->bindValue(':id', $record, PDO::PARAM_INT);
         $stmt->execute();
-		$domain_id = $stmt->fetchColumn();
+        $domain_id = $stmt->fetchColumn();
 
         update_serial($db, $domain_id);
 
@@ -74,10 +74,10 @@ if(filter_input(INPUT_SERVER, "REQUEST_METHOD") == "GET") {
     
     if(isset($input->domain) && isset($input->id) && isset($input->content)) {
         $stmt = $db->prepare("SELECT E.name,E.id FROM remote R JOIN records E ON R.record = E.id WHERE R.id=:id LIMIT 1");
-		$stmt->bindValue(':id', $input->id, PDO::PARAM_INT);
+        $stmt->bindValue(':id', $input->id, PDO::PARAM_INT);
         $stmt->execute();
-		$stmt->bindColumn('E.name', $domainName);
-		$stmt->bindColumn('E.id', $record);
+        $stmt->bindColumn('E.name', $domainName);
+        $stmt->bindColumn('E.id', $record);
         $stmt->fetch(PDO::FETCH_BOUND);
 
         if($domainName != $input->domain) {
@@ -92,8 +92,8 @@ if(filter_input(INPUT_SERVER, "REQUEST_METHOD") == "GET") {
             $dbNonce = $newNonce . ":" . time();
             
             $stmt = $db->prepare("UPDATE remote SET nonce=:nonce WHERE id=:id");
-			$stmt->bindValue(':nonce', $dbNonce, PDO::PARAM_STR);
-			$stmt->bindValue(':id', $input->id, PDO::PARAM_INT);
+            $stmt->bindValue(':nonce', $dbNonce, PDO::PARAM_STR);
+            $stmt->bindValue(':id', $input->id, PDO::PARAM_INT);
             $stmt->execute();
             
             $return['nonce'] = $newNonce;
@@ -103,9 +103,9 @@ if(filter_input(INPUT_SERVER, "REQUEST_METHOD") == "GET") {
             $stmt = $db->prepare("SELECT security,nonce FROM remote WHERE id=:id LIMIT 1");
             $stmt->bindValue(':id', $input->id, PDO::PARAM_INT);
             $stmt->execute();
-			$stmt->bindColumn('security', $pubkey);
-			$stmt->bindColumn('nonce', $dbNonce);
-			$stmt->fetch(PDO::FETCH_BOUND);
+            $stmt->bindColumn('security', $pubkey);
+            $stmt->bindColumn('nonce', $dbNonce);
+            $stmt->fetch(PDO::FETCH_BOUND);
             
             $nonce = explode(":", $dbNonce);
             
@@ -127,9 +127,9 @@ if(filter_input(INPUT_SERVER, "REQUEST_METHOD") == "GET") {
             }
             
             $stmt = $db->prepare("UPDATE records SET content=:content WHERE name=:name AND id=:id");
-			$stmt->bindValue(':content', $input->content, PDO::PARAM_STR);
-			$stmt->bindValue(':name', $input->domain, PDO::PARAM_STR);
-			$stmt->bindValue(':id', $record, PDO::PARAM_INT);
+	    $stmt->bindValue(':content', $input->content, PDO::PARAM_STR);
+	    $stmt->bindValue(':name', $input->domain, PDO::PARAM_STR);
+	    $stmt->bindValue(':id', $record, PDO::PARAM_INT);
             $stmt->execute();
 
             $stmt = $db->prepare("SELECT domain_id FROM records WHERE id=:id LIMIT 1");

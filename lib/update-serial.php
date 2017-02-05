@@ -24,7 +24,7 @@ function update_serial($db, $domainId) {
     $stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
     $stmt->execute();
     $content = $stmt->fetchColumn();
-	
+
     $content = explode(" ", $content);    
     
     $serial = $content[2];
@@ -48,7 +48,7 @@ function update_serial($db, $domainId) {
     $newsoa = implode(" ", $content);
     
     $stmt = $db->prepare("UPDATE records SET content=:content WHERE type='SOA' AND domain_id=:domain_id");
-	$stmt->bindValue(':content', $newsoa, PDO::PARAM_STR);
+    $stmt->bindValue(':content', $newsoa, PDO::PARAM_STR);
     $stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
     $stmt->execute();
     

@@ -31,9 +31,9 @@ if(!isset($input->csrfToken) || $input->csrfToken !== $_SESSION['csrfToken']) {
 
 //Permission check
 if(isset($input->domain)) {
-	$permquery = $db->prepare("SELECT COUNT(*) FROM permissions WHERE userid=:user AND domain=:domain");
-	$permquery->bindValue(':user', $_SESSION['id'], PDO::PARAM_INT);
-	$permquery->bindValue(':domain', $input->domain, PDO::PARAM_INT);
+    $permquery = $db->prepare("SELECT COUNT(*) FROM permissions WHERE userid=:user AND domain=:domain");
+    $permquery->bindValue(':user', $_SESSION['id'], PDO::PARAM_INT);
+    $permquery->bindValue(':domain', $input->domain, PDO::PARAM_INT);
     $permquery->execute();
     if($permquery->fetchColumn() < 1 && $_SESSION['type'] != "admin") {
         echo "Permission denied!";
@@ -113,11 +113,11 @@ if(isset($input->action) && $input->action == "getRecords") {
 
     $domainId = (int)$input->domain;
     
-	$stmt->bindValue(':name1', $name_filter, PDO::PARAM_STR);
-	$stmt->bindValue(':name2', $name_filter_used, PDO::PARAM_INT);
-	$stmt->bindValue(':content1', $content_filter, PDO::PARAM_STR);
-	$stmt->bindValue(':content2', $content_filter_used, PDO::PARAM_INT);
-	$stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
+    $stmt->bindValue(':name1', $name_filter, PDO::PARAM_STR);
+    $stmt->bindValue(':name2', $name_filter_used, PDO::PARAM_INT);
+    $stmt->bindValue(':content1', $content_filter, PDO::PARAM_STR);
+    $stmt->bindValue(':content2', $content_filter_used, PDO::PARAM_INT);
+    $stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
     $stmt->execute();
 
     $retval = Array();
@@ -133,7 +133,7 @@ if(isset($input->action) && $input->action == "getSoa") {
     $domainId = (int)$input->domain;
     
     $stmt = $db->prepare("SELECT content FROM records WHERE type='SOA' AND domain_id=:domain_id LIMIT 1");
-	$stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
+    $stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
     $stmt->execute();
     
     $content = $stmt->fetchColumn();
@@ -149,8 +149,6 @@ if(isset($input->action) && $input->action == "getSoa") {
     $retval['retry'] = $content[4];
     $retval['expire'] = $content[5];
     $retval['ttl'] = $content[6];
-    
-    
 }
 
 //Action for getting SOA Serial
@@ -158,7 +156,7 @@ if(isset($input->action) && $input->action == "getSerial") {
     $domainId = (int)$input->domain;
     
     $stmt = $db->prepare("SELECT content FROM records WHERE type='SOA' AND domain_id=:domain_id LIMIT 1");
-	$stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
+    $stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
     $stmt->execute();
     
     $content = $stmt->fetchColumn();
@@ -174,12 +172,12 @@ if(isset($input->action) && $input->action == "getSerial") {
 if(isset($input->action) && $input->action == "saveSoa") {
     $domainId = (int)$input->domain;
     
-	$db->beginTransaction();
+    $db->beginTransaction();
     
     $stmt = $db->prepare("SELECT content FROM records WHERE type='SOA' AND domain_id=:domain_id LIMIT 1");
-	$stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
+    $stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
     $stmt->execute();
-	$content = $stmt->fetchColumn();;
+    $content = $stmt->fetchColumn();;
     
     $content = explode(" ", $content);    
     $serial = $content[2];
@@ -193,9 +191,9 @@ if(isset($input->action) && $input->action == "saveSoa") {
     $newsoa .= $input->ttl;
     
     $stmt = $db->prepare("UPDATE records SET content=:content,ttl=:ttl WHERE type='SOA' AND domain_id=:domain_id");
-	$stmt->bindValue(':content', $newsoa, PDO::PARAM_STR);
-	$stmt->bindValue(':ttl', $input->ttl, PDO::PARAM_INT);
-	$stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
+    $stmt->bindValue(':content', $newsoa, PDO::PARAM_STR);
+    $stmt->bindValue(':ttl', $input->ttl, PDO::PARAM_INT);
+    $stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
     $stmt->execute();
     
     $db->commit();
@@ -209,16 +207,16 @@ if(isset($input->action) && $input->action == "saveSoa") {
 if(isset($input->action) && $input->action == "saveRecord") {
     $domainId = $input->domain;
     $recordName = strtolower(preg_replace('/\s+/', '', $input->name));
-	$recordContent = trim($input->content);
-	
+    $recordContent = trim($input->content);
+
     $stmt = $db->prepare("UPDATE records SET name=:name,type=:type,content=:content,ttl=:ttl,prio=:prio WHERE id=:id AND domain_id=:domain_id");
-	$stmt->bindValue(':name', $recordName, PDO::PARAM_STR);
-	$stmt->bindValue(':type', $input->type, PDO::PARAM_STR);
-	$stmt->bindValue(':content', $recordContent, PDO::PARAM_STR);
-	$stmt->bindValue(':ttl', $input->ttl, PDO::PARAM_INT);
-	$stmt->bindValue(':prio', $input->prio, PDO::PARAM_INT);
-	$stmt->bindValue(':id', $input->id, PDO::PARAM_INT);
-	$stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
+    $stmt->bindValue(':name', $recordName, PDO::PARAM_STR);
+    $stmt->bindValue(':type', $input->type, PDO::PARAM_STR);
+    $stmt->bindValue(':content', $recordContent, PDO::PARAM_STR);
+    $stmt->bindValue(':ttl', $input->ttl, PDO::PARAM_INT);
+    $stmt->bindValue(':prio', $input->prio, PDO::PARAM_INT);
+    $stmt->bindValue(':id', $input->id, PDO::PARAM_INT);
+    $stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
     $stmt->execute();
     update_serial($db, $domainId);
 }
@@ -226,32 +224,32 @@ if(isset($input->action) && $input->action == "saveRecord") {
 //Action for adding Record
 if(isset($input->action) && $input->action == "addRecord") {
     $domainId = $input->domain;
-	$recordName = strtolower(preg_replace('/\s+/', '', $input->name));
-	$recordContent = trim($input->content);
-	
-    $db->beginTransaction();
-	
-    $stmt = $db->prepare("INSERT INTO records (domain_id, name, type, content, prio, ttl) VALUES (:domain_id,:name,:type,:content,:prio,:ttl)");
-	$stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
-	$stmt->bindValue(':name', $recordName, PDO::PARAM_STR);
-	$stmt->bindValue(':type', $input->type, PDO::PARAM_STR);
-	$stmt->bindValue(':content', $recordContent, PDO::PARAM_STR);
-	$stmt->bindValue(':ttl', $input->ttl, PDO::PARAM_INT);
-	$stmt->bindValue(':prio', $input->prio, PDO::PARAM_INT);
-    $stmt->execute();
-	
-    $stmt = $db->prepare("SELECT MAX(id) FROM records WHERE domain_id=:domain_id AND name=:name AND type=:type AND content=:content AND prio=:prio AND ttl=:ttl");
-	$stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
-	$stmt->bindValue(':name', $recordName, PDO::PARAM_STR);
-	$stmt->bindValue(':type', $input->type, PDO::PARAM_STR);
-	$stmt->bindValue(':content', $recordContent, PDO::PARAM_STR);
-	$stmt->bindValue(':ttl', $input->ttl, PDO::PARAM_INT);
-	$stmt->bindValue(':prio', $input->prio, PDO::PARAM_INT);
-    $stmt->execute();
-	$newId = $stmt->fetchColumn();
+    $recordName = strtolower(preg_replace('/\s+/', '', $input->name));
+    $recordContent = trim($input->content);
 
-	$db->commit();
-	
+    $db->beginTransaction();
+
+    $stmt = $db->prepare("INSERT INTO records (domain_id, name, type, content, prio, ttl) VALUES (:domain_id,:name,:type,:content,:prio,:ttl)");
+    $stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
+    $stmt->bindValue(':name', $recordName, PDO::PARAM_STR);
+    $stmt->bindValue(':type', $input->type, PDO::PARAM_STR);
+    $stmt->bindValue(':content', $recordContent, PDO::PARAM_STR);
+    $stmt->bindValue(':ttl', $input->ttl, PDO::PARAM_INT);
+    $stmt->bindValue(':prio', $input->prio, PDO::PARAM_INT);
+    $stmt->execute();
+
+    $stmt = $db->prepare("SELECT MAX(id) FROM records WHERE domain_id=:domain_id AND name=:name AND type=:type AND content=:content AND prio=:prio AND ttl=:ttl");
+    $stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
+    $stmt->bindValue(':name', $recordName, PDO::PARAM_STR);
+    $stmt->bindValue(':type', $input->type, PDO::PARAM_STR);
+    $stmt->bindValue(':content', $recordContent, PDO::PARAM_STR);
+    $stmt->bindValue(':ttl', $input->ttl, PDO::PARAM_INT);
+    $stmt->bindValue(':prio', $input->prio, PDO::PARAM_INT);
+    $stmt->execute();
+    $newId = $stmt->fetchColumn();
+
+    $db->commit();
+
     $retval = Array();
     $retval['newId'] = $newId;
     
@@ -264,8 +262,8 @@ if(isset($input->action) && $input->action == "removeRecord") {
     $recordId = $input->id;
     
     $stmt = $db->prepare("DELETE FROM records WHERE id=:id AND domain_id=:domain_id");
-	$stmt->bindValue(':id', $recordId, PDO::PARAM_INT);
-	$stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
+    $stmt->bindValue(':id', $recordId, PDO::PARAM_INT);
+    $stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
     $stmt->execute();
     
     update_serial($db, $domainId);

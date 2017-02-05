@@ -65,18 +65,18 @@ if(isset($input->action) && $input->action == "getDomains") {
         $type_filter_used = 1;
     }
 
-	$stmt->bindValue(':user1', $id_filter, PDO::PARAM_STR);
-	$stmt->bindValue(':user2', $id_filter_used, PDO::PARAM_INT);
-	$stmt->bindValue(':name1', $name_filter, PDO::PARAM_STR);
-	$stmt->bindValue(':name2', $name_filter_used, PDO::PARAM_INT);
-	$stmt->bindValue(':type1', $type_filter, PDO::PARAM_INT);
-	$stmt->bindValue(':type2', $type_filter_used, PDO::PARAM_INT);
+    $stmt->bindValue(':user1', $id_filter, PDO::PARAM_STR);
+    $stmt->bindValue(':user2', $id_filter_used, PDO::PARAM_INT);
+    $stmt->bindValue(':name1', $name_filter, PDO::PARAM_STR);
+    $stmt->bindValue(':name2', $name_filter_used, PDO::PARAM_INT);
+    $stmt->bindValue(':type1', $type_filter, PDO::PARAM_INT);
+    $stmt->bindValue(':type2', $type_filter_used, PDO::PARAM_INT);
     $stmt->execute();
-	$result = $stmt->fetchColumn();
+    $result = $stmt->fetchColumn();
     
-	if ($result == 0) {
-		$result = 1;
-	}
+    if ($result == 0) {
+        $result = 1;
+    }
 	
     // Initialize the return value
     $retval = Array();
@@ -149,14 +149,14 @@ if(isset($input->action) && $input->action == "getDomains") {
         $type_filter_used = 1;
     }
 
-	$stmt->bindValue(':user1', $id_filter, PDO::PARAM_STR);
-	$stmt->bindValue(':user2', $id_filter_used, PDO::PARAM_INT);
-	$stmt->bindValue(':name1', $name_filter, PDO::PARAM_STR);
-	$stmt->bindValue(':name2', $name_filter_used, PDO::PARAM_INT);
-	$stmt->bindValue(':type1', $type_filter, PDO::PARAM_INT);
-	$stmt->bindValue(':type2', $type_filter_used, PDO::PARAM_INT);
+    $stmt->bindValue(':user1', $id_filter, PDO::PARAM_STR);
+    $stmt->bindValue(':user2', $id_filter_used, PDO::PARAM_INT);
+    $stmt->bindValue(':name1', $name_filter, PDO::PARAM_STR);
+    $stmt->bindValue(':name2', $name_filter_used, PDO::PARAM_INT);
+    $stmt->bindValue(':type1', $type_filter, PDO::PARAM_INT);
+    $stmt->bindValue(':type2', $type_filter_used, PDO::PARAM_INT);
     $stmt->execute();
-	
+
     while($obj = $stmt->fetchObject()) {
         $retval['data'][] = $obj;
     }
@@ -168,7 +168,7 @@ if(isset($input->action) && $input->action == "deleteDomain") {
     $db->beginTransaction();
     
     $stmt = $db->prepare("DELETE FROM permissions WHERE domain=:domain_id");
-	$stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
+    $stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
     $stmt->execute();
     
     $stmt = $db->prepare("DELETE FROM remote WHERE record IN (SELECT id FROM records WHERE domain_id=:domain_id)");

@@ -78,10 +78,10 @@ if(isset($input->action) && $input->action == "getUsers") {
         $type_filter_used = 1;
     }
 
-	$stmt->bindValue(':name1', $name_filter, PDO::PARAM_STR);
-	$stmt->bindValue(':name2', $name_filter_used, PDO::PARAM_INT);
-	$stmt->bindValue(':type1', $type_filter, PDO::PARAM_INT);
-	$stmt->bindValue(':type2', $type_filter_used, PDO::PARAM_INT);
+    $stmt->bindValue(':name1', $name_filter, PDO::PARAM_STR);
+    $stmt->bindValue(':name2', $name_filter_used, PDO::PARAM_INT);
+    $stmt->bindValue(':type1', $type_filter, PDO::PARAM_INT);
+    $stmt->bindValue(':type2', $type_filter_used, PDO::PARAM_INT);
     $stmt->execute();
 
     $retval = Array();
@@ -97,11 +97,11 @@ if(isset($input->action) && $input->action == "deleteUser") {
     $db->beginTransaction();
     
     $stmt = $db->prepare("DELETE FROM permissions WHERE userid=:userid");
-	$stmt->bindValue(':userid', $userId, PDO::PARAM_INT);
+    $stmt->bindValue(':userid', $userId, PDO::PARAM_INT);
     $stmt->execute();
     
     $stmt = $db->prepare("DELETE FROM users WHERE id=:id");
-	$stmt->bindValue(':id', $userId, PDO::PARAM_INT);
+    $stmt->bindValue(':id', $userId, PDO::PARAM_INT);
     $stmt->execute();
     
     $db->commit();

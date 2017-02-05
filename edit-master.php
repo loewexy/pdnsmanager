@@ -70,7 +70,7 @@ limitations under the License.
                             </div>
                             <div class="form-group">
                                 <label for="soa-mail" class="control-label">Email</label>
-                                <input type="email" class="form-control" id="soa-mail" placeholder="Email" autocomplete="off" tabindex="2">
+                                <input type="text" class="form-control" id="soa-mail" placeholder="Email" autocomplete="off" data-regex="^.+@[^.]+(\.[^.]+)*$" tabindex="2">
                             </div>
                             <button disabled type="submit" class="btn btn-primary" tabindex="7">Save</button>
                         </div>

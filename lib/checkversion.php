@@ -17,7 +17,7 @@
  */
 
 function getExpectedVersion() {
-    return 4;
+    return 3;
 }
 
 function checkVersion($db) {
@@ -29,12 +29,12 @@ function checkVersion($db) {
 }
 
 function getVersion($db) {
-	
-	$stmt = $db->prepare("SELECT value FROM options WHERE name='schema_version' LIMIT 1");
-	$stmt->execute();
-	$version = $stmt->fetchColumn();
+    $stmt = $db->prepare("SELECT value FROM options WHERE name='schema_version' LIMIT 1");
+    $stmt->execute();
+    $version = $stmt->fetchColumn();
     if (!$version) {
-		$version = 0;
+        $version = 0;
     }
+
     return $version;    
 }

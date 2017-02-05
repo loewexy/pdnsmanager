@@ -30,8 +30,8 @@ if(!isset($input->csrfToken) || $input->csrfToken !== $_SESSION['csrfToken']) {
 //Permission check
 if(isset($input->record)) {
     $permquery = $db->prepare("SELECT COUNT(*) FROM records JOIN permissions ON records.domain_id=permissions.domain WHERE userid=:user AND records.id=:id");
-	$permquery->bindValue(':user', $_SESSION['id'], PDO::PARAM_INT);
-	$permquery->bindValue(':id', $input->record, PDO::PARAM_INT);
+    $permquery->bindValue(':user', $_SESSION['id'], PDO::PARAM_INT);
+    $permquery->bindValue(':id', $input->record, PDO::PARAM_INT);
     $permquery->execute();
     if($permquery->fetchColumn() < 1 && $_SESSION['type'] != "admin") {
         echo "Permission denied!";
@@ -48,7 +48,7 @@ if(isset($input->action) && $input->action == "getPermissions") {
     $sql = "SELECT id, description, type FROM remote WHERE record=:record";
     $stmt = $db->prepare($sql);
     
-	$stmt->bindValue(':record', $input->record, PDO::PARAM_INT);
+    $stmt->bindValue(':record', $input->record, PDO::PARAM_INT);
     $stmt->execute();
 
     $retval = Array();
@@ -66,9 +66,9 @@ if(isset($input->action) && $input->action == "addPassword") {
     $sql = "INSERT INTO remote(record,description,type,security) VALUES (:record,:description,'password',:security)";
     $stmt = $db->prepare($sql);
     
-	$stmt->bindValue(':record', $input->record, PDO::PARAM_INT);
-	$stmt->bindValue(':description', $input->description, PDO::PARAM_STR);
-	$stmt->bindValue(':security', $passwordHash, PDO::PARAM_STR);
+    $stmt->bindValue(':record', $input->record, PDO::PARAM_INT);
+    $stmt->bindValue(':description', $input->description, PDO::PARAM_STR);
+    $stmt->bindValue(':security', $passwordHash, PDO::PARAM_STR);
     $stmt->execute();
 }
 
@@ -77,9 +77,9 @@ if(isset($input->action) && $input->action == "addKey") {
     $sql = "INSERT INTO remote(record,description,type,security) VALUES (:record,:description,'key',:security)";
     $stmt = $db->prepare($sql);
     
-	$stmt->bindValue(':record', $input->record, PDO::PARAM_INT);
-	$stmt->bindValue(':description', $input->description, PDO::PARAM_STR);
-	$stmt->bindValue(':security', $input->key, PDO::PARAM_STR);
+    $stmt->bindValue(':record', $input->record, PDO::PARAM_INT);
+    $stmt->bindValue(':description', $input->description, PDO::PARAM_STR);
+    $stmt->bindValue(':security', $input->key, PDO::PARAM_STR);
     $stmt->execute();
 }
 
@@ -89,14 +89,14 @@ if(isset($input->action) && $input->action == "changePassword") {
         $passwordHash = password_hash($input->password, PASSWORD_DEFAULT);
         $sql = "UPDATE remote SET description=:description,security=:security WHERE id=:id";
         $stmt = $db->prepare($sql);
-		$stmt->bindValue(':description', $input->description, PDO::PARAM_STR);
-		$stmt->bindValue(':security', $passwordHash, PDO::PARAM_STR);
-		$stmt->bindValue(':id', $input->permission, PDO::PARAM_INT);
+        $stmt->bindValue(':description', $input->description, PDO::PARAM_STR);
+        $stmt->bindValue(':security', $passwordHash, PDO::PARAM_STR);
+	$stmt->bindValue(':id', $input->permission, PDO::PARAM_INT);
         $stmt->execute();
     } else {
         $sql = "UPDATE remote SET description=:description WHERE id=:id";
         $stmt = $db->prepare($sql);
-		$stmt->bindValue(':description', $input->description, PDO::PARAM_STR);
+        $stmt->bindValue(':description', $input->description, PDO::PARAM_STR);
         $stmt->bindValue(':id', $input->permission, PDO::PARAM_INT);
         $stmt->execute();
     }
@@ -106,10 +106,10 @@ if(isset($input->action) && $input->action == "changePassword") {
 if(isset($input->action) && $input->action == "changeKey") { 
     $sql = "UPDATE remote SET description=:description,security=:security WHERE id=:id";
     $stmt = $db->prepare($sql);
-	
-	$stmt->bindValue(':description', $input->description, PDO::PARAM_STR);
-	$stmt->bindValue(':security', $input->key, PDO::PARAM_STR);
-	$stmt->bindValue(':id', $input->permission, PDO::PARAM_INT);
+
+    $stmt->bindValue(':description', $input->description, PDO::PARAM_STR);
+    $stmt->bindValue(':security', $input->key, PDO::PARAM_STR);
+    $stmt->bindValue(':id', $input->permission, PDO::PARAM_INT);
     $stmt->execute();
 }
 
@@ -117,7 +117,7 @@ if(isset($input->action) && $input->action == "changeKey") {
 if(isset($input->action) && $input->action == "getKey") { 
     $sql = "SELECT security FROM remote WHERE id=:id AND type='key' LIMIT 1";
     $stmt = $db->prepare($sql);
-	$stmt->bindValue(':id', $input->permission, PDO::PARAM_INT);
+    $stmt->bindValue(':id', $input->permission, PDO::PARAM_INT);
     $stmt->execute();
     $key = $stmt->fetchColumn();
     

@@ -83,7 +83,7 @@ CREATE TABLE IF NOT EXISTS remote (
     nonce varchar(255) DEFAULT NULL,
     PRIMARY KEY (id),
     KEY record (record),
-	CONSTRAINT remote_ibfk_1 FOREIGN KEY (record) REFERENCES records (id) ON DELETE CASCADE
+    CONSTRAINT remote_ibfk_1 FOREIGN KEY (record) REFERENCES records (id) ON DELETE CASCADE
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS options (
@@ -94,58 +94,7 @@ CREATE TABLE IF NOT EXISTS options (
 
 DELETE FROM options where name='schema_version';
 
-INSERT INTO options(name,value) VALUES ('schema_version', 4);
-
-CREATE TABLE IF NOT EXISTS supermasters (
-  ip                    VARCHAR(64) NOT NULL,
-  nameserver            VARCHAR(255) NOT NULL,
-  account               VARCHAR(40) NOT NULL,
-  PRIMARY KEY (ip, nameserver)
-) Engine=InnoDB  DEFAULT CHARSET=latin1;
-
-
-CREATE TABLE IF NOT EXISTS comments (
-  id                    INT AUTO_INCREMENT,
-  domain_id             INT NOT NULL,
-  name                  VARCHAR(255) NOT NULL,
-  type                  VARCHAR(10) NOT NULL,
-  modified_at           INT NOT NULL,
-  account               VARCHAR(40) NOT NULL,
-  comment               VARCHAR(64000) NOT NULL,
-  PRIMARY KEY (id),
-  KEY comments_domain_id_idx (domain_id),
-  KEY comments_name_type_idx (name,type),
-  KEY comments_order_idx (domain_id, modified_at)
-) Engine=InnoDB  DEFAULT CHARSET=latin1;
-
-CREATE TABLE IF NOT EXISTS domainmetadata (
-  id                    INT AUTO_INCREMENT,
-  domain_id             INT NOT NULL,
-  kind                  VARCHAR(32),
-  content               TEXT,
-  PRIMARY KEY (id),
-  KEY domainmetadata_idx (domain_id, kind)
-) Engine=InnoDB  DEFAULT CHARSET=latin1;
-
-
-CREATE TABLE IF NOT EXISTS cryptokeys (
-  id                    INT AUTO_INCREMENT,
-  domain_id             INT NOT NULL,
-  flags                 INT NOT NULL,
-  active                BOOL,
-  content               TEXT,
-  PRIMARY KEY(id),
-  KEY domainidindex (domain_id)
-) Engine=InnoDB  DEFAULT CHARSET=latin1;
-
-CREATE TABLE IF NOT EXISTS tsigkeys (
-  id                    INT AUTO_INCREMENT,
-  name                  VARCHAR(255),
-  algorithm             VARCHAR(50),
-  secret                VARCHAR(255),
-  PRIMARY KEY (id),
-  UNIQUE KEY namealgoindex (name, algorithm)
-) Engine=InnoDB  DEFAULT CHARSET=latin1;
+INSERT INTO options(name,value) VALUES ('schema_version', 3);
 ";
 
 $sql["pgsql"]="
@@ -231,66 +180,9 @@ CREATE TABLE IF NOT EXISTS options (
 
 DELETE FROM options where name='schema_version';
 
-INSERT INTO options(name,value) VALUES ('schema_version', 4);
-
-CREATE TABLE IF NOT EXISTS supermasters (
-  ip                    INET NOT NULL,
-  nameserver            VARCHAR(255) NOT NULL,
-  account               VARCHAR(40) NOT NULL,
-  PRIMARY KEY(ip, nameserver)
-);
-
-
-CREATE TABLE IF NOT EXISTS comments (
-  id                    SERIAL PRIMARY KEY,
-  domain_id             INT NOT NULL,
-  name                  VARCHAR(255) NOT NULL,
-  type                  VARCHAR(10) NOT NULL,
-  modified_at           INT NOT NULL,
-  account               VARCHAR(40) DEFAULT NULL,
-  comment               VARCHAR(65535) NOT NULL,
-  CONSTRAINT domain_exists
-  FOREIGN KEY(domain_id) REFERENCES domains(id)
-  ON DELETE CASCADE,
-  CONSTRAINT c_lowercase_name CHECK (((name)::TEXT = LOWER((name)::TEXT)))
-);
-
-CREATE INDEX IF NOT EXISTS comments_domain_id_idx ON comments (domain_id);
-CREATE INDEX IF NOT EXISTS comments_name_type_idx ON comments (name, type);
-CREATE INDEX IF NOT EXISTS comments_order_idx ON comments (domain_id, modified_at);
-
-
-CREATE TABLE IF NOT EXISTS domainmetadata (
-  id                    SERIAL PRIMARY KEY,
-  domain_id             INT REFERENCES domains(id) ON DELETE CASCADE,
-  kind                  VARCHAR(32),
-  content               TEXT
-);
-
-CREATE INDEX IF NOT EXISTS domainidmetaindex ON domainmetadata(domain_id);
-
-
-CREATE TABLE IF NOT EXISTS cryptokeys (
-  id                    SERIAL PRIMARY KEY,
-  domain_id             INT REFERENCES domains(id) ON DELETE CASCADE,
-  flags                 INT NOT NULL,
-  active                BOOL,
-  content               TEXT
-);
-
-CREATE INDEX IF NOT EXISTS domainidindex ON cryptokeys(domain_id);
-
-
-CREATE TABLE IF NOT EXISTS tsigkeys (
-  id                    SERIAL PRIMARY KEY,
-  name                  VARCHAR(255),
-  algorithm             VARCHAR(50),
-  secret                VARCHAR(255),
-  CONSTRAINT c_lowercase_name CHECK (((name)::TEXT = LOWER((name)::TEXT)))
-);
-
-CREATE UNIQUE INDEX IF NOT EXISTS namealgoindex ON tsigkeys(name, algorithm);
+INSERT INTO options(name,value) VALUES ('schema_version', 3);
 ";
+
 try {
 	$db = new PDO("$input->type:dbname=$input->database;host=$input->host;port=$input->port", $input->user, $input->password);
 }
@@ -303,42 +195,42 @@ $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 if (!isset($retval)) {
     $passwordHash = password_hash($input->userPassword, PASSWORD_DEFAULT);
+
+    $queries = explode(";", $sql[$input->type]);
+
+    $db->beginTransaction();
+
+    foreach ($queries as $query) {
+        if (preg_replace('/\s+/', '', $query) != '') {
+            $db->exec($query);
+        }
+    }
+
+    $db->commit();
+
+    $stmt = $db->prepare("INSERT INTO users(name,password,type) VALUES (:user,:hash,'admin')");
+    $stmt->bindValue(':user', $input->userName, PDO::PARAM_STR);
+    $stmt->bindValue(':hash', $passwordHash, PDO::PARAM_STR);
+    $stmt->execute();
+
+    $configFile = Array();
+
+    $configFile[] = '<?php';
+    $configFile[] = '$config[\'db_host\'] = \'' . addslashes($input->host) . "';";
+    $configFile[] = '$config[\'db_user\'] = \'' . addslashes($input->user) . "';";
+    $configFile[] = '$config[\'db_password\'] = \'' . addslashes($input->password) . "';";
+    $configFile[] = '$config[\'db_name\'] = \'' . addslashes($input->database) . "';";
+    $configFile[] = '$config[\'db_port\'] = ' . addslashes($input->port) . ";";
+    $configFile[] = '$config[\'db_type\'] = \'' . addslashes($input->type) . "';";
 	
-	$queries = explode(";", $sql[$input->type]);
-	
-	$db->beginTransaction();
-	
-	foreach ($queries as $query) {
-		if (preg_replace('/\s+/', '', $query) != '') {
-			$db->exec($query);
-		}
-	}
-	
-	$db->commit();
-	
-	$stmt = $db->prepare("INSERT INTO users(name,password,type) VALUES (:user,:hash,'admin')");
-	$stmt->bindValue(':user', $input->userName, PDO::PARAM_STR);
-	$stmt->bindValue(':hash', $passwordHash, PDO::PARAM_STR);
-	$stmt->execute();
-	
-	$configFile = Array();
-	
-	$configFile[] = '<?php';
-	$configFile[] = '$config[\'db_host\'] = \'' . addslashes($input->host) . "';";
-	$configFile[] = '$config[\'db_user\'] = \'' . addslashes($input->user) . "';";
-	$configFile[] = '$config[\'db_password\'] = \'' . addslashes($input->password) . "';";
-	$configFile[] = '$config[\'db_name\'] = \'' . addslashes($input->database) . "';";
-	$configFile[] = '$config[\'db_port\'] = ' . addslashes($input->port) . ";";
-	$configFile[] = '$config[\'db_type\'] = \'' . addslashes($input->type) . "';";
-	
-	$retval['status'] = "success";
-	try {
-		file_put_contents("../config/config-user.php", implode("\n", $configFile));	
-	}
-	catch (Exception $e) {
-		$retval['status'] = "error";
-		$retval['message'] = serialize($e);
-	}
+    $retval['status'] = "success";
+    try {
+        file_put_contents("../config/config-user.php", implode("\n", $configFile));	
+    }
+    catch (Exception $e) {
+        $retval['status'] = "error";
+        $retval['message'] = serialize($e);
+    }
 }
 
 if(isset($retval)) {
