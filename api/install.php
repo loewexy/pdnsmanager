@@ -94,7 +94,7 @@ CREATE TABLE IF NOT EXISTS options (
 
 DELETE FROM options where name='schema_version';
 
-INSERT INTO options(name,value) VALUES ('schema_version', 3);
+INSERT INTO options(name,value) VALUES ('schema_version', 4);
 ";
 
 $sql["pgsql"]="
@@ -180,7 +180,7 @@ CREATE TABLE IF NOT EXISTS options (
 
 DELETE FROM options where name='schema_version';
 
-INSERT INTO options(name,value) VALUES ('schema_version', 3);
+INSERT INTO options(name,value) VALUES ('schema_version', 4);
 ";
 
 try {

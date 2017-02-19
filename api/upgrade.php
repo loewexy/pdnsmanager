@@ -129,6 +129,27 @@ if(isset($input->action) && $input->action == "requestUpgrade") {
 
         $db->commit();
     }
+    if($currentVersion < 4) {
+        $sql["mysql"] = "
+            RENAME TABLE user TO users;
+            ALTER TABLE permissions CHANGE user userid INT(11);
+            
+            UPDATE options SET value=4 WHERE name='schema_version';
+        ";
+        $sql["pgsql"] = "UPDATE options SET value=4 WHERE name='schema_version';";
+
+        $queries = explode(";", $sql[$dbType]);
+
+        $db->beginTransaction();
+
+        foreach ($queries as $query) {
+            if (preg_replace('/\s+/', '', $query) != '') {
+                $db->exec($query);
+            }
+        }
+
+        $db->commit();
+    }
 
     $retval['status'] = "success";
 }
