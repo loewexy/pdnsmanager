@@ -22,12 +22,12 @@ var sort = {
 var domainName = "";
 
 var recordTypes = [
-    "A","AAAA","AFSDB","CERT","CNAME","DHCID",
-    "DLV","DNSKEY","DS","EUI48","EUI64","HINFO",
-    "IPSECKEY","KEY","KX","LOC","MINFO","MR",
-    "MX","NAPTR","NS","NSEC","NSEC3","NSEC3PARAM",
-    "OPT","PTR","RKEY","RP","RRSIG","SPF",
-    "SRV","SSHFP","TLSA","TSIG","TXT","WKS"
+    "A","A6","AAAA","AFSDB","ALIAS","CAA","CDNSKEY","CDS","CERT","CNAME","DHCID",
+    "DLV","DNAME","DNSKEY","DS","EUI48","EUI64","HINFO",
+    "IPSECKEY","KEY","KX","LOC","MAILA","MAILB","MINFO","MR",
+    "MX","NAPTR","NS","NSEC","NSEC3","NSEC3PARAM","OPENPGPKEY",
+    "OPT","PTR","RKEY","RP","RRSIG","SIG","SPF",
+    "SRV","TKEY","SSHFP","TLSA","TSIG","TXT","WKS","MBOXFW","URL"
 ];
 
 $(document).ready(function() {
