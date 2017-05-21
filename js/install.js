@@ -21,6 +21,14 @@ $(document).ready(function() {
         checkSettings();
     });
     
+    $('#dbType').change(function() {
+        if($(this).val() == 'mysql') {
+            $('#dbPort').val(3306);
+        } else if($(this).val() == 'pgsql') {
+            $('#dbPort').val(5432);
+        }
+    });
+    
     $('#adminPassword2').bind("change keyup paste", function() {
         if($('#adminPassword').val() == $('#adminPassword2').val()) {
             $(this).parent().removeClass("has-error");
