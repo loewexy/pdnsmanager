@@ -20,6 +20,7 @@ if(file_exists("../config/config-user.php")) {
     echo "Permission denied!";
     exit();
 }
+require_once("../config/config-default.php");
 
 //Get input
 $input = json_decode(file_get_contents('php://input'));
