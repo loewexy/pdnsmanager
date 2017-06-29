@@ -184,16 +184,18 @@ INSERT INTO options(name,value) VALUES ('schema_version', 4);
 ";
 
 try {
-	$db = new PDO("$input->type:dbname=$input->database;host=$input->host;port=$input->port", $input->user, $input->password);
+	$db = new PDO("$input->type:dbname=$input->database;host=$input->host;port=" . intval($input->port), $input->user, $input->password);
 }
 catch (PDOException $e) {
     $retval['status'] = "error";
     $retval['message'] = serialize($e);
 }
 
-$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
 
 if (!isset($retval)) {
+    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    
     $passwordHash = password_hash($input->userPassword, PASSWORD_DEFAULT);
 
     $queries = explode(";", $sql[$input->type]);
@@ -220,7 +222,7 @@ if (!isset($retval)) {
     $configFile[] = '$config[\'db_user\'] = \'' . addslashes($input->user) . "';";
     $configFile[] = '$config[\'db_password\'] = \'' . addslashes($input->password) . "';";
     $configFile[] = '$config[\'db_name\'] = \'' . addslashes($input->database) . "';";
-    $configFile[] = '$config[\'db_port\'] = ' . addslashes($input->port) . ";";
+    $configFile[] = '$config[\'db_port\'] = ' . intval($input->port) . ";";
     $configFile[] = '$config[\'db_type\'] = \'' . addslashes($input->type) . "';";
 	
     $retval['status'] = "success";

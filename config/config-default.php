@@ -30,4 +30,4 @@ $config['nonce_lifetime'] = 15;
 //Number of rows in domain overview
 $config['domain_rows'] = 15;
 
-include 'config-user.php';
+require 'config-user.php';
