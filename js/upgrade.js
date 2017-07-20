@@ -13,20 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 $(document).ready(function() {
-    
     $('#button-start').click(function() {
         $('#row-button-start').hide();
         requestVersions();
     });
 });
-
 function requestVersions() {
     var data = {
         action: "getVersions"
     };
-    
     $.post(
         "api/upgrade.php",
         JSON.stringify(data),
@@ -37,12 +33,10 @@ function requestVersions() {
         "json"
     );
 }
-
 function requestUpdate() {
     var data = {
         action: "requestUpgrade"
     };
-    
     $.post(
         "api/upgrade.php",
         JSON.stringify(data),

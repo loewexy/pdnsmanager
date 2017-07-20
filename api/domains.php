@@ -1,5 +1,4 @@
 <?php
-
 /* 
  * Copyright 2016 Lukas Metzger <developer@lukas-metzger.com>.
  *
@@ -15,25 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 require_once '../config/config-default.php';
 require_once '../lib/database.php';
 require_once '../lib/session.php';
-
 $input = json_decode(file_get_contents('php://input'));
-
 if(!isset($input->csrfToken) || $input->csrfToken !== $_SESSION['csrfToken']) {
     echo "Permission denied!";
     exit();
 }
-
 if(isset($input->action) && $input->action == "getDomains") {
     // Check if the requested page is a number
     if(!(isset($input->page) && is_int($input->page) && $input->page > 0)) {
         echo "Requested page must be a positive number!";
         exit();
     }
-    
     // Here we get the number of matching records
     $sql = "
         SELECT COUNT(*) AS anzahl
@@ -43,9 +37,7 @@ if(isset($input->action) && $input->action == "getDomains") {
         (D.name LIKE :name1 OR :name2) AND
         (D.type=:type1 OR :type2)
     ";
-
     $stmt = $db->prepare($sql);
-
     if(isset($input->name)) {
         $name_filter = "%" . $input->name . "%";
         $name_filter_used = 0;
@@ -53,10 +45,8 @@ if(isset($input->action) && $input->action == "getDomains") {
         $name_filter = "";
         $name_filter_used = 1;
     }
-
     $id_filter = $_SESSION['id'];
     $id_filter_used = (int)($_SESSION['type'] == "admin" ? 1 : 0);
-
     if(isset($input->type)) {
         $type_filter = $input->type;
         $type_filter_used = 0;
@@ -64,7 +54,6 @@ if(isset($input->action) && $input->action == "getDomains") {
         $type_filter = "";
         $type_filter_used = 1;
     }
-
     $stmt->bindValue(':user1', $id_filter, PDO::PARAM_STR);
     $stmt->bindValue(':user2', $id_filter_used, PDO::PARAM_INT);
     $stmt->bindValue(':name1', $name_filter, PDO::PARAM_STR);
@@ -73,18 +62,13 @@ if(isset($input->action) && $input->action == "getDomains") {
     $stmt->bindValue(':type2', $type_filter_used, PDO::PARAM_INT);
     $stmt->execute();
     $result = $stmt->fetchColumn();
-    
     if ($result == 0) {
         $result = 1;
     }
-	
     // Initialize the return value
     $retval = Array();
-    
     $retval['pages']['current'] = $input->page;
     $retval['pages']['total'] =  ceil($result / $config['domain_rows']);
-
-
     // Now the real search is done on the database
     $sql = "
         SELECT D.id,D.name,D.type,count(R.domain_id) AS records
@@ -97,7 +81,6 @@ if(isset($input->action) && $input->action == "getDomains") {
         (D.name LIKE :name1 OR :name2) AND
         (D.type=:type1 OR :type2)
     ";
-
     if(isset($input->sort->field) && $input->sort->field != "") {
         if($input->sort->field == "id") {
             $sql .= "ORDER BY id";
@@ -108,7 +91,6 @@ if(isset($input->action) && $input->action == "getDomains") {
         } else if($input->sort->field == "records") {
             $sql .= "ORDER BY records";
         }
-
         if(isset($input->sort->order)) {
             if($input->sort->order == 0) {
                 $sql .= " DESC";
@@ -117,7 +99,6 @@ if(isset($input->action) && $input->action == "getDomains") {
             }
         }
     }
-    
     /*
      * Now the number of entries gets limited to the domainRows config value.
      * SQL LIMIT and OFFSET is used for that:
@@ -125,11 +106,8 @@ if(isset($input->action) && $input->action == "getDomains") {
      * Note that LIMIT 5 OFFSET 0 returns the first five rows!
      */
     $lower_limit = ($config['domain_rows'] * ($input->page - 1));
-    
     $sql .= " LIMIT " . $config['domain_rows'] . " OFFSET " . $lower_limit;
-    
     $stmt = $db->prepare($sql);
-
     if(isset($input->name)) {
         $name_filter = "%" . $input->name . "%";
         $name_filter_used = 0;
@@ -137,10 +115,8 @@ if(isset($input->action) && $input->action == "getDomains") {
         $name_filter = "";
         $name_filter_used = 1;
     }
-
     $id_filter = $_SESSION['id'];
     $id_filter_used = (int)($_SESSION['type'] == "admin" ? 1 : 0);
-
     if(isset($input->type)) {
         $type_filter = $input->type;
         $type_filter_used = 0;
@@ -148,7 +124,6 @@ if(isset($input->action) && $input->action == "getDomains") {
         $type_filter = "";
         $type_filter_used = 1;
     }
-
     $stmt->bindValue(':user1', $id_filter, PDO::PARAM_STR);
     $stmt->bindValue(':user2', $id_filter_used, PDO::PARAM_INT);
     $stmt->bindValue(':name1', $name_filter, PDO::PARAM_STR);
@@ -156,36 +131,27 @@ if(isset($input->action) && $input->action == "getDomains") {
     $stmt->bindValue(':type1', $type_filter, PDO::PARAM_INT);
     $stmt->bindValue(':type2', $type_filter_used, PDO::PARAM_INT);
     $stmt->execute();
-
     while($obj = $stmt->fetchObject()) {
         $retval['data'][] = $obj;
     }
 }
-
 if(isset($input->action) && $input->action == "deleteDomain") {
     $domainId = $input->id;
-    
     $db->beginTransaction();
-    
     $stmt = $db->prepare("DELETE FROM permissions WHERE domain=:domain_id");
     $stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
     $stmt->execute();
-    
     $stmt = $db->prepare("DELETE FROM remote WHERE record IN (SELECT id FROM records WHERE domain_id=:domain_id)");
     $stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
     $stmt->execute();
-    
     $stmt = $db->prepare("DELETE FROM records WHERE domain_id=:domain_id");
     $stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
     $stmt->execute();
-    
     $stmt = $db->prepare("DELETE FROM domains WHERE id=:domain_id");
     $stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
     $stmt->execute();
-    
     $db->commit();
 }
-
 if(isset($retval)) {
     echo json_encode($retval);
 } else {

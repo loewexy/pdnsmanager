@@ -1,5 +1,4 @@
 <?php
-
 /* 
  * Copyright 2016 Lukas Metzger <developer@lukas-metzger.com>.
  *
@@ -15,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 try {
     $db = new PDO($config['db_type'].":dbname=".$config['db_name'].";host=".$config['db_host'].";port=".strval($config['db_port']), $config['db_user'], $config['db_password']);
 }

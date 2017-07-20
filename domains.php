@@ -1,13 +1,10 @@
 <!DOCTYPE html>
 <!--
 Copyright 2016 Lukas Metzger <developer@lukas-metzger.com>.
-
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
-
      http://www.apache.org/licenses/LICENSE-2.0
-
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,17 +20,14 @@ limitations under the License.
         <title>PDNS Manager - Domains</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        
         <link href="include/bootstrap/css/bootstrap.min.css" rel="stylesheet">
         <link href="include/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
         <link href="include/select2/select2.min.css" rel="stylesheet">
         <link href="include/select2/select2-bootstrap.min.css" rel="stylesheet">
         <link href="include/custom.css" rel="stylesheet">
-        
         <script src="include/jquery.js"></script>
         <script src="include/bootstrap/js/bootstrap.min.js"></script>
         <script src="include/select2/select2.min.js"></script>
-        
         <script src="js/domains.js"></script>
     </head>
     <body>
@@ -50,7 +44,6 @@ limitations under the License.
                 </ul>
             </div>
         </nav>
-
         <div class="container">
             <table class="table table-hover" id="table-domains">
                 <thead>
@@ -86,10 +79,8 @@ limitations under the License.
             </table>
            <nav id="pagination-wrapper" class="text-center defaulthidden">
                 <ul id="pagination" class="pagination cursor-pointer">
-
                 </ul>
             </nav>
-            
             <?php 
                 if($_SESSION['type'] == "admin") {
                     echo '<div class="row text-center">';
@@ -99,7 +90,6 @@ limitations under the License.
                 }
             ?>   
         </div>
-
         <div class="modal fade" id="deleteConfirm" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -113,8 +103,6 @@ limitations under the License.
                 </div>
             </div>
         </div>
-
         <?php echo '<span class="hidden" id="csrfToken">' . $_SESSION['csrfToken'] . '</span>'; ?>
-
     </body>
 </html>

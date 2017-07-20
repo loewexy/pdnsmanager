@@ -1,5 +1,4 @@
 <?php
-
 /* 
  * Copyright 2016 Lukas Metzger <developer@lukas-metzger.com>.
  *
@@ -15,15 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 if(file_exists("../config/config-user.php")) {
     echo "Permission denied!";
     exit();
 }
-
 //Get input
 $input = json_decode(file_get_contents('php://input'));
-
 //Database command
 $sql["mysql"] = "
 CREATE TABLE IF NOT EXISTS domains (
@@ -37,7 +33,6 @@ CREATE TABLE IF NOT EXISTS domains (
   PRIMARY KEY (id),
   UNIQUE KEY name_index (name)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
-
 CREATE TABLE IF NOT EXISTS records (
   id int(11) NOT NULL AUTO_INCREMENT,
   domain_id int(11) DEFAULT NULL,
@@ -55,7 +50,6 @@ CREATE TABLE IF NOT EXISTS records (
   KEY domain_id (domain_id),
   CONSTRAINT records_ibfk_1 FOREIGN KEY (domain_id) REFERENCES domains (id) ON DELETE CASCADE
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
-
 CREATE TABLE IF NOT EXISTS users (
   id int(11) NOT NULL AUTO_INCREMENT,
   name varchar(50) NOT NULL,
@@ -64,7 +58,6 @@ CREATE TABLE IF NOT EXISTS users (
   PRIMARY KEY (id),
   UNIQUE KEY user_name_index (name)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
-
 CREATE TABLE IF NOT EXISTS permissions (
   userid int(11) NOT NULL,
   domain int(11) NOT NULL,
@@ -73,7 +66,6 @@ CREATE TABLE IF NOT EXISTS permissions (
   CONSTRAINT permissions_ibfk_1 FOREIGN KEY (domain) REFERENCES domains (id) ON DELETE CASCADE,
   CONSTRAINT permissions_ibfk_2 FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
 CREATE TABLE IF NOT EXISTS remote (
     id int(11) NOT NULL AUTO_INCREMENT,
     record int(11) NOT NULL,
@@ -85,18 +77,14 @@ CREATE TABLE IF NOT EXISTS remote (
     KEY record (record),
     CONSTRAINT remote_ibfk_1 FOREIGN KEY (record) REFERENCES records (id) ON DELETE CASCADE
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
-
 CREATE TABLE IF NOT EXISTS options (
     name varchar(255) NOT NULL,
     value varchar(2000) DEFAULT NULL,
     PRIMARY KEY (name)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
-
 DELETE FROM options where name='schema_version';
-
 INSERT INTO options(name,value) VALUES ('schema_version', 4);
 ";
-
 $sql["pgsql"]="
 CREATE TABLE IF NOT EXISTS domains (
   id                    SERIAL PRIMARY KEY,
@@ -108,9 +96,7 @@ CREATE TABLE IF NOT EXISTS domains (
   account               VARCHAR(40) DEFAULT NULL,
   CONSTRAINT c_lowercase_name CHECK (((name)::TEXT = LOWER((name)::TEXT)))
 );
-
 CREATE UNIQUE INDEX IF NOT EXISTS name_index ON domains(name);
-
 CREATE TABLE IF NOT EXISTS records (
   id                    SERIAL PRIMARY KEY,
   domain_id             INT DEFAULT NULL,
@@ -128,21 +114,17 @@ CREATE TABLE IF NOT EXISTS records (
   ON DELETE CASCADE,
   CONSTRAINT c_lowercase_name CHECK (((name)::TEXT = LOWER((name)::TEXT)))
 );
-
 CREATE INDEX IF NOT EXISTS rec_name_index ON records(name);
 CREATE INDEX IF NOT EXISTS nametype_index ON records(name,type);
 CREATE INDEX IF NOT EXISTS domain_id ON records(domain_id);
 CREATE INDEX IF NOT EXISTS recordorder ON records (domain_id, ordername text_pattern_ops);
-
 CREATE TABLE IF NOT EXISTS users (
   id 				SERIAL PRIMARY KEY,
   name				varchar(50) NOT NULL,
   password			varchar(200) NOT NULL,
   type				varchar(20) NOT NULL
 );
-
 CREATE UNIQUE INDEX IF NOT EXISTS user_name_index ON users(name);
-
 CREATE TABLE IF NOT EXISTS permissions (
   userid				INT NOT NULL,
   domain			INT NOT NULL,
@@ -154,10 +136,8 @@ CREATE TABLE IF NOT EXISTS permissions (
   FOREIGN KEY(userid) REFERENCES users(id)
   ON DELETE CASCADE
 );
-
 CREATE INDEX IF NOT EXISTS perm_domain_index ON permissions(domain);
 CREATE INDEX IF NOT EXISTS perm_userid_index ON permissions(userid);
-
 CREATE TABLE IF NOT EXISTS remote (
   id 				SERIAL PRIMARY KEY,
   record			INT NOT NULL,
@@ -169,20 +149,15 @@ CREATE TABLE IF NOT EXISTS remote (
   FOREIGN KEY(record) REFERENCES records(id)
   ON DELETE CASCADE
 );
-
 CREATE INDEX IF NOT EXISTS rem_record_index ON remote(record);
-
 CREATE TABLE IF NOT EXISTS options (
     name varchar(255) NOT NULL,
     value varchar(2000) DEFAULT NULL,
     PRIMARY KEY (name)
 );
-
 DELETE FROM options where name='schema_version';
-
 INSERT INTO options(name,value) VALUES ('schema_version', 4);
 ";
-
 try {
 	$db = new PDO("$input->type:dbname=$input->database;host=$input->host;port=" . intval($input->port), $input->user, $input->password);
 }
@@ -190,33 +165,22 @@ catch (PDOException $e) {
     $retval['status'] = "error";
     $retval['message'] = serialize($e);
 }
-
-
-
 if (!isset($retval)) {
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    
     $passwordHash = password_hash($input->userPassword, PASSWORD_DEFAULT);
-
     $queries = explode(";", $sql[$input->type]);
-
     $db->beginTransaction();
-
     foreach ($queries as $query) {
         if (preg_replace('/\s+/', '', $query) != '') {
             $db->exec($query);
         }
     }
-
     $db->commit();
-
     $stmt = $db->prepare("INSERT INTO users(name,password,type) VALUES (:user,:hash,'admin')");
     $stmt->bindValue(':user', $input->userName, PDO::PARAM_STR);
     $stmt->bindValue(':hash', $passwordHash, PDO::PARAM_STR);
     $stmt->execute();
-
     $configFile = Array();
-
     $configFile[] = '<?php';
     $configFile[] = '$config[\'db_host\'] = \'' . addslashes($input->host) . "';";
     $configFile[] = '$config[\'db_user\'] = \'' . addslashes($input->user) . "';";
@@ -224,7 +188,6 @@ if (!isset($retval)) {
     $configFile[] = '$config[\'db_name\'] = \'' . addslashes($input->database) . "';";
     $configFile[] = '$config[\'db_port\'] = ' . intval($input->port) . ";";
     $configFile[] = '$config[\'db_type\'] = \'' . addslashes($input->type) . "';";
-	
     $retval['status'] = "success";
     try {
         file_put_contents("../config/config-user.php", implode("\n", $configFile));	
@@ -234,7 +197,6 @@ if (!isset($retval)) {
         $retval['message'] = serialize($e);
     }
 }
-
 if(isset($retval)) {
     echo json_encode($retval);
 } else {

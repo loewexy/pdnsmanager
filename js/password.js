@@ -13,18 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 $(document).ready(function() {
-    
     $('#saveChanges').click(function(evt){
         evt.preventDefault();
         savePassword();
     });
-    
     $('#user-password').unbind().bind("paste keyup change", function() {
         $('#user-password').parent().removeClass("has-error");
     });
-    
     $('#user-password2').unbind().bind("paste keyup change", function() {
         if($('#user-password').val() != $('#user-password2').val()) {
             $('#user-password2').parent().addClass("has-error");
@@ -33,9 +29,7 @@ $(document).ready(function() {
         }
     });
 });
-
 function savePassword() {
-    
     if($('#user-password').val().length <= 0) {
         $('#user-password').parent().addClass("has-error");
         $('#user-password2').parent().addClass("has-error");
@@ -44,13 +38,11 @@ function savePassword() {
         shake($('#saveChanges'));
         return;
     }    
-    
     var data = {
         password: $('#user-password').val(),
         action: "changePassword",
         csrfToken: $('#csrfToken').text()
     };
-    
     $.post(
         "api/password.php",
         JSON.stringify(data),
@@ -61,19 +53,15 @@ function savePassword() {
         "json"
     );
 }
-
 function shake(element){                                                                                                                                                                                            
     var interval = 50;                                                                                                 
     var distance = 5;                                                                                                  
     var times = 6;                                                                                                      
-
     $(element).css('position','relative');                                                                                  
-
     for(var iter=0;iter<(times+1);iter++){                                                                              
         $(element).animate({ 
             left:((iter%2===0 ? distance : distance*-1))
             },interval);                     
     }                                                                                                             
-
     $(element).animate({ left: 0},interval);                                                                                
 }

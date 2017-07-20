@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 $(document).ready(function() { 
     $('#data-password-password2').bind("paste keyup change", function() {
         if($('#data-password-password').val() != $('#data-password-password2').val()) {
@@ -22,32 +21,26 @@ $(document).ready(function() {
             $(this).parent().removeClass("has-error");
         }
     });
-    
     $('#button-add-password').click(function() {
         resetFields();
         $('#data-password').show();
         $('#data-key').hide();
         $('#data-password-confirm').unbind().click(addPassword);
     });
-    
     $('#button-add-key').click(function() {
         resetFields();
         $('#data-key').show();
         $('#data-password').hide();
         $('#data-key-confirm').unbind().click(addKey);
     });
-    
     $('#data-password-cancel').click(function() {
         $('#data-password').hide();
     });
-    
     $('#data-key-cancel').click(function() {
         $('#data-key').hide();
     });
-    
     requestPermissions();
 });
-
 function regexValidate() {
     var regex = new RegExp($(this).attr('data-regex'));
     if(!regex.test($(this).val())) {
@@ -56,10 +49,8 @@ function regexValidate() {
         $(this).parent().removeClass("has-error"); 
     }
 }
-
 function createTable(data) {
     $('#permissions tbody').empty();
-    
     $.each(data, function(index,item) {
         $('<tr></tr>').appendTo('#permissions tbody')
             .append('<td>' + item.id + '</td>')
@@ -68,18 +59,15 @@ function createTable(data) {
             .append('<td><span class="glyphicon glyphicon-pencil cursor-pointer"></span></td>')
             .append('<td><span class="glyphicon glyphicon-trash cursor-pointer"></span></td>');     
     });
-    
     $('#permissions tbody span.glyphicon-trash').click(deletePermission);
     $('#permissions tbody span.glyphicon-pencil').click(prepareEdit);
 }
-
 function requestPermissions() {
     var data = {
         action: "getPermissions",
         csrfToken: $('#csrfToken').text(),
         record: location.hash.substring(1)
     };
-    
     $.post(
         "api/edit-remote.php",
         JSON.stringify(data),
@@ -89,7 +77,6 @@ function requestPermissions() {
         "json"
     );
 }
-
 function resetFields() {
     $('#info-dialogs input').val("");
     $('#info-dialogs textarea').val("");
@@ -99,14 +86,12 @@ function resetFields() {
     $('#data-password-confirm').text("Add");
     $('#data-key-confirm').text("Add");
 }
-
 function addPassword() {
     if($('#data-password-password').val() != $('#data-password-password2').val() || $('#data-password-password').val().length <= 0) {
         $('#data-password-password2').parent().addClass("has-error");
         shake($('#data-password-confirm'));
         return;
     }
-
     var data = {
         csrfToken: $('#csrfToken').text(),
         action: "addPassword",
@@ -114,7 +99,6 @@ function addPassword() {
         password: $('#data-password-password').val(),
         record: location.hash.substring(1)
     };
-    
     $.post(
         "api/edit-remote.php",
         JSON.stringify(data),
@@ -125,14 +109,12 @@ function addPassword() {
         "json"
     );
 }
-
 function addKey() {
     if($('#data-key-key').val().length <= 0) {
         $('#data-key-key').parent().addClass("has-error");
         shake($('#data-key-confirm'));
         return;
     }
-
     var data = {
         csrfToken: $('#csrfToken').text(),
         action: "addKey",
@@ -140,7 +122,6 @@ function addKey() {
         key: $('#data-key-key').val(),
         record: location.hash.substring(1)
     };
-    
     $.post(
         "api/edit-remote.php",
         JSON.stringify(data),
@@ -151,7 +132,6 @@ function addKey() {
         "json"
     );
 }
-
 function deletePermission() {
     var data = {
         csrfToken: $('#csrfToken').text(),
@@ -159,7 +139,6 @@ function deletePermission() {
         permission: $(this).parent().siblings().eq(0).text(),
         record: location.hash.substring(1)
     };
-    
     $.post(
         "api/edit-remote.php",
         JSON.stringify(data),
@@ -169,7 +148,6 @@ function deletePermission() {
         "json"
     );
 }
-
 function prepareEdit() {
     var type = $(this).parent().siblings().eq(2).text();
     if(type === "password") {
@@ -177,32 +155,25 @@ function prepareEdit() {
         $('#data-password').show();
         $('#data-key').hide();
         $('#data-password-confirm').unbind().click(changePassword);
-        
         $('#data-password-password').attr("placeholder", "(Unchanged)");
         $('#data-password-password2').attr("placeholder", "(Unchanged)");
         $('#data-password-confirm').text("Change");
-        
         $('#data-password-description').val($(this).parent().siblings().eq(1).text());
-        
         $('#data-password-confirm').data("permission-id", $(this).parent().siblings().eq(0).text());
     } else if(type === "key") {
         resetFields();
         $('#data-key').show();
         $('#data-password').hide();
         $('#data-key-confirm').unbind().click(changeKey);
-        
         $('#data-key-confirm').text("Change");
         $('#data-key-description').val($(this).parent().siblings().eq(1).text());
-        
         $('#data-key-confirm').data("permission-id", $(this).parent().siblings().eq(0).text());
-        
         var data = {
             csrfToken: $('#csrfToken').text(),
             action: "getKey",
             permission: $(this).parent().siblings().eq(0).text(),
             record: location.hash.substring(1)
         };
-
         $.post(
             "api/edit-remote.php",
             JSON.stringify(data),
@@ -213,13 +184,11 @@ function prepareEdit() {
         );
     }
 }
-
 function changePassword() {
     if($('#data-password-password').val() != $('#data-password-password2').val()) {
         $('#data-password-password2').parent().addClass("has-error");
         return;
     }
-
     var data = {
         csrfToken: $('#csrfToken').text(),
         action: "changePassword",
@@ -227,11 +196,9 @@ function changePassword() {
         record: location.hash.substring(1),
         permission: $('#data-password-confirm').data("permission-id")
     };
-    
     if($('#data-password-password').val().length >= 0) {
         data.password = $('#data-password-password').val();
     }
-    
     $.post(
         "api/edit-remote.php",
         JSON.stringify(data),
@@ -242,13 +209,11 @@ function changePassword() {
         "json"
     );
 }
-
 function changeKey() {
     if($('#data-key-key').val().length <= 0) {
         $('#data-key-key').parent().addClass("has-error");
         return;
     }
-
     var data = {
         csrfToken: $('#csrfToken').text(),
         action: "changeKey",
@@ -257,7 +222,6 @@ function changeKey() {
         record: location.hash.substring(1),
         permission: $('#data-key-confirm').data("permission-id")
     };
-    
     $.post(
         "api/edit-remote.php",
         JSON.stringify(data),
@@ -268,19 +232,15 @@ function changeKey() {
         "json"
     );
 }
-
 function shake(element){                                                                                                                                                                                            
     var interval = 50;                                                                                                 
     var distance = 5;                                                                                                  
     var times = 6;                                                                                                      
-
     $(element).css('position','relative');                                                                                  
-
     for(var iter=0;iter<(times+1);iter++){                                                                              
         $(element).animate({ 
             left:((iter%2===0 ? distance : distance*-1))
             },interval);                     
     }                                                                                                             
-
     $(element).animate({ left: 0},interval);                                                                                
 }

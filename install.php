@@ -1,13 +1,10 @@
 <!DOCTYPE html>
 <!--
 Copyright 2016 Lukas Metzger <developer@lukas-metzger.com>.
-
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
-
      http://www.apache.org/licenses/LICENSE-2.0
-
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,14 +22,11 @@ limitations under the License.
         <title>PDNS Manager - Domains</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        
         <link href="include/bootstrap/css/bootstrap.min.css" rel="stylesheet">
         <link href="include/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
         <link href="include/custom.css" rel="stylesheet">
-        
         <script src="include/jquery.js"></script>
         <script src="include/bootstrap/js/bootstrap.min.js"></script>
-        
         <script src="js/install.js"></script>
     </head>
     <body>
@@ -46,21 +40,16 @@ limitations under the License.
                 </ul>
             </div>
         </nav>
-        
         <div class="container">
-            
             <row>
                 <h2 id="domain-name">Install PDNS Manager</h2>
             </row>
-            
             <row>
                 <div class="alert alert-danger defaulthidden" id="alertFailed" role="alert">
                     Error
                 </div>
             </row>
-
             <row>
-                
                 <form>
                     <div class="container col-md-3">
                         <h3>Database</h3>
@@ -93,10 +82,8 @@ limitations under the License.
                         </div>
                         <button id="buttonInstall" class="btn btn-primary">Install</button>
                     </div>
-                    
                     <div class="container col-md-3">
                         <h3>Admin</h3>
-                        
                         <div class="form-group">
                             <label for="adminName" class="control-label">Name</label>
                             <input type="text" class="form-control" id="adminName" placeholder="Name" autocomplete="off">
@@ -112,9 +99,6 @@ limitations under the License.
                      </div>
                 </form>
             </row>
-            
         </div>
-
     </body>
 </html>
-

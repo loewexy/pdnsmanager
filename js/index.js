@@ -13,18 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 $(document).ready(function() {
-    
     $('#buttonSubmit').click(function(event) {
         event.preventDefault();
-        
         $('#alertLoginFailed').slideUp(300);
-        
         var data = {};
         data.user=$('#inputUser').val();
         data.password=$('#inputPassword').val();
-        
         $.post(
             "api/index.php",
             JSON.stringify(data),
@@ -37,6 +32,5 @@ $(document).ready(function() {
             },
             "json"
         );
-        
     });
 });

@@ -1,5 +1,4 @@
 <?php
-
 /* 
  * Copyright 2016 Lukas Metzger <developer@lukas-metzger.com>.
  *
@@ -15,11 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 function getExpectedVersion() {
     return 4;
 }
-
 function checkVersion($db) {
     if(getVersion($db) == getExpectedVersion()) {
         return true;
@@ -27,7 +24,6 @@ function checkVersion($db) {
         return false;
     }
 }
-
 function getVersion($db) {
     $stmt = $db->prepare("SELECT value FROM options WHERE name='schema_version' LIMIT 1");
     $stmt->execute();
@@ -35,6 +31,5 @@ function getVersion($db) {
     if (!$version) {
         $version = 0;
     }
-
     return $version;    
 }

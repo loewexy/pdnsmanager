@@ -1,5 +1,4 @@
 <?php
-
 /* 
  * Copyright 2016 Lukas Metzger <developer@lukas-metzger.com>.
  *
@@ -15,24 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 require_once '../config/config-default.php';
 require_once '../lib/database.php';
 require_once '../lib/session.php';
 require_once '../lib/soa-mail.php';
-
 $input = json_decode(file_get_contents('php://input'));
-
 if(!isset($input->csrfToken) || $input->csrfToken !== $_SESSION['csrfToken']) {
     echo "Permission denied!";
     exit();
 }
-
 if(!isset($_SESSION['type']) || $_SESSION['type'] != "admin") {
     echo "Permission denied!";
     exit();
 }
-
 if(isset($input->action) && $input->action == "addDomain") {
     $soaData = Array();
     $soaData[] = strtolower(preg_replace('/\s+/', '', $input->primary));
@@ -42,37 +36,28 @@ if(isset($input->action) && $input->action == "addDomain") {
     $soaData[] = $input->retry;
     $soaData[] = $input->expire;
     $soaData[] = $input->ttl;
-    
     $domainsName = strtolower(preg_replace('/\s+/', '', $input->name));
-	
     $soaContent = implode(" ", $soaData);
-    
     $db->beginTransaction();
-    
     $stmt = $db->prepare("INSERT INTO domains(name,type) VALUES (:name,:type)");
 	$stmt->bindValue(':name', $domainsName, PDO::PARAM_STR);
 	$stmt->bindValue(':type', $input->type, PDO::PARAM_STR);
     $stmt->execute();
-    
     $stmt = $db->prepare("SELECT MAX(id) FROM domains WHERE name=:name AND type=:type");
     $stmt->bindValue(':name', $domainsName, PDO::PARAM_STR);
     $stmt->bindValue(':type', $input->type, PDO::PARAM_STR);
     $stmt->execute();
     $newDomainId = $stmt->fetchColumn();
-    
     $stmt = $db->prepare("INSERT INTO records(domain_id,name,type,content,ttl) VALUES (:domain_id,:name,'SOA',:content,:ttl)");
     $stmt->bindValue(':domain_id', $newDomainId, PDO::PARAM_INT);
     $stmt->bindValue(':name', $domainsName, PDO::PARAM_STR);
     $stmt->bindValue(':content', $soaContent, PDO::PARAM_STR);
     $stmt->bindValue(':ttl', $input->ttl, PDO::PARAM_INT);
     $stmt->execute();
-    
     $db->commit();
-    
     $retval = Array();
     $retval['newId'] = $newDomainId;
 }
-
 if(isset($retval)) {
     echo json_encode($retval);
 } else {

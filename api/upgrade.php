@@ -1,5 +1,4 @@
 <?php
-
 /* 
  * Copyright 2016 Lukas Metzger <developer@lukas-metzger.com>.
  *
@@ -15,18 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 require_once '../config/config-default.php';
 require_once '../lib/database.php';
 require_once '../lib/checkversion.php';
-
 $input = json_decode(file_get_contents('php://input'));
-
 if(isset($input->action) && $input->action == "getVersions") {
     $retval['from'] = getVersion($db);
     $retval['to'] = getExpectedVersion();
 }
-
 if(isset($input->action) && $input->action == "requestUpgrade") {
     $currentVersion = getVersion($db);
     $dbType = $config['db_type'];
@@ -42,28 +37,23 @@ if(isset($input->action) && $input->action == "requestUpgrade") {
                 PRIMARY KEY (id),
                 KEY record (record)
             ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
-            
             ALTER TABLE `remote`
                 ADD CONSTRAINT `remote_ibfk_1` FOREIGN KEY (`record`) REFERENCES `records` (`id`);
-                
             CREATE TABLE IF NOT EXISTS options (
                 name varchar(255) NOT NULL,
                 value varchar(2000) DEFAULT NULL,
                 PRIMARY KEY (name)
             ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
-            
             INSERT INTO options(name,value) VALUES ('schema_version', 1);
         ";
         $sql["pgsql"] = "INSERT INTO options(name,value) VALUES ('schema_version', 1);";
         $queries = explode(";", $sql[$dbType]);
         $db->beginTransaction();
-
         foreach ($queries as $query) {
             if (preg_replace('/\s+/', '', $query) != '') {
                 $db->exec($query);
             }
         }
-
         $db->commit();
     }
     if($currentVersion < 2) {
@@ -76,28 +66,22 @@ if(isset($input->action) && $input->action == "requestUpgrade") {
               ADD CONSTRAINT permissions_ibfk_1 FOREIGN KEY (domain) REFERENCES domains (id) ON DELETE CASCADE;
             ALTER TABLE permissions
               ADD CONSTRAINT permissions_ibfk_2 FOREIGN KEY (user) REFERENCES user (id) ON DELETE CASCADE;
-              
             ALTER TABLE remote
               DROP FOREIGN KEY remote_ibfk_1;
             ALTER TABLE remote
               ADD CONSTRAINT remote_ibfk_1 FOREIGN KEY (record) REFERENCES records (id) ON DELETE CASCADE;
-              
             ALTER TABLE records
               ADD CONSTRAINT records_ibfk_1 FOREIGN KEY (domain_id) REFERENCES domains (id) ON DELETE CASCADE;
-              
             UPDATE options SET value=2 WHERE name='schema_version';
         ";
         $sql["pgsql"] = "UPDATE options SET value=2 WHERE name='schema_version';";
         $queries = explode(";", $sql[$dbType]);
-
         $db->beginTransaction();
-
         foreach ($queries as $query) {
             if (preg_replace('/\s+/', '', $query) != '') {
                 $db->exec($query);
             }
         }
-
         $db->commit();
     }
     if($currentVersion < 3) {
@@ -109,24 +93,18 @@ if(isset($input->action) && $input->action == "requestUpgrade") {
                 content TEXT,
                 PRIMARY KEY (id)
             ) Engine=InnoDB;
-            
             ALTER TABLE records ADD disabled TINYINT(1) DEFAULT 0;
             ALTER TABLE records ADD auth TINYINT(1) DEFAULT 1;
-            
             UPDATE options SET value=3 WHERE name='schema_version';
         ";
         $sql["pgsql"] = "UPDATE options SET value=3 WHERE name='schema_version';";
-
         $queries = explode(";", $sql[$dbType]);
-
         $db->beginTransaction();
-
         foreach ($queries as $query) {
             if (preg_replace('/\s+/', '', $query) != '') {
                 $db->exec($query);
             }
         }
-
         $db->commit();
     }
     if($currentVersion < 4) {
@@ -136,29 +114,21 @@ if(isset($input->action) && $input->action == "requestUpgrade") {
             ALTER TABLE permissions CHANGE user userid INT(11);
             ALTER TABLE permissions
               ADD CONSTRAINT permissions_ibfk_2 FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE;
-            
             ALTER TABLE users ADD CONSTRAINT UNIQUE KEY user_name_index (name);
-
             UPDATE options SET value=4 WHERE name='schema_version';
         ";
         $sql["pgsql"] = "UPDATE options SET value=4 WHERE name='schema_version';";
-
         $queries = explode(";", $sql[$dbType]);
-
         $db->beginTransaction();
-
         foreach ($queries as $query) {
             if (preg_replace('/\s+/', '', $query) != '') {
                 $db->exec($query);
             }
         }
-
         $db->commit();
     }
-
     $retval['status'] = "success";
 }
-
 if(isset($retval)) {
     echo json_encode($retval);
 } else {

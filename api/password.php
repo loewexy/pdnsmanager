@@ -1,5 +1,4 @@
 <?php
-
 /* 
  * Copyright 2016 Lukas Metzger <developer@lukas-metzger.com>.
  *
@@ -15,27 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 require_once '../config/config-default.php';
 require_once '../lib/database.php';
 require_once '../lib/session.php';
-
 $input = json_decode(file_get_contents('php://input'));
-
 if(!isset($input->csrfToken) || $input->csrfToken !== $_SESSION['csrfToken']) {
     echo "Permission denied!";
     exit();
 }
-
 if(isset($input->action) && $input->action == "changePassword") {
     $passwordHash = password_hash($input->password, PASSWORD_DEFAULT);
-    
     $stmt = $db->prepare("UPDATE users SET password=:password WHERE id=:id");
     $stmt->bindValue(':password', $passwordHash, PDO::PARAM_STR);
     $stmt->bindValue(':id', $_SESSION['id'], PDO::PARAM_INT);
     $stmt->execute();
 }
-
 if(isset($retval)) {
     echo json_encode($retval);
 } else {

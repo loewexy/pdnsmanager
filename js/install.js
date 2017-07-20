@@ -13,14 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 $(document).ready(function() {
-    
     $('#buttonInstall').click(function(evt){
         evt.preventDefault();
         checkSettings();
     });
-    
     $('#dbType').change(function() {
         if($(this).val() == 'mysql') {
             $('#dbPort').val(3306);
@@ -28,7 +25,6 @@ $(document).ready(function() {
             $('#dbPort').val(5432);
         }
     });
-    
     $('#adminPassword2').bind("change keyup paste", function() {
         if($('#adminPassword').val() == $('#adminPassword2').val()) {
             $(this).parent().removeClass("has-error");
@@ -37,21 +33,16 @@ $(document).ready(function() {
         }
     })
 });
-
 function checkSettings() {
-    
     if($('#adminPassword').val() != $('#adminPassword2').val()) {
         $('#adminPassword2').parent().addClass("has-error");
     }
-    
     if($('#adminPassword').val().length <= 0) {
         $('#adminPassword').parent().addClass("has-error");
     }
-    
     if($('#adminName').val().length <= 0) {
         $('#adminName').parent().addClass("has-error");
     }
-    
     var data = {
         host: $('#dbHost').val(),
         user: $('#dbUser').val(),
@@ -62,7 +53,6 @@ function checkSettings() {
         userPassword: $('#adminPassword').val(),
         type: $('#dbType').val()
     };
-    
     $.post(
         "api/install.php",
         JSON.stringify(data),
@@ -77,4 +67,3 @@ function checkSettings() {
         "json"
     );
 }
-

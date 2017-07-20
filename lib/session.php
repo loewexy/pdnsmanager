@@ -1,5 +1,4 @@
 <?php
-
 /* 
  * Copyright 2016 Lukas Metzger <developer@lukas-metzger.com>.
  *
@@ -15,10 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 session_start();
-
-
 if(
     !isset($_SESSION['id']) ||
     !isset($_SESSION['secret']) ||
