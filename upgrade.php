@@ -1,3 +1,12 @@
+<?php
+    require_once 'lib/headers.php';
+    require_once 'config/config-default.php';
+    require_once 'lib/database.php';
+    require_once 'lib/checkversion.php';
+    if(checkVersion($db)) {
+        Header("Location: index.php");
+    }
+?>
 <!DOCTYPE html>
 <!--
 Copyright 2016 Lukas Metzger <developer@lukas-metzger.com>.
@@ -11,15 +20,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
-<?php
-    require_once 'lib/headers.php';
-    require_once 'config/config-default.php';
-    require_once 'lib/database.php';
-    require_once 'lib/checkversion.php';
-    if(checkVersion($db)) {
-        Header("Location: index.php");
-    }
-?>
 <html>
     <head>
         <title>PDNS Manager - Upgrade</title>

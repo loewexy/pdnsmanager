@@ -1,3 +1,9 @@
+<?php
+    require_once 'lib/headers.php';
+    require_once 'lib/session.php';
+    session_destroy();
+    setcookie("authSecret", "", 1, "/", "", false, true);
+?>
 <!DOCTYPE html>
 <!--
 Copyright 2016 Lukas Metzger <developer@lukas-metzger.com>.
@@ -11,12 +17,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
-<?php
-    require_once 'lib/headers.php';
-    require_once 'lib/session.php';
-    session_destroy();
-    setcookie("authSecret", "", 1, "/", "", false, true);
-?>
 <html>
     <head>
         <title>PDNS Manager</title>
