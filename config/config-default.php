@@ -25,4 +25,8 @@ $config['db_name'] = "pdnsmanager";
 $config['nonce_lifetime'] = 15;
 //Number of rows in domain overview
 $config['domain_rows'] = 15;
-require 'config-user.php';
+
+// If config-user.php does not exist, redirect to the setup page
+if(!(include 'config-user.php')) {
+  Header("Location: install.php");
+}

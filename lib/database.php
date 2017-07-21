@@ -18,5 +18,5 @@ try {
     $db = new PDO($config['db_type'].":dbname=".$config['db_name'].";host=".$config['db_host'].";port=".strval($config['db_port']), $config['db_user'], $config['db_password']);
 }
 catch (PDOException $e) {
-    die("Connection to database failed");
+    die("Connection to the database failed. There is an error in the database configuration.");
 }
