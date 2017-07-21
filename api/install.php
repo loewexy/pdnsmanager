@@ -1,5 +1,5 @@
 <?php
-/* 
+/*
  * Copyright 2016 Lukas Metzger <developer@lukas-metzger.com>.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -166,38 +166,44 @@ DELETE FROM options where name='schema_version';
 INSERT INTO options(name,value) VALUES ('schema_version', 4);
 ";
 try {
-	$db = new PDO("$input->type:dbname=$input->database;host=$input->host;port=" . intval($input->port), $input->user, $input->password);
+    $db = new PDO("$input->type:dbname=$input->database;host=$input->host;port=" . intval($input->port), $input->user, $input->password);
 }
 catch (PDOException $e) {
     $retval['status'] = "error";
     $retval['message'] = serialize($e);
 }
 if (!isset($retval)) {
-    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $passwordHash = password_hash($input->userPassword, PASSWORD_DEFAULT);
-    $queries = explode(";", $sql[$input->type]);
-    $db->beginTransaction();
-    foreach ($queries as $query) {
-        if (preg_replace('/\s+/', '', $query) != '') {
-            $db->exec($query);
-        }
-    }
-    $db->commit();
-    $stmt = $db->prepare("INSERT INTO users(name,password,type) VALUES (:user,:hash,'admin')");
-    $stmt->bindValue(':user', $input->userName, PDO::PARAM_STR);
-    $stmt->bindValue(':hash', $passwordHash, PDO::PARAM_STR);
-    $stmt->execute();
-    $configFile = Array();
-    $configFile[] = '<?php';
-    $configFile[] = '$config[\'db_host\'] = \'' . addslashes($input->host) . "';";
-    $configFile[] = '$config[\'db_user\'] = \'' . addslashes($input->user) . "';";
-    $configFile[] = '$config[\'db_password\'] = \'' . addslashes($input->password) . "';";
-    $configFile[] = '$config[\'db_name\'] = \'' . addslashes($input->database) . "';";
-    $configFile[] = '$config[\'db_port\'] = ' . intval($input->port) . ";";
-    $configFile[] = '$config[\'db_type\'] = \'' . addslashes($input->type) . "';";
-    $retval['status'] = "success";
     try {
-        file_put_contents("../config/config-user.php", implode("\n", $configFile));	
+        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $passwordHash = password_hash($input->userPassword, PASSWORD_DEFAULT);
+        $queries = explode(";", $sql[$input->type]);
+        $db->beginTransaction();
+        foreach ($queries as $query) {
+            if (preg_replace('/\s+/', '', $query) != '') {
+                $db->exec($query);
+            }
+        }
+        $db->commit();
+        $stmt = $db->prepare("INSERT INTO users(name,password,type) VALUES (:user,:hash,'admin')");
+        $stmt->bindValue(':user', $input->userName, PDO::PARAM_STR);
+        $stmt->bindValue(':hash', $passwordHash, PDO::PARAM_STR);
+        $stmt->execute();
+        $configFile = Array();
+        $configFile[] = '<?php';
+        $configFile[] = '$config[\'db_host\'] = \'' . addslashes($input->host) . "';";
+        $configFile[] = '$config[\'db_user\'] = \'' . addslashes($input->user) . "';";
+        $configFile[] = '$config[\'db_password\'] = \'' . addslashes($input->password) . "';";
+        $configFile[] = '$config[\'db_name\'] = \'' . addslashes($input->database) . "';";
+        $configFile[] = '$config[\'db_port\'] = ' . intval($input->port) . ";";
+        $configFile[] = '$config[\'db_type\'] = \'' . addslashes($input->type) . "';";
+        $retval['status'] = "success";
+        try {
+            file_put_contents("../config/config-user.php", implode("\n", $configFile));
+        }
+        catch (Exception $e) {
+            $retval['status'] = "error";
+            $retval['message'] = serialize($e);
+        }
     }
     catch (Exception $e) {
         $retval['status'] = "error";
