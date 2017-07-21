@@ -18,6 +18,13 @@ if(file_exists("../config/config-user.php")) {
     echo "Permission denied!";
     exit();
 }
+
+if(!(is_writable("../config"))) {
+    $retval['status'] = "error";
+    $retval['message'] = "Can't write to the config directory, please check the file system permissions";
+    die(json_encode($retval));
+}
+
 //Get input
 $input = json_decode(file_get_contents('php://input'));
 //Database command
