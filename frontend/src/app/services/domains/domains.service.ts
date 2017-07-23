@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 
 import { HttpService } from 'app/services/http/http.service';
 import { DomainsAnswer } from 'app/interfaces/domains-answer';
-import { EmptyAnswer } from 'app/interfaces/empty-answer';
 
 @Injectable()
 export class DomainsService {
@@ -21,10 +20,10 @@ export class DomainsService {
      * @returns A Promise for a DomainsAnswer object
      */
     getDomains(page: number, field: string, order: number, searchName: string, searchType: string) {
-        let _order = order === 1 ? 1 : 0;
+        const _order = order === 1 ? 1 : 0;
 
         return new Promise((resolve, reject) => {
-            let body: any = {
+            const body: any = {
                 sort: {
                     field: field,
                     order: _order
@@ -63,7 +62,7 @@ export class DomainsService {
                 id: id
             };
 
-            this.httpService.post<EmptyAnswer>('api/domains.php', body)
+            this.httpService.post<{}>('api/domains.php', body)
                 .then(() => {
                     resolve();
                 }, (err) => {

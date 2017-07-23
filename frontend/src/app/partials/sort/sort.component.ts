@@ -12,7 +12,7 @@ export class SortComponent {
     @Output() sort = new EventEmitter<SortEvent>();
 
     @Input() field: string;
-    private order: number = 0;
+    private order = 0;
 
     constructor() { }
 

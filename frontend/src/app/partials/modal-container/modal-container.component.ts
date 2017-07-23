@@ -17,8 +17,8 @@ export class ModalContainerComponent implements OnInit {
         acceptClass: 'primary'
     };
 
-    private show: boolean = false;
-    private animate: boolean = false;
+    private show = false;
+    private animate = false;
 
     private currentResolve: Function;
     private currentReject: Function;

@@ -92,7 +92,7 @@ export class SessionService {
      * Loads the state from the sessionStorage.
      */
     loadState() {
-        let state = JSON.parse(sessionStorage.getItem('state'));
+        const state = JSON.parse(sessionStorage.getItem('state'));
         if (state) {
             this.isLoggedIn = state.isLoggedIn;
             this.userType = state.userType;

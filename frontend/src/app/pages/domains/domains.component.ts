@@ -21,10 +21,10 @@ export class DomainsComponent implements OnInit {
     @ViewChild('sortRecords') sortRecords: SortComponent;
 
     private sortField: string = null;
-    private sortOrder: number = 0;
+    private sortOrder = 0;
 
     private searchName: string;
-    private searchType: string = 'none';
+    private searchType = 'none';
 
     constructor(private domainsService: DomainsService,
         private modalService: ModalService) { }
@@ -38,8 +38,8 @@ export class DomainsComponent implements OnInit {
      * the properties of the components.
      */
     loadDomains() {
-        let field = this.sortField ? this.sortField : '';
-        let searchType = this.searchType === 'none' ? '' : this.searchType;
+        const field = this.sortField ? this.sortField : '';
+        const searchType = this.searchType === 'none' ? '' : this.searchType;
 
         this.domainsService.getDomains(1, field, this.sortOrder, this.searchName, searchType)
             .then((data: DomainsAnswer) => {
