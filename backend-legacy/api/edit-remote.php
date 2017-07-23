@@ -22,11 +22,6 @@ require_once '../lib/session.php';
 
 $input = json_decode(file_get_contents('php://input'));
 
-if(!isset($input->csrfToken) || $input->csrfToken !== $_SESSION['csrfToken']) {
-    echo "Permission denied!";
-    exit();
-}
-
 //Permission check
 if(isset($input->record)) {
     $permquery = $db->prepare("SELECT COUNT(*) FROM records JOIN permissions ON records.domain_id=permissions.domain WHERE userid=:user AND records.id=:id");
