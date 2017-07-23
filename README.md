@@ -12,6 +12,11 @@
  ```bash
  npm install -g @angular/cli
  ```
+
+ Then you have to install all dependencies using
+ ```bash
+ npm install
+ ```
  
  Then change in the backend-legacy folder and start the backend in one terminal.
  ```bash
