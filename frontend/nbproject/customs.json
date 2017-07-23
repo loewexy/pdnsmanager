@@ -1,0 +1,49 @@
+{
+    "elements": {
+        "app-sort": {
+            "attributes": {
+                "field": {}
+            }
+        },
+        "app-navbar-entry": {
+            "attributes": {
+                "icon": {},
+                "right": {},
+                "target": {}
+            }
+        },
+        "app-fa-icon": {
+            "attributes": {
+                "fixedWidth": {},
+                "size": {},
+                "icon": {},
+                "animate": {}
+            }
+        },
+        "app-modal-container": {},
+        "ng-content": {
+            "attributes": {
+                "select": {}
+            }
+        },
+        "ng-select": {},
+        "router-outlet": {},
+        "app-alert-message": {
+            "attributes": {
+                "strong": {}
+            }
+        },
+        "li": {},
+        "app-navbar": {
+            "attributes": {
+                "brand": {}
+            }
+        },
+        "app-alert": {}
+    },
+    "attributes": {
+        "routerLinkActive": {},
+        "*ngfor": {},
+        "class": {}
+    }
+}

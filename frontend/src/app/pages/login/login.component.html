@@ -1,0 +1,31 @@
+<div class="row">
+    <div class="col-12 col-md-6 col-lg-3 offset-md-6">
+
+        <app-alert *ngIf="loginError">
+            <app-alert-message strong>Username or password wrong!</app-alert-message>
+        </app-alert>
+
+        <form #loginForm="ngForm" (ngSubmit)="tryLogin()">
+            <div class="form-group">
+                <label class="control-label">Username</label>
+                <input type="text" class="form-control" placeholder="Username"
+                       autocapitalize="none" autocomplete="off" name="username"
+                       ngModel #name="ngModel" required>
+            </div>
+            <app-alert *ngIf="name.errors && (name.dirty || name.touched || submited)">
+                <app-alert-message *ngIf="name.errors.required">Name is required!</app-alert-message>
+            </app-alert>
+
+            <div class="form-group">
+                <label class="control-label" >Password</label>
+                <input type="password" class="form-control" placeholder="Password"
+                       name="password" #password="ngModel" required ngModel>
+            </div>
+            <app-alert *ngIf="password.errors && (password.dirty || password.touched || submited)">
+                <app-alert-message *ngIf="password.errors.required">Password is required!</app-alert-message>
+            </app-alert>
+
+            <button type="submit" class="btn btn-primary" >Login</button>
+        </form>
+    </div>
+</div>
