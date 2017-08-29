@@ -339,10 +339,19 @@ function requestDomainName() {
             $('#domain-name').text(data.name);
             $('#add-domain-name').text("." + data.name);
             domainName = data.name;
+            setDefaultRecordType();
             $('#addButton').unbind().click(addRecord);
         },
         "json"
     );
+}
+function setDefaultRecordType() {
+    var reverseZone = false;
+    if(domainName.endsWith('.in-addr.arpa')) reverseZone = true;
+    if(domainName.endsWith('.ip6.arpa')) reverseZone = true;
+    if(reverseZone) {
+        $('#addType').val('PTR').change();
+    }
 }
 function enableFilter(enable) {
     if(enable) {
