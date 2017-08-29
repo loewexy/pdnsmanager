@@ -304,11 +304,6 @@ function addRecord() {
             $('#table-records>tbody>tr').last().find('span.glyphicon-trash').click(trashClicked);
             $('#table-records>tbody>tr').last().find('span.glyphicon-share').click(remoteClicked);
             requestSerial();
-            $('#addName').val("");
-            $('#addType').val("A").change();
-            $('#addContent').val("");
-            $('#addPrio').val("");
-            $('#addTtl').val("");
         },
         "json"
     );
