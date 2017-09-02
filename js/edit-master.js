@@ -304,11 +304,6 @@ function addRecord() {
             $('#table-records>tbody>tr').last().find('span.glyphicon-trash').click(trashClicked);
             $('#table-records>tbody>tr').last().find('span.glyphicon-share').click(remoteClicked);
             requestSerial();
-            $('#addName').val("");
-            $('#addType').val("A").change();
-            $('#addContent').val("");
-            $('#addPrio').val("");
-            $('#addTtl').val("");
         },
         "json"
     );
@@ -344,10 +339,19 @@ function requestDomainName() {
             $('#domain-name').text(data.name);
             $('#add-domain-name').text("." + data.name);
             domainName = data.name;
+            setDefaultRecordType();
             $('#addButton').unbind().click(addRecord);
         },
         "json"
     );
+}
+function setDefaultRecordType() {
+    var reverseZone = false;
+    if(domainName.endsWith('.in-addr.arpa')) reverseZone = true;
+    if(domainName.endsWith('.ip6.arpa')) reverseZone = true;
+    if(reverseZone) {
+        $('#addType').val('PTR').change();
+    }
 }
 function enableFilter(enable) {
     if(enable) {
