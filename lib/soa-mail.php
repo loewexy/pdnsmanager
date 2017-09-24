@@ -24,5 +24,5 @@ function mail_to_soa($mail) {
     $parts = explode("@", $mail);
     $parts[0] = str_replace(".", "\.", $parts[0]);
     $parts[] = "";
-    return implode(".", $parts);
+    return rtrim(implode(".", $parts), ".");
 }
