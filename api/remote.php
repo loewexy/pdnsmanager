@@ -64,8 +64,8 @@ if(filter_input(INPUT_SERVER, "REQUEST_METHOD") == "GET") {
         $stmt = $db->prepare("SELECT E.name,E.id FROM remote R JOIN records E ON R.record = E.id WHERE R.id=:id LIMIT 1");
         $stmt->bindValue(':id', $input->id, PDO::PARAM_INT);
         $stmt->execute();
-        $stmt->bindColumn('E.name', $domainName);
-        $stmt->bindColumn('E.id', $record);
+        $stmt->bindColumn('name', $domainName);
+        $stmt->bindColumn('id', $record);
         $stmt->fetch(PDO::FETCH_BOUND);
         if($domainName != $input->domain) {
             $return['status'] = "error";
