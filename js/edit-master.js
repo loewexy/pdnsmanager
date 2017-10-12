@@ -46,7 +46,7 @@ $(document).ready(function() {
     });
     $('#addType').select2({
         data: recordTypes
-    });
+    }).on("change", { target: $("#addContent") }, adaptContentRegex).trigger("change");
     $('#table-records>thead>tr>td span.glyphicon').click(function() {
         var field = $(this).siblings('strong').text().toLowerCase();
         if(sort.field == field) {
@@ -74,6 +74,35 @@ $(document).ready(function() {
     requestSerial();
     requestDomainName();
 });
+function adaptContentRegex(event) {
+    var re;
+    switch($(this).val()) {
+        case 'A':
+            re = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.toString();
+        break;
+        case 'A6':
+        case 'AAAA':
+            re = /(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))/.toString();
+        break;
+        case 'MX':
+        case 'CNAME':
+        case 'PTR':
+        case 'NS':
+        case 'ALIAS':
+        case 'URL':
+        case 'AFSDB':
+            re = /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/.toString();
+        break;
+        case 'SPF':
+            re = /^v\=spf/.toString();
+        break;
+        case 'LOC':
+            re = /(\d+)(?: (\d+))?(?: (\d+(?:\.\d+)?))? (N|S) (\d+)(?: (\d+))?(?: (\d+(?:\.\d+)?))? (E|W)(?: (-?\d+(?:\.\d+)?)m?)(?: (-?\d+(?:\.\d+)?)m?)?(?: (-?\d+(?:\.\d+)?)m?)?(?: (-?\d+(?:\.\d+)?)m?)?/.toString();
+        default:
+            re = '/^.+$/';
+    }
+    event.data.target.attr('data-regex', re.substring(1, re.length -1)).trigger('change');
+};
 function validateSoaData() {
     var error = 0;
     $('#soa form input:not(#soa-serial)').each(function() {
@@ -198,12 +227,13 @@ function editClicked() {
     $('<span class="input-group-addon"></span>').appendTo(inputGroupName).text("." + domainName);
     var valueType = tableCells.eq(2).text();
     tableCells.eq(2).empty();
-    $('<select class="form-control select-narrow-70"></select>').appendTo(tableCells.eq(2)).select2({
+    var typeSelect = $('<select class="form-control select-narrow-70"></select>').appendTo(tableCells.eq(2)).select2({
         data: recordTypes
     }).val(valueType).trigger("change");
     var valueContent = tableCells.eq(3).text();
     tableCells.eq(3).empty();
-    $('<input type="text" class="form-control input-sm" data-regex="^.+$">').appendTo(tableCells.eq(3)).val(valueContent);
+    var content = $('<input type="text" class="form-control input-sm" data-regex="^.+$">').appendTo(tableCells.eq(3)).val(valueContent);
+    typeSelect.on("change", { target: content }, adaptContentRegex).change();
     var valuePrio = tableCells.eq(4).text();
     tableCells.eq(4).empty();
     $('<input type="text" class="form-control input-sm" size="1" data-regex="^[0-9]+$">').appendTo(tableCells.eq(4)).val(valuePrio);
