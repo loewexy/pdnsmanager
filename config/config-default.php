@@ -23,6 +23,9 @@ $config['db_password'] = "";
 $config['db_port'] = 3306;
 $config['db_name'] = "pdnsmanager";
 
+// Authentication source
+$config['auth_type'] = 'db';
+
 //Remote update
 $config['nonce_lifetime'] = 15;
 
