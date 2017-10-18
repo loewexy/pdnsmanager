@@ -28,6 +28,8 @@ $config['auth_type'] = 'db';
 
 // LDAP settings
 $config['ldap_uri'] = 'ldapi:///';
+$config['ldap_version'] = 3;
+$config['ldap_starttls'] = false;
 $config['ldap_bind_dn'] = '';
 $config['ldap_bind_pw'] = '';
 $config['ldap_base_dn'] = '';

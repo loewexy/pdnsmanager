@@ -40,7 +40,10 @@ if ($config['auth_type'] == 'db') {
 	}
 } elseif ($config['auth_type'] == 'ldap') {
 	$ldap = @ldap_connect($config['ldap_uri']);
-	@ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3);
+	@ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, $config['ldap_version']);
+	if ($config['ldap_starttls']) {
+		@ldap_start_tls($ldap);
+	}
 	@ldap_bind($ldap, $config['ldap_bind_dn'], $config['ldap_bind_pw']);
 	$filter = str_replace('%user%', @ldap_escape($input->user, null, LDAP_ESCAPE_FILTER), $config['ldap_search']);
 	$result = @ldap_search($ldap, $config['ldap_base_dn'], $filter, array('dn'));
