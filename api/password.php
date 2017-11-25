@@ -22,6 +22,10 @@ if(!isset($input->csrfToken) || $input->csrfToken !== $_SESSION['csrfToken']) {
     echo "Permission denied!";
     exit();
 }
+if(!isset($_SESSION['id']) || $_SESSION['id'] == 0) {
+    echo "Permission denied!";
+    exit();
+}
 if(isset($input->action) && $input->action == "changePassword") {
     $passwordHash = password_hash($input->password, PASSWORD_DEFAULT);
     $stmt = $db->prepare("UPDATE users SET password=:password WHERE id=:id");
