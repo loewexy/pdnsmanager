@@ -26,6 +26,10 @@ if(!isset($_SESSION['type']) || $_SESSION['type'] != "admin") {
     echo "Permission denied!";
     exit();
 }
+if(!isset($_SESSION['id']) || $_SESSION['id'] == 0) {
+    echo "Permission denied!";
+    exit();
+}
 if(isset($input->action) && $input->action == "addUser") {
     $passwordHash = password_hash($input->password, PASSWORD_DEFAULT);
     $db->beginTransaction();

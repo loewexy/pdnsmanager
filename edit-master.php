@@ -38,8 +38,8 @@ limitations under the License.
                 </div>
                 <ul class="nav navbar-nav">
                     <li><a href="domains.php">Domains</a></li>
-                    <?php if($_SESSION['type'] == "admin") echo '<li><a href="users.php">Users</a></li>'; ?>
-                    <li><a href="password.php">Password</a></li>
+                    <?php if($_SESSION['type'] == "admin" and $_SESSION['id'] > 0) echo '<li><a href="users.php">Users</a></li>'; ?>
+                    <?php if($_SESSION['id'] > 0) echo '<li><a href="password.php">Password</a></li>'; ?>
                     <li><a href="logout.php">Logout</a></li>
                 </ul>
             </div>

@@ -23,6 +23,18 @@ $config['db_password'] = "";
 $config['db_port'] = 3306;
 $config['db_name'] = "pdnsmanager";
 
+// Authentication source
+$config['auth_type'] = 'db';
+
+// LDAP settings
+$config['ldap_uri'] = 'ldapi:///';
+$config['ldap_version'] = 3;
+$config['ldap_starttls'] = false;
+$config['ldap_bind_dn'] = '';
+$config['ldap_bind_pw'] = '';
+$config['ldap_base_dn'] = '';
+$config['ldap_search'] = 'uid=%user%';
+
 //Remote update
 $config['nonce_lifetime'] = 15;
 
