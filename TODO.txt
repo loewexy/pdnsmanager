@@ -1,0 +1,1 @@
+- Add route guards to make it nicer for the user if he is not logged in

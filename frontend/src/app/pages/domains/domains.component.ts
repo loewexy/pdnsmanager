@@ -1,10 +1,11 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {Router, ActivatedRoute} from '@angular/router';
 
-import { DomainsService } from 'app/services/domains/domains.service';
-import { DomainsAnswer } from 'app/interfaces/domains-answer';
-import { ModalService } from 'app/services/modal/modal.service';
-import { SortComponent } from 'app/partials/sort/sort.component';
-import { SortEvent } from 'app/interfaces/sort-event';
+import {DomainsService} from 'app/services/domains/domains.service';
+import {DomainsAnswer} from 'app/interfaces/domains-answer';
+import {ModalService} from 'app/services/modal/modal.service';
+import {SortComponent} from 'app/partials/sort/sort.component';
+import {SortEvent} from 'app/interfaces/sort-event';
 
 @Component({
     selector: 'app-domains',
@@ -13,7 +14,7 @@ import { SortEvent } from 'app/interfaces/sort-event';
 })
 export class DomainsComponent implements OnInit {
 
-    data: DomainsAnswer = { pages: { current: 1, total: 1 }, data: [] };
+    data: DomainsAnswer = {pages: {current: 1, total: 1}, data: []};
 
     @ViewChild('sortId') sortId: SortComponent;
     @ViewChild('sortName') sortName: SortComponent;
@@ -27,7 +28,9 @@ export class DomainsComponent implements OnInit {
     private searchType = 'none';
 
     constructor(private domainsService: DomainsService,
-        private modalService: ModalService) { }
+        private modalService: ModalService,
+        private router: Router,
+        private route: ActivatedRoute) {}
 
     ngOnInit() {
         this.loadDomains();
@@ -56,7 +59,7 @@ export class DomainsComponent implements OnInit {
     deleteDomain(id: number, name: string) {
         this.modalService.showMessage({
             heading: 'Delete Domain?',
-            body: `Are you shure you want to delete the zone ${ name }?`,
+            body: `Are you shure you want to delete the zone ${name}?`,
             acceptText: 'Delete',
             dismisText: 'Cancel',
             acceptClass: 'danger'
@@ -89,6 +92,15 @@ export class DomainsComponent implements OnInit {
         this.sortOrder = event.order;
 
         this.loadDomains();
+    }
+
+    /**
+     * Navigates to the domain edit page
+     *
+     * @param id    Id of the domain to edit
+     */
+    onClickDomain(id: Number) {
+        this.router.navigate(['edit', id], {relativeTo: this.route});
     }
 
 }

@@ -4,8 +4,13 @@ import {Routes, RouterModule} from '@angular/router';
 import {DomainsComponent} from './pages/domains/domains.component';
 import {UsersComponent} from './pages/users/users.component';
 import {LoginComponent} from './pages/login/login.component';
+import {RecordEditComponent} from './pages/record-edit/record-edit.component';
 
 const routes: Routes = [
+    {
+        path: 'domains/edit/:id',
+        component: RecordEditComponent
+    },
     {
         path: 'domains',
         component: DomainsComponent

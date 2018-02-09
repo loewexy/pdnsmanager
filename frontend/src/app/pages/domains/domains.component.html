@@ -37,7 +37,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let domain of data.data">
+            <tr *ngFor="let domain of data.data" (click)="onClickDomain(domain.id)">
                 <td>{{domain.id}}</td>
                 <td>{{domain.name}}</td>
                 <td>{{domain.type}}</td>
