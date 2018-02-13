@@ -26,6 +26,7 @@ $(document).ready(function() {
             function(data){
                 if(data.status == "fail") {
                     $('#alertLoginFailed').slideDown(600);
+		    $.post( "action.php", { action: "failedlogin", user: $('#inputUser').val() } );
                 } else {
                     location.assign("domains.php");
                 }
