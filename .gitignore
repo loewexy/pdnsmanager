@@ -1,3 +1,6 @@
 backend-legacy/config/config-user.php
 */nbproject/private
 */node_modules/*
+
+backend/vendor/*
+backend/config/ConfigUser.php

@@ -1,0 +1,16 @@
+{
+    "require": {
+        "slim/slim": "^3.9",
+        "monolog/monolog": "^1.23"
+    },
+    "autoload": {
+        "psr-4": {
+            "Services\\": "services/",
+            "Controllers\\": "controllers/",
+            "Operations\\": "operations/",
+            "Plugins\\": "plugins/",
+            "Middlewares\\": "middlewares/",
+            "Exceptions\\": "exceptions/"
+        }
+    }
+}
