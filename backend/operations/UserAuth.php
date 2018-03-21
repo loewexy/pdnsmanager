@@ -124,7 +124,7 @@ class UserAuth
 
         $query = $this->db->prepare('SELECT id FROM users WHERE name=:name AND backend=:backend');
         $query->bindValue(':name', $username, \PDO::PARAM_STR);
-        $query->bindValue(':backend', $backend);
+        $query->bindValue(':backend', $backend, \PDO::PARAM_STR);
         $query->execute();
 
         $record = $query->fetch();
