@@ -120,11 +120,14 @@ class UserAuth
      */
     private function localUser(string $backend, string $username, string $password) : int
     {
+        $config = $this->c['config']['authentication'];
+        $backendId = $config[$backend]['plugin'];
+
         $this->db->beginTransaction();
 
         $query = $this->db->prepare('SELECT id FROM users WHERE name=:name AND backend=:backend');
         $query->bindValue(':name', $username, \PDO::PARAM_STR);
-        $query->bindValue(':backend', $backend, \PDO::PARAM_STR);
+        $query->bindValue(':backend', $backendId, \PDO::PARAM_STR);
         $query->execute();
 
         $record = $query->fetch();
@@ -132,16 +135,16 @@ class UserAuth
         if ($record === false) {
             $insert = $this->db->prepare('INSERT INTO users (name,backend,type) VALUES (:name, :backend, \'user\')');
             $insert->bindValue(':name', $username, \PDO::PARAM_STR);
-            $insert->bindValue(':backend', $backend, \PDO::PARAM_STR);
+            $insert->bindValue(':backend', $backendId, \PDO::PARAM_STR);
             $insert->execute();
 
             $query->execute();
 
             $record = $query->fetch();
 
-            $this->logger->info('Non existing user created', ['username' => $username, 'backend' => $backend, 'newId' => $record['id']]);
+            $this->logger->info('Non existing user created', ['username' => $username, 'backendId' => $backendId, 'newId' => $record['id']]);
         } else {
-            $this->logger->debug('User was found in database', ['username' => $username, 'backend' => $backend, 'id' => $record['id']]);
+            $this->logger->debug('User was found in database', ['username' => $username, 'backendId' => $backendId, 'id' => $record['id']]);
         }
 
         $this->db->commit();
