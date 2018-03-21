@@ -10,7 +10,8 @@
             "Operations\\": "operations/",
             "Plugins\\": "plugins/",
             "Middlewares\\": "middlewares/",
-            "Exceptions\\": "exceptions/"
+            "Exceptions\\": "exceptions/",
+            "Utils\\": "utils/"
         }
     }
 }
