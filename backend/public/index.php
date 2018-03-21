@@ -29,7 +29,6 @@ $app->group('/v1', function () {
 
         $this->get('/domains', '\Controllers\Domains:getList');
     })->add('\Middlewares\Authentication');
-
 });
 
 // Add global middlewares
@@ -38,4 +37,3 @@ $app->add('\Middlewares\RejectEmptyBody');
 
 // Run application
 $app->run();
-

@@ -26,6 +26,5 @@ class RejectEmptyBody
         } else {
             return $next($req, $res);
         }
-
     }
 }

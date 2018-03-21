@@ -72,7 +72,5 @@ class Sessions
             $this->logger->warning('Trying to delete non existing session', ['token' => $args['sessionId']]);
             return $res->withJson(['error' => 'Session not found'], 404);
         }
-
-
     }
 }

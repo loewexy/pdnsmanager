@@ -62,7 +62,6 @@ class UserAuth
         } catch (\Exceptions\PluginNotFoundException $e) {
             throw $e;
         }
-
     }
 
     /**

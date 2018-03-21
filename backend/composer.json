@@ -13,5 +13,11 @@
             "Exceptions\\": "exceptions/",
             "Utils\\": "utils/"
         }
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^2.11"
+    },
+    "scripts": {
+        "lint": "vendor/bin/php-cs-fixer fix --dry-run --rules @PSR2,-no_trailing_whitespace_in_comment --using-cache false --stop-on-violation  --diff ./"
     }
 }

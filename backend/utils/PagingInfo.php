@@ -32,6 +32,6 @@ class PagingInfo
 
         return array_filter($val, function ($var) {
             return !is_null($var);
-        });;
+        });
     }
 }

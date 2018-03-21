@@ -83,7 +83,7 @@ class Database
             if (array_key_exists($parts[0], $colMap) && count($parts) == 2) { // is valid known field
                 if ($parts[1] == 'asc') {
                     $orderStrings[] = $colMap[$parts[0]] . ' ASC';
-                } else if ($parts[1] == 'desc') {
+                } elseif ($parts[1] == 'desc') {
                     $orderStrings[] = $colMap[$parts[0]] . ' DESC';
                 }
             }
