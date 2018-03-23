@@ -5,13 +5,15 @@ if ! npm run lint
 then
     echo "Frontend lint failed"
     exit 1
-failed
+fi
+cd ..
 
-cd backend
+cd backend/src
 if ! composer run-script lint
 then
     echo "Backend lint failed"
     exit 2
 fi
+cd ..
 
 exit 0
