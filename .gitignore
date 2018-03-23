@@ -2,5 +2,6 @@ backend-legacy/config/config-user.php
 */nbproject/private
 */node_modules/*
 
-backend/vendor/*
-backend/config/ConfigUser.php
+backend/src/vendor/*
+backend/src/config/ConfigUser.php
+backend/src/config/ConfigOverride.php
