@@ -25,6 +25,10 @@ $defaultConfig = [
     ]
 ];
 
-$userConfig = require('ConfigUser.php');
+if (file_exists('ConfigOverride.php')) {
+    $userConfig = require('ConfigOverride.php');
+} else {
+    $userConfig = require('ConfigUser.php');
+}
 
 return array('config' => array_replace_recursive($defaultConfig, $userConfig));
