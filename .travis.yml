@@ -16,11 +16,8 @@ before_script:
     - phpenv config-rm xdebug.ini
     - phpenv config-add .travis/data/phpconfig.ini
     - mysql -e 'CREATE DATABASE pdnstest;'
-    - .travis/backend-start-server.sh > server.log 2>&1 &
+    - .travis/backend-start-server.sh > /dev/null 2>&1 &
 script:
     - .travis/frontend-lint.sh
     - .travis/backend-lint.sh
     - .travis/backend-test.sh
-after_script:
-    - cat server.log
-
