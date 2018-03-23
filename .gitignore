@@ -7,3 +7,4 @@ backend/src/config/ConfigUser.php
 backend/src/config/ConfigOverride.php
 backend/test/config.sh
 backend/test/node_modules/
+backend/test/logfile.log

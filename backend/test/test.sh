@@ -60,7 +60,12 @@ then
     makeConfig
 
     echo "Preparing Database"
-    mysql "-h$DBHOST" "-u$DBUSER" "-p$DBPASSWORD" "$DBNAME" < db.sql
+    if [ -z "$DBPASSWORD" ]
+    then
+        mysql "-h$DBHOST" "-u$DBUSER" "$DBNAME" < db.sql
+    else
+        mysql "-h$DBHOST" "-u$DBUSER" "-p$DBPASSWORD" "$DBNAME" < db.sql
+    fi
 
     echo "Executing test"
     if ! node "tests/$2.js" "$TESTURL"
@@ -89,7 +94,12 @@ then
 
         echo -n $(basename $test .js) "..."
 
-        mysql "-h$DBHOST" "-u$DBUSER" "-p$DBPASSWORD" "$DBNAME" < db.sql
+        if [ -z "$DBPASSWORD" ]
+        then
+            mysql "-h$DBHOST" "-u$DBUSER" "$DBNAME" < db.sql
+        else
+            mysql "-h$DBHOST" "-u$DBUSER" "-p$DBPASSWORD" "$DBNAME" < db.sql
+        fi
 
         echo -n "..."
 
