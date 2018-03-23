@@ -1,0 +1,22 @@
+sudo: required
+dist: trusty
+language: php
+services: 
+    - mysql
+php:
+    - "7.1"
+before_install:
+    - sudo rm -rf ~/.nvm
+    - curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+    - sudo apt-get install -y nodejs build-essential
+install:
+    - .travis/frontend-install.sh
+    - .travis/backend-install.sh
+before_script:
+    - mysql -e 'CREATE DATABASE pdnstest;'
+    - .travis/backend-start-server.sh &
+script:
+    - .travis/frontend-lint.sh
+    - .travis/backend-lint.sh
+    - .travis/backend-test.sh
+
