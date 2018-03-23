@@ -14,6 +14,7 @@ install:
     - .travis/backend-install.sh
 before_script:
     - phpenv config-rm xdebug.ini
+    - phpenv config-add .travis/data/phpconfig.ini
     - mysql -e 'CREATE DATABASE pdnstest;'
     - .travis/backend-start-server.sh > server.log 2>&1 &
 script:
