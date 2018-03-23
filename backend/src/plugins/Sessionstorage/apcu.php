@@ -23,7 +23,7 @@ class apcu implements InterfaceSessionstorage
         $this->logger = $logger;
 
         if (!function_exists('apcu_store')) {
-            $this->$logger->critical('PHP APCu extension is not available but configured as session storage backend exiting now');
+            $this->logger->critical('PHP APCu extension is not available but configured as session storage backend exiting now');
             exit();
         }
     }
