@@ -52,6 +52,8 @@ async function logIn(assert, req) {
         }
     });
 
+    console.log(res);
+
     assert.equal(res.status, 201, 'LOGIN: Status not valid');
     assert.equal(res.data.username, 'admin', 'LOGIN: Username should be admin');
     assert.equal(res.data.token.length, 86, 'LOGIN: Token length fail');
