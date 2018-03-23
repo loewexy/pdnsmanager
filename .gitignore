@@ -1,5 +1,3 @@
-backend-legacy/config/config-user.php
-*/nbproject/private
 */node_modules/*
 
 backend/src/vendor/*
