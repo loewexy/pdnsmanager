@@ -25,7 +25,7 @@ $defaultConfig = [
     ]
 ];
 
-if (file_exists('ConfigOverride.php')) {
+if (file_exists('../config/ConfigOverride.php')) {
     $userConfig = require('ConfigOverride.php');
 } else {
     $userConfig = require('ConfigUser.php');

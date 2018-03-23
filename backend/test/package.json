@@ -1,0 +1,8 @@
+{
+  "name": "backend-test",
+  "version": "1.0.0",
+  "description": "Dependencies for pdnsmanager test",
+  "dependencies": {
+    "axios": "^0.18.0"
+  }
+}
