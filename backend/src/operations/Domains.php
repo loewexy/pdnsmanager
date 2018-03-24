@@ -103,6 +103,8 @@ class Domains
             if ($item['type'] != 'SLAVE') {
                 unset($item['master']);
             }
+            $item['id'] = intval($item['id']);
+            $item['records'] = intval($item['records']);
             return $item;
         }, $data);
     }
@@ -147,6 +149,7 @@ class Domains
         $query->execute();
 
         $record = $query->fetch();
+        $record['id'] = intval($record['id']);
         if ($type !== 'SLAVE') {
             unset($record['master']);
         }
