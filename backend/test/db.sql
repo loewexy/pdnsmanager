@@ -103,6 +103,14 @@ CREATE TABLE `permissions` (
   `user_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Dumping data for table `permissions`
+--
+
+INSERT INTO `permissions` (`domain_id`, `user_id`) VALUES
+(1, 2),
+(2, 2);
+
 -- --------------------------------------------------------
 
 --
@@ -175,7 +183,7 @@ CREATE TABLE `users` (
 
 --
 -- Dumping data for table `users`
---$2y$10$MktCI4XcfD0FpIFSkxex6OVifnIw3Nqw6QJueWmjVte99wx6XGBoq
+--
 
 INSERT INTO `users` (`id`, `name`, `backend`, `type`, `password`) VALUES
 (1, 'admin', 'native', 'admin', '$2y$10$9iIDHWgjY0pEsz8pZLXPx.gkMNDxTMzb7U0Um5hUGjKmUUHWQNXcW'),
@@ -218,7 +226,7 @@ ALTER TABLE `domains`
 -- Indexes for table `permissions`
 --
 ALTER TABLE `permissions`
-  ADD PRIMARY KEY (`user_id`);
+  ADD PRIMARY KEY (`user_id`, `domain_id`);
 
 --
 -- Indexes for table `records`
