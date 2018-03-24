@@ -28,6 +28,7 @@ $app->group('/v1', function () {
         $this->delete('/sessions/{sessionId}', '\Controllers\Sessions:delete');
 
         $this->get('/domains', '\Controllers\Domains:getList');
+        $this->post('/domains', '\Controllers\Domains:postNew');
     })->add('\Middlewares\Authentication');
 });
 

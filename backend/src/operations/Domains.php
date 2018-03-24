@@ -33,6 +33,8 @@ class Domains
      * @param   $query      Search query to search in the domain name, null for no filter
      * @param   $sorting    Sort string in format 'field-asc,field2-desc', null for default
      * @param   $type       Type to filter for, null for no filter
+     * 
+     * @return  array       Array with matching domains
      */
     public function getDomains(\Utils\PagingInfo &$pi, int $userId, ? string $query, ? string $sorting, ? string $type) : array
     {
@@ -103,5 +105,54 @@ class Domains
             }
             return $item;
         }, $data);
+    }
+
+    /**
+     * Get a list of domains according to filter criteria
+     * 
+     * @param   $name       Name of the new zone
+     * @param   $type       Type of the new zone
+     * @param   $master     Master for slave zones, otherwise null
+     * 
+     * @return  array       New domain entry
+     */
+    public function addDomain(string $name, string $type, ? string $master)
+    {
+        $this->db->beginTransaction();
+
+        $query = $this->db->prepare('SELECT id FROM domains WHERE name=:name');
+        $query->bindValue(':name', $name, \PDO::PARAM_STR);
+        $query->execute();
+
+        $record = $query->fetch();
+
+        if ($record !== false) { // Domain already exists
+            $this->db->rollBack();
+            throw new \Exceptions\AlreadyExistentException();
+        }
+
+        if ($type === 'SLAVE') {
+            $query = $this->db->prepare('INSERT INTO domains (name, type, master) VALUES(:name, :type, :master)');
+            $query->bindValue(':master', $master, \PDO::PARAM_STR);
+        } else {
+            $query = $this->db->prepare('INSERT INTO domains (name, type) VALUES(:name, :type)');
+        }
+        $query->bindValue(':name', $name, \PDO::PARAM_STR);
+        $query->bindValue(':type', $type, \PDO::PARAM_STR);
+        $query->execute();
+
+
+        $query = $this->db->prepare('SELECT id,name,type,master FROM domains WHERE name=:name');
+        $query->bindValue(':name', $name, \PDO::PARAM_STR);
+        $query->execute();
+
+        $record = $query->fetch();
+        if ($type !== 'SLAVE') {
+            unset($record['master']);
+        }
+
+        $this->db->commit();
+
+        return $record;
     }
 }

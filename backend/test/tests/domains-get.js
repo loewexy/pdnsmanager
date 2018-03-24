@@ -1,6 +1,6 @@
 const cartesianProduct = require('cartesian-product');
 
-require('../testlib')(async function (assert, req) {
+require('../testlib')('admin', async function (assert, req) {
     //GET /domains?page=5&pagesize=10&query=foo&sort=id-asc,name-desc,type-asc,records-asc&type=MASTER
 
     //Test sorting in all combinations

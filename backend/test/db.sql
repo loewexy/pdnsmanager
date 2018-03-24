@@ -175,10 +175,11 @@ CREATE TABLE `users` (
 
 --
 -- Dumping data for table `users`
---
+--$2y$10$MktCI4XcfD0FpIFSkxex6OVifnIw3Nqw6QJueWmjVte99wx6XGBoq
 
 INSERT INTO `users` (`id`, `name`, `backend`, `type`, `password`) VALUES
-(1, 'admin', 'native', 'admin', '$2y$10$9iIDHWgjY0pEsz8pZLXPx.gkMNDxTMzb7U0Um5hUGjKmUUHWQNXcW');
+(1, 'admin', 'native', 'admin', '$2y$10$9iIDHWgjY0pEsz8pZLXPx.gkMNDxTMzb7U0Um5hUGjKmUUHWQNXcW'),
+(2, 'user', 'native', 'user', '$2y$10$MktCI4XcfD0FpIFSkxex6OVifnIw3Nqw6QJueWmjVte99wx6XGBoq');
 
 --
 -- Indexes for dumped tables

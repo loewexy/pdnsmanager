@@ -1,7 +1,7 @@
 const assert = require('assert');
 const axios = require('axios');
 
-async function runTest(f) {
+async function runTest(user, f) {
     const assertObj = {
         equal: assert.deepStrictEqual,
         true: assert.ok
@@ -13,7 +13,7 @@ async function runTest(f) {
     });
 
     try {
-        const token = await logIn(assertObj, requestObj);
+        const token = await logIn(assertObj, requestObj, user);
 
         requestObj = axios.create({
             baseURL: process.argv[2],
@@ -41,19 +41,19 @@ async function runTest(f) {
     process.exit(0);
 }
 
-async function logIn(assert, req) {
+async function logIn(assert, req, username) {
     //Try to login with valid username and password
     var res = await req({
         url: '/sessions',
         method: 'post',
         data: {
-            username: 'admin',
-            password: 'admin'
+            username: username,
+            password: username
         }
     });
 
     assert.equal(res.status, 201, 'LOGIN: Status not valid');
-    assert.equal(res.data.username, 'admin', 'LOGIN: Username should be admin');
+    assert.equal(res.data.username, username, 'LOGIN: Username should be ' + username);
     assert.equal(res.data.token.length, 86, 'LOGIN: Token length fail');
 
     return res.data.token;

@@ -1,5 +1,5 @@
 
-require('../testlib')(async function (assert, req) {
+require('../testlib')('admin', async function (assert, req) {
     //Try to login with invalid username and password
     var res = await req({
         url: '/sessions',
