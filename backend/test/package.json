@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Dependencies for pdnsmanager test",
   "dependencies": {
-    "axios": "^0.18.0"
+    "axios": "^0.18.0",
+    "cartesian-product": "^2.1.2"
   }
 }

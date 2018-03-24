@@ -74,7 +74,7 @@ then
         clearConfig
         exit 1
     else
-        if [ $(wc -l logfile.log) -gt 0 ]
+        if [ $(cat logfile.log | wc -l) -gt 0 ]
         then
             echo "Errors in logfile:"
             cat "logfile.log"

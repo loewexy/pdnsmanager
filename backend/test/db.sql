@@ -3,10 +3,11 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Mar 23, 2018 at 02:29 PM
+-- Generation Time: Mar 24, 2018 at 01:13 PM
 -- Server version: 5.7.21-0ubuntu0.16.04.1
 -- PHP Version: 7.0.28-0ubuntu0.16.04.1
 
+SET FOREIGN_KEY_CHECKS=0;
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
@@ -15,7 +16,6 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;
-
 
 -- --------------------------------------------------------
 
@@ -86,7 +86,10 @@ CREATE TABLE `domains` (
 
 INSERT INTO `domains` (`id`, `name`, `master`, `last_check`, `type`, `notified_serial`, `account`) VALUES
 (1, 'example.com', NULL, NULL, 'MASTER', NULL, NULL),
-(2, 'slave.example.net', '12.34.56.78', NULL, 'SLAVE', NULL, NULL);
+(2, 'slave.example.net', '12.34.56.78', NULL, 'SLAVE', NULL, NULL),
+(3, 'foo.de', NULL, NULL, 'NATIVE', NULL, NULL),
+(4, 'bar.net', NULL, NULL, 'MASTER', NULL, NULL),
+(5, 'baz.org', NULL, NULL, 'MASTER', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -267,7 +270,7 @@ ALTER TABLE `domainmetadata`
 -- AUTO_INCREMENT for table `domains`
 --
 ALTER TABLE `domains`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 --
 -- AUTO_INCREMENT for table `records`
 --
@@ -282,7 +285,8 @@ ALTER TABLE `tsigkeys`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;SET FOREIGN_KEY_CHECKS=1;
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
