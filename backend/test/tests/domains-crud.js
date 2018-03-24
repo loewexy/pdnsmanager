@@ -87,10 +87,26 @@ const cartesianProduct = require('cartesian-product');
             type: 'SLAVE',
             master: '1.2.3.4'
         }, 'Creation result fail.')
+
+        //Delete not existing domain
+        var res = await req({
+            url: '/domains/100',
+            method: 'delete'
+        });
+
+        assert.equal(res.status, 404, 'Non existing domain deletion should be 404.');
+
+        //Delete existing domain
+        var res = await req({
+            url: '/domains/1',
+            method: 'delete'
+        });
+
+        assert.equal(res.status, 204, 'Deletion of domain 1 should be successfull.');
     });
 
     await require('../testlib')('user', async function (assert, req) {
-        //Test insufficient privileges
+        //Test insufficient privileges for add
         var res = await req({
             url: '/domains',
             method: 'post',
@@ -100,6 +116,14 @@ const cartesianProduct = require('cartesian-product');
         });
 
         assert.equal(res.status, 403, 'Domain creation should be forbidden for users.')
+
+        //Test insufficient privileges for delete
+        var res = await req({
+            url: '/domains/1',
+            method: 'delete'
+        });
+
+        assert.equal(res.status, 403, 'Domain deletion should be forbidden for users.');
     });
 
 })();

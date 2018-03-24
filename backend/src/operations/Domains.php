@@ -110,15 +110,17 @@ class Domains
     }
 
     /**
-     * Get a list of domains according to filter criteria
+     * Add new domain
      * 
      * @param   $name       Name of the new zone
      * @param   $type       Type of the new zone
      * @param   $master     Master for slave zones, otherwise null
      * 
      * @return  array       New domain entry
+     * 
+     * @throws  AlreadyExistenException it the domain exists already
      */
-    public function addDomain(string $name, string $type, ? string $master)
+    public function addDomain(string $name, string $type, ? string $master) : array
     {
         $this->db->beginTransaction();
 
@@ -157,5 +159,32 @@ class Domains
         $this->db->commit();
 
         return $record;
+    }
+
+    /**
+     * Add new domain
+     * 
+     * @param   $id     Id of the domain to delete
+     * 
+     * @return  void
+     * 
+     * @throws  NotFoundException   if domain does not exist
+     */
+    public function deleteDomain(int $id) : void
+    {
+        $this->db->beginTransaction();
+
+        $query = $this->db->prepare('SELECT id FROM domains WHERE id=:id');
+        $query->bindValue(':id', $id, \PDO::PARAM_INT);
+        $query->execute();
+
+        if ($query->fetch() === false) { //Domain does not exist
+            $this->db->rollBack();
+            throw new \Exceptions\NotFoundException();
+        }
+
+        $query = $this->db->prepare('DELETE FROM domains WHERE id=:id');
+        $query->bindValue(':id', $id, \PDO::PARAM_INT);
+        $query->execute();
     }
 }

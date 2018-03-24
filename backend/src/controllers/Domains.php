@@ -70,11 +70,33 @@ class Domains
         try {
             $result = $domains->addDomain($name, $type, $master);
 
-            $this->logger->debug('Domain was added', $result);
+            $this->logger->info('Created domain', $result);
             return $res->withJson($result, 201);
         } catch (\Exceptions\AlreadyExistentException $e) {
             $this->logger->debug('Zone with name ' . $name . ' already exists.');
             return $res->withJson(['error' => 'Zone with name ' . $name . ' already exists.'], 409);
+        }
+    }
+
+    public function delete(Request $req, Response $res, array $args)
+    {
+        $ac = new \Operations\AccessControl($this->c);
+        if (!$ac->isAdmin($req->getAttribute('userId'))) {
+            $this->logger->info('Non admin user tries to delete domain');
+            return $res->withJson(['error' => 'You must be admin to use this feature'], 403);
+        }
+
+        $domains = new \Operations\Domains($this->c);
+
+        $domainId = intval($args['domainId']);
+
+        try {
+            $domains->deleteDomain($domainId);
+
+            $this->logger->info('Deleted domain', ['id' => $domainId]);
+            return $res->withStatus(204);
+        } catch (\Exceptions\NotFoundException $e) {
+            return $res->withJson(['error' => 'No domain found for id ' + $domainId], 404);
         }
     }
 }
