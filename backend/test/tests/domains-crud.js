@@ -131,6 +131,59 @@ test.run(async function () {
             master: '1.2.3.4'
         }, 'Slave domain data mismatch');
 
+        //Update slave domain
+        var res = await req({
+            url: '/domains/8',
+            method: 'put',
+            data: {
+                master: '9.8.7.6'
+            }
+        });
+
+        assert.equal(res.status, 204, 'Slave update should return no content');
+
+        //Check if update succeded
+        var res = await req({
+            url: '/domains/8',
+            method: 'get'
+        });
+
+        assert.equal(res.status, 200, 'Slave domain should be accessible after update.');
+        assert.equal(res.data.master, '9.8.7.6', 'Slave update had no effect');
+
+        //Check if update fails for non existing domain
+        var res = await req({
+            url: '/domains/100',
+            method: 'put',
+            data: {
+                master: '9.8.7.6'
+            }
+        });
+
+        assert.equal(res.status, 404, 'Update on not existing domain should fail.');
+
+        //Check if update fails for master zone
+        var res = await req({
+            url: '/domains/1',
+            method: 'put',
+            data: {
+                master: '9.8.7.6'
+            }
+        });
+
+        assert.equal(res.status, 405, 'Update on master zone should fail.');
+
+        //Check if update fails for missing field
+        var res = await req({
+            url: '/domains/100',
+            method: 'put',
+            data: {
+                foo: 'bar'
+            }
+        });
+
+        assert.equal(res.status, 422, 'Update with missing master field should fail.');
+
         //Delete not existing domain
         var res = await req({
             url: '/domains/100',
@@ -167,6 +220,17 @@ test.run(async function () {
         });
 
         assert.equal(res.status, 403, 'Domain deletion should be forbidden for users.');
+
+        //Test insufficient permissions
+        var res = await req({
+            url: '/domains/2',
+            method: 'put',
+            data: {
+                master: '9.8.7.6'
+            }
+        });
+
+        assert.equal(res.status, 403, 'Update of slave zone should be forbidden for non admins.');
 
         //Test insufficient privileges for get
         var res = await req({

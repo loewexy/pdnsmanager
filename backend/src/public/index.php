@@ -31,6 +31,7 @@ $app->group('/v1', function () {
         $this->post('/domains', '\Controllers\Domains:postNew');
         $this->delete('/domains/{domainId}', '\Controllers\Domains:delete');
         $this->get('/domains/{domainId}', '\Controllers\Domains:getSingle');
+        $this->put('/domains/{domainId}', '\Controllers\Domains:put');
     })->add('\Middlewares\Authentication');
 });
 

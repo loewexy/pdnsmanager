@@ -122,4 +122,38 @@ class Domains
             return $res->withJson(['error' => 'No domain found for id ' . $domainId], 404);
         }
     }
+
+    public function put(Request $req, Response $res, array $args)
+    {
+        $ac = new \Operations\AccessControl($this->c);
+        if (!$ac->isAdmin($req->getAttribute('userId'))) {
+            $this->logger->info('Non admin user tries to delete domain');
+            return $res->withJson(['error' => 'You must be admin to use this feature'], 403);
+        }
+
+        $body = $req->getParsedBody();
+
+        if (!array_key_exists('master', $body)) {
+            $this->logger->debug('One of the required fields is missing');
+            return $res->withJson(['error' => 'One of the required fields is missing'], 422);
+        }
+
+        $domainId = $args['domainId'];
+        $master = $body['master'];
+
+        $domains = new \Operations\Domains($this->c);
+
+        try {
+            $result = $domains->updateSlave($domainId, $master);
+
+            $this->logger->debug('Update master', ['id' => $domainId]);
+            return $res->withStatus(204);
+        } catch (\Exceptions\NotFoundException $e) {
+            $this->logger->debug('Trying to update non existing slave zone', ['id' => $domainId]);
+            return $res->withJson(['error' => 'No domain found for id ' . $domainId], 404);
+        } catch (\Exceptions\SemanticException $e) {
+            $this->logger->debug('Trying to update non slave zone', ['id' => $domainId]);
+            return $res->withJson(['error' => 'Domain is not a slave zone'], 405);
+        }
+    }
 }

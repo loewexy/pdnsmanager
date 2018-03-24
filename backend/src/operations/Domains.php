@@ -222,4 +222,50 @@ class Domains
 
         return $record;
     }
+
+    /**
+     * Get type of given domain
+     * 
+     * @param   int     Domain id
+     * 
+     * @return  string  Domain type
+     * 
+     * @throws  NotFoundException   if domain does not exist
+     */
+    public function getDomainType(int $id) : string
+    {
+        $query = $this->db->prepare('SELECT type FROM domains WHERE id=:id');
+        $query->bindValue(':id', $id);
+        $query->execute();
+        $record = $query->fetch();
+
+        if ($record === false) {
+            throw new \Exceptions\NotFoundException();
+        }
+
+        return $record['type'];
+    }
+
+    /**
+     * Update master for slave zone
+     * 
+     * @param   int     Domain id
+     * @param   string  New master
+     * 
+     * @return  void
+     * 
+     * @throws  NotFoundException   if domain does not exist
+     * @throws  SemanticException   if domain is no slave zone
+     */
+    public function updateSlave(int $id, string $master)
+    {
+        if ($this->getDomainType($id) !== 'SLAVE') {
+            throw new \Exceptions\SemanticException();
+        }
+
+        $query = $this->db->prepare('UPDATE domains SET master=:master WHERE id=:id');
+        $query->bindValue(':id', $id);
+        $query->bindValue(':master', $master);
+        $query->execute();
+    }
 }
