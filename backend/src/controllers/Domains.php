@@ -96,7 +96,30 @@ class Domains
             $this->logger->info('Deleted domain', ['id' => $domainId]);
             return $res->withStatus(204);
         } catch (\Exceptions\NotFoundException $e) {
-            return $res->withJson(['error' => 'No domain found for id ' + $domainId], 404);
+            return $res->withJson(['error' => 'No domain found for id ' . $domainId], 404);
+        }
+    }
+
+    public function getSingle(Request $req, Response $res, array $args)
+    {
+        $userId = $req->getAttribute('userId');
+        $domainId = intval($args['domainId']);
+
+        $ac = new \Operations\AccessControl($this->c);
+        if (!$ac->canAccessDomain($userId, $domainId)) {
+            $this->logger->info('Non admin user tries to get domain without permission.');
+            return $res->withJson(['error' => 'You have no permissions for this domain.'], 403);
+        }
+
+        $domains = new \Operations\Domains($this->c);
+
+        try {
+            $result = $domains->getDomain($domainId);
+
+            $this->logger->debug('Get domain info', ['id' => $domainId]);
+            return $res->withJson($result, 200);
+        } catch (\Exceptions\NotFoundException $e) {
+            return $res->withJson(['error' => 'No domain found for id ' . $domainId], 404);
         }
     }
 }

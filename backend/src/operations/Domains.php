@@ -162,7 +162,7 @@ class Domains
     }
 
     /**
-     * Add new domain
+     * Delete domain
      * 
      * @param   $id     Id of the domain to delete
      * 
@@ -186,5 +186,40 @@ class Domains
         $query = $this->db->prepare('DELETE FROM domains WHERE id=:id');
         $query->bindValue(':id', $id, \PDO::PARAM_INT);
         $query->execute();
+    }
+
+    /**
+     * Get domain
+     * 
+     * @param   $id     Id of the domain to get
+     * 
+     * @return  array   Domain data
+     * 
+     * @throws  NotFoundException   if domain does not exist
+     */
+    public function getDomain(int $id) : array
+    {
+        $query = $this->db->prepare('
+            SELECT D.id,D.name,D.type,D.master,COUNT(R.domain_id) AS records FROM domains D
+            LEFT OUTER JOIN records R ON D.id = R.domain_id
+            WHERE D.id=:id
+            GROUP BY D.id,D.name,D.type,D.master
+        ');
+        $query->bindValue(':id', $id, \PDO::PARAM_INT);
+        $query->execute();
+
+        $record = $query->fetch();
+
+        if ($record === false) {
+            throw new \Exceptions\NotFoundException();
+        }
+
+        $record['id'] = intval($record['id']);
+        $record['records'] = intval($record['records']);
+        if ($record['type'] !== 'SLAVE') {
+            unset($record['master']);
+        }
+
+        return $record;
     }
 }

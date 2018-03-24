@@ -43,4 +43,32 @@ class AccessControl
 
         return $record['type'] == 'admin';
     }
+
+    /**
+     * Check if a given user has permissons for a given domain.
+     * 
+     * @param   $userId     User id of the user
+     * @param   $domainId   Domain to check
+     * 
+     * @return bool true if access is granted, false otherwise
+     */
+    public function canAccessDomain(int $userId, int $domainId) : bool
+    {
+        if ($this->isAdmin($userId)) {
+            return true;
+        }
+
+        $query = $this->db->prepare('SELECT user_id,domain_id FROM permissions WHERE user_id=:userId AND domain_id=:domainId');
+        $query->bindValue(':userId', $userId, \PDO::PARAM_INT);
+        $query->bindValue(':domainId', $domainId, \PDO::PARAM_INT);
+        $query->execute();
+
+        $record = $query->fetch();
+
+        if ($record === false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 }

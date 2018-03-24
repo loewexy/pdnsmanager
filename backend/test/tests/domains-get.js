@@ -1,7 +1,8 @@
+const test = require('../testlib');
 const cartesianProduct = require('cartesian-product');
 
-(async function () {
-    require('../testlib')('admin', async function (assert, req) {
+test.run(async function () {
+    test('admin', async function (assert, req) {
         //GET /domains?page=5&pagesize=10&query=foo&sort=id-asc,name-desc,type-asc,records-asc&type=MASTER
 
         //Test sorting in all combinations
@@ -105,4 +106,4 @@ const cartesianProduct = require('cartesian-product');
             }
         ], 'Result fail for ' + res.config.url);
     });
-})();
+});

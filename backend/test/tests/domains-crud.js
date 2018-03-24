@@ -1,7 +1,7 @@
-const cartesianProduct = require('cartesian-product');
+const test = require('../testlib');
 
-(async function () {
-    await require('../testlib')('admin', async function (assert, req) {
+test.run(async function () {
+    await test('admin', async function (assert, req) {
         //Test missing fields
         var res = await req({
             url: '/domains',
@@ -88,6 +88,49 @@ const cartesianProduct = require('cartesian-product');
             master: '1.2.3.4'
         }, 'Creation result fail.')
 
+        //Get master domain
+        var res = await req({
+            url: '/domains/6',
+            method: 'get'
+        });
+
+        assert.equal(res.status, 200, 'Domain access for master domain should be OK.');
+        assert.equal(res.data, {
+            id: 6,
+            name: 'master.de',
+            type: 'MASTER',
+            records: 0
+        }, 'Master domain data mismatch');
+
+        //Get native domain
+        var res = await req({
+            url: '/domains/7',
+            method: 'get'
+        });
+
+        assert.equal(res.status, 200, 'Domain access for native domain should be OK.');
+        assert.equal(res.data, {
+            id: 7,
+            name: 'native.de',
+            type: 'NATIVE',
+            records: 0
+        }, 'Native domain data mismatch');
+
+        //Get slave domain
+        var res = await req({
+            url: '/domains/8',
+            method: 'get'
+        });
+
+        assert.equal(res.status, 200, 'Domain access for slave domain should be OK.');
+        assert.equal(res.data, {
+            id: 8,
+            name: 'slave.de',
+            type: 'SLAVE',
+            records: 0,
+            master: '1.2.3.4'
+        }, 'Slave domain data mismatch');
+
         //Delete not existing domain
         var res = await req({
             url: '/domains/100',
@@ -105,7 +148,7 @@ const cartesianProduct = require('cartesian-product');
         assert.equal(res.status, 204, 'Deletion of domain 1 should be successfull.');
     });
 
-    await require('../testlib')('user', async function (assert, req) {
+    await test('user', async function (assert, req) {
         //Test insufficient privileges for add
         var res = await req({
             url: '/domains',
@@ -124,6 +167,27 @@ const cartesianProduct = require('cartesian-product');
         });
 
         assert.equal(res.status, 403, 'Domain deletion should be forbidden for users.');
-    });
 
-})();
+        //Test insufficient privileges for get
+        var res = await req({
+            url: '/domains/3',
+            method: 'get'
+        });
+
+        assert.equal(res.status, 403, 'Domain get for domain 3 should be forbidden.');
+
+        //Test privileges for get
+        var res = await req({
+            url: '/domains/1',
+            method: 'get'
+        });
+
+        assert.equal(res.status, 200, 'Domain access for domain 1 should be OK.');
+        assert.equal(res.data, {
+            id: 1,
+            name: 'example.com',
+            type: 'MASTER',
+            records: 1
+        }, 'Domain 3 data mismatch');
+    });
+});

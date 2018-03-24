@@ -37,7 +37,10 @@ async function runTest(user, f) {
             process.exit(1);
         }
     }
+}
 
+async function run(f) {
+    await f();
     process.exit(0);
 }
 
@@ -70,3 +73,4 @@ async function logOut(assert, req, token) {
 }
 
 module.exports = runTest;
+module.exports.run = run;
