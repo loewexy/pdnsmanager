@@ -111,6 +111,38 @@ class Soa
     }
 
     /**
+     * Get soa record for domain
+     * 
+     * @param   $domainId   Domain to get soa from
+     * 
+     * @return  array       Soa data as associative array
+     */
+    public function getSoa(int $domainId)
+    {
+        $query = $this->db->prepare('SELECT content FROM records WHERE domain_id=:domainId AND type=\'SOA\'');
+        $query->bindValue(':domainId', $domainId, \PDO::PARAM_INT);
+        $query->execute();
+
+        $record = $query->fetch();
+
+        if ($record === false) {
+            throw new \Exceptions\NotFoundException();
+        }
+
+        $soaArray = explode(' ', $record['content']);
+
+        return [
+            'primary' => $soaArray[0],
+            'email' => $this->toEmail($soaArray[1]),
+            'serial' => intval($soaArray[2]),
+            'refresh' => intval($soaArray[3]),
+            'retry' => intval($soaArray[4]),
+            'expire' => intval($soaArray[5]),
+            'ttl' => intval($soaArray[6])
+        ];
+    }
+
+    /**
      * Increases the serial number of the given domain to the next required.
      * 
      * If domain has no present soa record this method does nothing.

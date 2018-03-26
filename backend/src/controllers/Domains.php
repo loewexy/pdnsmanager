@@ -202,4 +202,27 @@ class Domains
             return $res->withJson(['error' => 'SOA can not be set for slave domains'], 405);
         }
     }
+
+    public function getSoa(Request $req, Response $res, array $args)
+    {
+        $userId = $req->getAttribute('userId');
+        $domainId = $args['domainId'];
+
+        $ac = new \Operations\AccessControl($this->c);
+        if (!$ac->canAccessDomain($userId, $domainId)) {
+            $this->logger->info('Non admin user tries to get domain without permission.');
+            return $res->withJson(['error' => 'You have no permissions for this domain.'], 403);
+        }
+
+        $soa = new \Operations\Soa($this->c);
+
+        try {
+            $soaArray = $soa->getSoa($domainId);
+
+            return $res->withJson($soaArray, 200);
+        } catch (\Exceptions\NotFoundException $e) {
+            $this->logger->debug('User tried to get non existing soa.', ['domainId' => $domainId]);
+            return $res->withJson(['error' => 'This domain has no soa record.'], 404);
+        }
+    }
 }

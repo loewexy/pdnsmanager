@@ -34,6 +34,7 @@ $app->group('/v1', function () {
         $this->put('/domains/{domainId}', '\Controllers\Domains:put');
 
         $this->put('/domains/{domainId}/soa', '\Controllers\Domains:putSoa');
+        $this->get('/domains/{domainId}/soa', '\Controllers\Domains:getSoa');
     })->add('\Middlewares\Authentication');
 });
 
