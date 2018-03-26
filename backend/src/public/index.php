@@ -32,6 +32,8 @@ $app->group('/v1', function () {
         $this->delete('/domains/{domainId}', '\Controllers\Domains:delete');
         $this->get('/domains/{domainId}', '\Controllers\Domains:getSingle');
         $this->put('/domains/{domainId}', '\Controllers\Domains:put');
+
+        $this->put('/domains/{domainId}/soa', '\Controllers\Domains:putSoa');
     })->add('\Middlewares\Authentication');
 });
 

@@ -1,7 +1,7 @@
 const test = require('../testlib');
 
 test.run(async function () {
-    test('admin', async function (assert, req) {
+    await test('admin', async function (assert, req) {
         //Try to login with invalid username and password
         var res = await req({
             url: '/sessions',

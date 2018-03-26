@@ -156,4 +156,50 @@ class Domains
             return $res->withJson(['error' => 'Domain is not a slave zone'], 405);
         }
     }
+
+    public function putSoa(Request $req, Response $res, array $args)
+    {
+        $userId = $req->getAttribute('userId');
+        $domainId = $args['domainId'];
+
+        $ac = new \Operations\AccessControl($this->c);
+        if (!$ac->canAccessDomain($userId, $domainId)) {
+            $this->logger->info('Non admin user tries to get domain without permission.');
+            return $res->withJson(['error' => 'You have no permissions for this domain.'], 403);
+        }
+
+        $body = $req->getParsedBody();
+
+        if (!array_key_exists('primary', $body) ||
+            !array_key_exists('email', $body) ||
+            !array_key_exists('refresh', $body) ||
+            !array_key_exists('retry', $body) ||
+            !array_key_exists('expire', $body) ||
+            !array_key_exists('ttl', $body)) {
+            $this->logger->debug('One of the required fields is missing');
+            return $res->withJson(['error' => 'One of the required fields is missing'], 422);
+        }
+
+        $soa = new \Operations\Soa($this->c);
+
+        try {
+            $soa->setSoa(
+                intval($domainId),
+                $body['email'],
+                $body['primary'],
+                intval($body['refresh']),
+                intval($body['retry']),
+                intval($body['expire']),
+                intval($body['ttl'])
+            );
+
+            return $res->withStatus(204);
+        } catch (\Exceptions\NotFoundException $e) {
+            $this->logger->warning('Trying to set soa for not existing domain.', ['domainId' => $domainId]);
+            return $res->withJson(['error' => 'No domain found for id ' . $domainId], 404);
+        } catch (\Exceptions\SemanticException $e) {
+            $this->logger->warning('Trying to set soa for slave domain.', ['domainId' => $domainId]);
+            return $res->withJson(['error' => 'SOA can not be set for slave domains'], 405);
+        }
+    }
 }
