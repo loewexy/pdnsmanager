@@ -239,7 +239,7 @@ class Domains
     public function getDomainType(int $id) : string
     {
         $query = $this->db->prepare('SELECT type FROM domains WHERE id=:id');
-        $query->bindValue(':id', $id);
+        $query->bindValue(':id', $id, \PDO::PARAM_INT);
         $query->execute();
         $record = $query->fetch();
 
@@ -268,8 +268,8 @@ class Domains
         }
 
         $query = $this->db->prepare('UPDATE domains SET master=:master WHERE id=:id');
-        $query->bindValue(':id', $id);
-        $query->bindValue(':master', $master);
+        $query->bindValue(':id', $id, \PDO::PARAM_INT);
+        $query->bindValue(':master', $master, \PDO::PARAM_STR);
         $query->execute();
     }
 }

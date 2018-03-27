@@ -45,7 +45,7 @@ class Soa
         $this->db->beginTransaction();
 
         $query = $this->db->prepare('SELECT id,name,type FROM domains WHERE id=:id');
-        $query->bindValue(':id', $domainId);
+        $query->bindValue(':id', $domainId, \PDO::PARAM_INT);
         $query->execute();
         $record = $query->fetch();
 
@@ -71,7 +71,7 @@ class Soa
         ];
 
         $query = $this->db->prepare('SELECT content FROM records WHERE domain_id=:id AND type=\'SOA\'');
-        $query->bindValue(':id', $domainId);
+        $query->bindValue(':id', $domainId, \PDO::PARAM_INT);
         $query->execute();
 
         $content = $query->fetch();
@@ -154,7 +154,7 @@ class Soa
     public function updateSerial(int $domainId) : void
     {
         $query = $this->db->prepare('SELECT content FROM records WHERE domain_id=:id AND type=\'SOA\'');
-        $query->bindValue(':id', $domainId);
+        $query->bindValue(':id', $domainId, \PDO::PARAM_INT);
         $query->execute();
         $content = $query->fetch();
 
