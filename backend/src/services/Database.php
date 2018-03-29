@@ -69,7 +69,7 @@ class Database
      * 
      * @return  string  SQL string to use
      */
-    public static function makeSortingString(? string $sort, array $colMap)
+    public static function makeSortingString(? string $sort, array $colMap) : string
     {
         if ($sort === null) {
             return '';
@@ -94,5 +94,31 @@ class Database
         }
 
         return ' ORDER BY ' . implode(', ', $orderStrings);
+    }
+
+    /**
+     * Makes a string which works to use with an IN SQL clause.
+     * 
+     * Input is a comma separated list, all items are escaped and joint
+     * to the form ('a','b')
+     * 
+     * @param   $db         PDO object used for escaping
+     * @param   $input      Comma separated list of items
+     * 
+     * @return  string  SQL string to use
+     */
+    public function makeSetString(\PDO $db, ? string $input) : string
+    {
+        if ($input === null || $input === '') {
+            return '(\'\')';
+        }
+
+        $parts = explode(',', $input);
+
+        $partsEscaped = array_map(function ($item) use ($db) {
+            return $db->quote($item, \PDO::PARAM_STR);
+        }, $parts);
+
+        return '(' . implode(', ', $partsEscaped) . ')';
     }
 }

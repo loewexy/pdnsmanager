@@ -137,7 +137,10 @@ CREATE TABLE `records` (
 --
 
 INSERT INTO `records` (`id`, `domain_id`, `name`, `type`, `content`, `ttl`, `prio`, `change_date`, `disabled`, `ordername`, `auth`) VALUES
-(1, 1, 'test.example.com', 'A', '12.34.56.78', 86400, 0, 1521645110, 0, NULL, 1);
+(1, 1, 'test.example.com', 'A', '12.34.56.78', 86400, 0, 1521645110, 0, NULL, 1),
+(2, 1, 'sdfdf.example.com', 'TXT', 'foo bar baz', 60, 10, 1522321931, 0, NULL, 1),
+(3, 1, 'foo.example.com', 'AAAA', '::1', 86400, 0, 1522321902, 0, NULL, 1),
+(4, 3, 'foo.de', 'A', '9.8.7.6', 86400, 0, 1522321989, 0, NULL, 1);
 
 -- --------------------------------------------------------
 
