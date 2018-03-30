@@ -251,7 +251,7 @@ test.run(async function () {
             id: 1,
             name: 'example.com',
             type: 'MASTER',
-            records: 1
+            records: 3
         }, 'Domain 3 data mismatch');
     });
 });

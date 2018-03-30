@@ -14,6 +14,14 @@ then
     echo "Backend lint failed"
     exit 2
 fi
-cd ..
+cd ../..
+
+cd backend/test
+if ! ./test.sh all
+then
+    echo "Backend test failed"
+    exit 3
+fi
+cd ../..
 
 exit 0

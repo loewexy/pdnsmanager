@@ -102,7 +102,7 @@ test.run(async function () {
                 id: 3,
                 name: 'foo.de',
                 type: 'NATIVE',
-                records: 0
+                records: 1
             }
         ], 'Result fail for ' + res.config.url);
     });
