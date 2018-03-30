@@ -60,11 +60,6 @@ class Domains
         $type = $body['type'];
         $master = isset($body['master']) ? $body['master'] : null;
 
-        if (!in_array($type, ['MASTER', 'NATIVE', 'SLAVE'])) {
-            $this->logger->info('Invalid type for new domain', ['type' => $type]);
-            return $res->withJson(['error' => 'Invalid type allowed are MASTER, NATIVE and SLAVE'], 422);
-        }
-
         $domains = new \Operations\Domains($this->c);
 
         try {
@@ -75,6 +70,9 @@ class Domains
         } catch (\Exceptions\AlreadyExistentException $e) {
             $this->logger->debug('Zone with name ' . $name . ' already exists.');
             return $res->withJson(['error' => 'Zone with name ' . $name . ' already exists.'], 409);
+        } catch (\Exceptions\SemanticException $e) {
+            $this->logger->info('Invalid type for new domain', ['type' => $type]);
+            return $res->withJson(['error' => 'Invalid type allowed are MASTER, NATIVE and SLAVE'], 400);
         }
     }
 

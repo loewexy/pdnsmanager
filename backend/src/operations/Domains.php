@@ -122,6 +122,10 @@ class Domains
      */
     public function addDomain(string $name, string $type, ? string $master) : array
     {
+        if (!in_array($type, ['MASTER', 'SLAVE', 'NATIVE'])) {
+            throw new \Exceptions\SemanticException();
+        }
+
         $this->db->beginTransaction();
 
         $query = $this->db->prepare('SELECT id FROM domains WHERE name=:name');

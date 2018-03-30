@@ -28,6 +28,17 @@ test.run(async function () {
             url: '/domains',
             method: 'post',
             data: {
+                name: 'abc.de',
+                type: 'FOO'
+            }
+        });
+
+        assert.equal(res.status, 400, 'Invalid domain type should trigger error.');
+
+        var res = await req({
+            url: '/domains',
+            method: 'post',
+            data: {
                 name: 'foo.de',
                 type: 'MASTER'
             }
