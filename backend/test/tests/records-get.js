@@ -24,8 +24,6 @@ test.run(async function () {
 
             assert.equal(res.status, 200);
 
-            console.log(res.data);
-
             var sortedData = res.data.results.slice();
             sortedData.sort(function (a, b) {
                 for (sort of list) {

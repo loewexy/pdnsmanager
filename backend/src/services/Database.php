@@ -107,7 +107,7 @@ class Database
      * 
      * @return  string  SQL string to use
      */
-    public function makeSetString(\PDO $db, ? string $input) : string
+    public static function makeSetString(\PDO $db, ? string $input) : string
     {
         if ($input === null || $input === '') {
             return '(\'\')';
