@@ -106,4 +106,29 @@ test.run(async function () {
             }
         ], 'Result fail for ' + res.config.url);
     });
+
+    await test('user', async function (assert, req) {
+        //Type filter
+        var res = await req({
+            url: '/domains',
+            method: 'get'
+        });
+
+        assert.equal(res.status, 200, 'Status should be OK for user');
+        assert.equal(res.data.results, [
+            {
+                id: 1,
+                name: 'example.com',
+                type: 'MASTER',
+                records: 3
+            },
+            {
+                id: 2,
+                name: 'slave.example.net',
+                type: 'SLAVE',
+                master: '12.34.56.78',
+                records: 0
+            }
+        ], 'Result fail for user on ' + res.config.url);
+    });
 });

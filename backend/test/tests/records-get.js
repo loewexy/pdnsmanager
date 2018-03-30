@@ -145,4 +145,43 @@ test.run(async function () {
             domain: 3
         }], 'Result fail for ' + res.config.url);
     });
+
+    await test('user', async function (assert, req) {
+        //Type filter
+        var res = await req({
+            url: '/records',
+            method: 'get'
+        });
+
+        assert.equal(res.status, 200, 'Status should be OK for user');
+        assert.equal(res.data.results, [
+            {
+                id: 1,
+                name: 'test.example.com',
+                type: 'A',
+                content: '12.34.56.78',
+                priority: 0,
+                ttl: 86400,
+                domain: 1
+            },
+            {
+                id: 2,
+                name: 'sdfdf.example.com',
+                type: 'TXT',
+                content: 'foo bar baz',
+                priority: 10,
+                ttl: 60,
+                domain: 1
+            },
+            {
+                id: 3,
+                name: 'foo.example.com',
+                type: 'AAAA',
+                content: '::1',
+                priority: 0,
+                ttl: 86400,
+                domain: 1
+            }
+        ], 'Result fail for user on ' + res.config.url);
+    });
 });
