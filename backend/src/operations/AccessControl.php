@@ -71,4 +71,36 @@ class AccessControl
             return true;
         }
     }
+
+    /**
+     * Check if a given user has permissons for a given record.
+     * 
+     * @param   $userId     User id of the user
+     * @param   $recordId   Record to check
+     * 
+     * @return bool true if access is granted, false otherwise
+     */
+    public function canAccessRecord(int $userId, int $recordId) : bool
+    {
+        if ($this->isAdmin($userId)) {
+            return true;
+        }
+
+        $query = $this->db->prepare('
+            SELECT * FROM records R
+            LEFT OUTER JOIN permissions P ON P.domain_id=R.domain_id
+            WHERE R.id=:recordId AND P.user_id=:userId
+        ');
+        $query->bindValue(':userId', $userId, \PDO::PARAM_INT);
+        $query->bindValue(':recordId', $recordId, \PDO::PARAM_INT);
+        $query->execute();
+
+        $record = $query->fetch();
+
+        if ($record === false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 }

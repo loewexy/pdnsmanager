@@ -28,7 +28,7 @@ class Records
     }
 
     /**
-     * Get a list of domains according to filter criteria
+     * Get a list of records according to filter criteria
      * 
      * @param   $pi             PageInfo object, which is also updated with total page number
      * @param   $userId         Id of the user for which the table should be retrieved
@@ -126,5 +126,175 @@ class Records
             $item['domain'] = intval($item['domain']);
             return $item;
         }, $data);
+    }
+
+    /**
+     * Add new record
+     * 
+     * @param   $name       Name of the new record
+     * @param   $type       Type of the new record
+     * @param   $content    Content of the new record
+     * @param   $priority   Priority of the new record
+     * @param   $ttl        TTL of the new record
+     * @param   $domain     Domain id of the domain to add the record
+     * 
+     * @return  array       New record entry
+     * 
+     * @throws  NotFoundException   if the domain does not exist
+     * @throws  SemanticException   if the record type is invalid
+     */
+    public function addRecord(string $name, string $type, string $content, int $priority, int $ttl, int $domain) : array
+    {
+        if (!in_array($type, $this->c['config']['records']['allowedTypes'])) {
+            throw new \Exceptions\SemanticException();
+        }
+
+        $this->db->beginTransaction();
+
+        $query = $this->db->prepare('SELECT id FROM domains WHERE id=:id AND type IN (\'MASTER\',\'NATIVE\')');
+        $query->bindValue(':id', $domain, \PDO::PARAM_INT);
+        $query->execute();
+
+        $record = $query->fetch();
+
+        if ($record === false) { // Domain does not exist
+            $this->db->rollBack();
+            throw new \Exceptions\NotFoundException();
+        }
+
+        $query = $this->db->prepare('INSERT INTO records (domain_id, name, type, content, ttl, prio, change_date)
+                                    VALUES (:domainId, :name, :type, :content, :ttl, :prio, :changeDate)');
+        $query->bindValue(':domainId', $domain, \PDO::PARAM_INT);
+        $query->bindValue(':name', $name, \PDO::PARAM_STR);
+        $query->bindValue(':type', $type, \PDO::PARAM_STR);
+        $query->bindValue(':content', $content, \PDO::PARAM_STR);
+        $query->bindValue(':ttl', $ttl, \PDO::PARAM_INT);
+        $query->bindValue(':prio', $priority, \PDO::PARAM_INT);
+        $query->bindValue(':changeDate', time(), \PDO::PARAM_INT);
+        $query->execute();
+
+        $query = $this->db->prepare('SELECT id,name,type,content,prio AS priority,ttl,domain_id AS domain FROM records
+                                    ORDER BY id DESC LIMIT 1');
+        $query->execute();
+
+        $record = $query->fetch();
+
+        $record['id'] = intval($record['id']);
+        $record['priority'] = intval($record['priority']);
+        $record['ttl'] = intval($record['ttl']);
+        $record['domain'] = intval($record['domain']);
+
+        $this->db->commit();
+
+        return $record;
+    }
+
+    /**
+     * Delete record
+     * 
+     * @param   $id     Id of the record to delete
+     * 
+     * @return  void
+     * 
+     * @throws  NotFoundException   if record does not exist
+     */
+    public function deleteRecord(int $id) : void
+    {
+        $this->db->beginTransaction();
+
+        $query = $this->db->prepare('SELECT id FROM records WHERE id=:id');
+        $query->bindValue(':id', $id, \PDO::PARAM_INT);
+        $query->execute();
+
+        if ($query->fetch() === false) { //Domain does not exist
+            $this->db->rollBack();
+            throw new \Exceptions\NotFoundException();
+        }
+
+        $query = $this->db->prepare('DELETE FROM records WHERE id=:id');
+        $query->bindValue(':id', $id, \PDO::PARAM_INT);
+        $query->execute();
+    }
+
+    /**
+     * Get record
+     * 
+     * @param   $recordId   Name of the record
+     * 
+     * @return  array       Record entry
+     * 
+     * @throws  NotFoundException   if the record does not exist
+     */
+    public function getRecord(int $recordId) : array
+    {
+        $query = $this->db->prepare('SELECT id,name,type,content,prio AS priority,ttl,domain_id AS domain FROM records
+                                     WHERE id=:recordId');
+        $query->bindValue(':recordId', $recordId, \PDO::PARAM_INT);
+        $query->execute();
+
+        $record = $query->fetch();
+
+        if ($record === false) {
+            throw new \Exceptions\NotFoundException();
+        }
+
+        $record['id'] = intval($record['id']);
+        $record['priority'] = intval($record['priority']);
+        $record['ttl'] = intval($record['ttl']);
+        $record['domain'] = intval($record['domain']);
+
+        return $record;
+    }
+
+    /** Update Record
+     * 
+     * If params are null do not change
+     * 
+     * @param   $recordId   Record to update
+     * @param   $name       New name
+     * @param   $type       New type
+     * @param   $content    New content
+     * @param   $priority   New priority
+     * @param   $ttl        New ttl
+     * 
+     * @return  void
+     * 
+     * @throws  NotFoundException   The given record does not exist
+     * @throws  SemanticException   The given record type is invalid
+     */
+    public function updateRecord(int $recordId, ? string $name, ? string $type, ? string $content, ? int $priority, ? int $ttl)
+    {
+        $this->db->beginTransaction();
+
+        $query = $this->db->prepare('SELECT id,name,type,content,prio,ttl FROM records WHERE id=:recordId');
+        $query->bindValue(':recordId', $recordId);
+        $query->execute();
+
+        $record = $query->fetch();
+
+        if ($record === false) {
+            $this->db->rollBack();
+            throw new \Exceptions\NotFoundException();
+        }
+
+        if ($type !== null && !in_array($type, $this->c['config']['records']['allowedTypes'])) {
+            throw new \Exceptions\SemanticException();
+        }
+
+        $name = $name === null ? $record['name'] : $name;
+        $type = $type === null ? $record['type'] : $type;
+        $content = $content === null ? $record['content'] : $content;
+        $priority = $priority === null ? intval($record['prio']) : $priority;
+        $ttl = $ttl === null ? intval($record['ttl']) : $ttl;
+
+        $query = $this->db->prepare('UPDATE records SET name=:name,type=:type,content=:content,prio=:priority,ttl=:ttl');
+        $query->bindValue(':name', $name);
+        $query->bindValue(':type', $type);
+        $query->bindValue(':content', $content);
+        $query->bindValue(':priority', $priority);
+        $query->bindValue(':ttl', $ttl);
+        $query->execute();
+
+        $this->db->commit();
     }
 }

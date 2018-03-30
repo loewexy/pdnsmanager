@@ -37,6 +37,10 @@ $app->group('/v1', function () {
         $this->get('/domains/{domainId}/soa', '\Controllers\Domains:getSoa');
 
         $this->get('/records', '\Controllers\Records:getList');
+        $this->post('/records', '\Controllers\Records:postNew');
+        $this->delete('/records/{recordId}', '\Controllers\Records:delete');
+        $this->get('/records/{recordId}', '\Controllers\Records:getSingle');
+        $this->put('/records/{recordId}', '\Controllers\Records:put');
     })->add('\Middlewares\Authentication');
 });
 
