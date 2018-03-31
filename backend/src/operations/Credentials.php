@@ -146,4 +146,39 @@ class Credentials
 
         $this->db->commit();
     }
+
+    /**
+     * Get record
+     * 
+     * @param   $recordId       Id of the record
+     * @param   $credentialId   Id of the credential
+     * 
+     * @return  array       Credential entry
+     * 
+     * @throws  NotFoundException   if the credential does not exist
+     */
+    public function getCredential(int $recordId, int $credentialId) : array
+    {
+        $query = $this->db->prepare('SELECT id,description,type,security FROM remote
+                                     WHERE id=:credential AND record=:record');
+        $query->bindValue(':credential', $credentialId, \PDO::PARAM_INT);
+        $query->bindValue(':record', $recordId, \PDO::PARAM_INT);
+        $query->execute();
+
+        $record = $query->fetch();
+
+        if ($record === false) {
+            throw new \Exceptions\NotFoundException();
+        }
+
+        $record['id'] = intval($record['id']);
+        if ($record['type'] === 'key') {
+            $record['key'] = $record['security'];
+            unset($record['security']);
+        } else {
+            unset($record['security']);
+        }
+
+        return $record;
+    }
 }

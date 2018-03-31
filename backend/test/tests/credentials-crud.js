@@ -62,7 +62,7 @@ test.run(async function () {
 
         assert.equal(res.status, 400);
 
-        //Add key (key is intensionally very short but valid)
+        //Add key (key is intensionally very short but valid) and get it
         var res = await req({
             url: '/records/1/credentials',
             method: 'post',
@@ -81,7 +81,20 @@ test.run(async function () {
             key: '-----BEGIN PUBLIC KEY-----\nMDwwDQYJKoZIhvcNAQEBBQADKwAwKAIhAMOLSxmtlYxSkEKep11gjq200PTKVUaA\nyalonAKxw3XnAgMBAAE=\n-----END PUBLIC KEY-----'
         }, 'Adding credential data fail.');
 
-        //Add password
+        var res = await req({
+            url: '/records/1/credentials/4',
+            method: 'get'
+        });
+
+        assert.equal(res.status, 200, 'Added key should be found.');
+        assert.equal(res.data, {
+            id: 4,
+            description: 'Test Key',
+            type: 'key',
+            key: '-----BEGIN PUBLIC KEY-----\nMDwwDQYJKoZIhvcNAQEBBQADKwAwKAIhAMOLSxmtlYxSkEKep11gjq200PTKVUaA\nyalonAKxw3XnAgMBAAE=\n-----END PUBLIC KEY-----'
+        }, 'Added key does not match.');
+
+        //Add password and get it
         var res = await req({
             url: '/records/1/credentials',
             method: 'post',
@@ -98,6 +111,18 @@ test.run(async function () {
             description: 'Test Password',
             type: 'password',
         }, 'Adding credential data fail.');
+
+        var res = await req({
+            url: '/records/1/credentials/5',
+            method: 'get'
+        });
+
+        assert.equal(res.status, 200, 'Added key should be found.');
+        assert.equal(res.data, {
+            id: 5,
+            description: 'Test Password',
+            type: 'password',
+        }, 'Added password does not match.');
 
         //Delete entry
         var res = await req({

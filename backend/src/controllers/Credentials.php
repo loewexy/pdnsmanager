@@ -105,4 +105,28 @@ class Credentials
             return $res->withJson(['error' => 'No credential found for id ' . $credentialId], 404);
         }
     }
+
+    public function getSingle(Request $req, Response $res, array $args)
+    {
+        $userId = $req->getAttribute('userId');
+        $recordId = intval($args['recordId']);
+        $credentialId = intval($args['credentialId']);
+
+        $ac = new \Operations\AccessControl($this->c);
+        if (!$ac->canAccessRecord($userId, $recordId)) {
+            $this->logger->info('Non admin user tries to get credential without permission.');
+            return $res->withJson(['error' => 'You have no permissions for this record.'], 403);
+        }
+
+        $credentials = new \Operations\Credentials($this->c);
+
+        try {
+            $result = $credentials->getCredential($recordId, $credentialId);
+            $this->logger->debug('Get credential info', ['id' => $credentialId]);
+            return $res->withJson($result, 200);
+        } catch (\Exceptions\NotFoundException $e) {
+            $this->logger->debug('Credential info not found', ['id' => $credentialId, 'record' => $recordId]);
+            return $res->withJson(['error' => 'No matching credential found.'], 404);
+        }
+    }
 }
