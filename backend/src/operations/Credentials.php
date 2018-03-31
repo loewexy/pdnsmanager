@@ -65,4 +65,52 @@ class Credentials
             return $item;
         }, $data);
     }
+
+    /**
+     * Add a new credential
+     * 
+     * @param   $record         Record for which this credential should be valid
+     * @param   $description    Description for this credential
+     * @param   $type           Type of the credential, can bei key or password
+     * @param   $key            Key if type is key, null otherwise
+     * @param   $password       Password if type was password, null otherwise
+     * 
+     * @return  array           The new credential entry.
+     */
+    public function addCredential(int $record, string $description, string $type, ? string $key, ? string $password) : array
+    {
+        if ($type === 'key') {
+            if (openssl_pkey_get_public($key) === false) {
+                throw new \Exceptions\InvalidKeyException();
+            }
+            $secret = $key;
+        } elseif ($type === 'password') {
+            $secret = password_hash($password, PASSWORD_DEFAULT);
+        } else {
+            throw new \Exceptions\SemanticException();
+        }
+
+        $this->db->beginTransaction();
+
+        $query = $this->db->prepare('INSERT INTO remote (record, description, type, security) VALUES (:record, :description, :type, :security)');
+        $query->bindValue(':record', $record, \PDO::PARAM_INT);
+        $query->bindValue(':description', $description, \PDO::PARAM_STR);
+        $query->bindValue(':type', $type, \PDO::PARAM_STR);
+        $query->bindValue(':security', $secret, \PDO::PARAM_STR);
+        $query->execute();
+
+        $query = $this->db->prepare('SELECT id, description, type, security FROM remote ORDER BY id DESC LIMIT 1');
+        $query->execute();
+        $record = $query->fetch();
+
+        $record['id'] = intval($record['id']);
+        if ($record['type'] === 'key') {
+            $record['key'] = $record['security'];
+            unset($record['security']);
+        } else {
+            unset($record['security']);
+        }
+
+        return $record;
+    }
 }

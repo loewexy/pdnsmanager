@@ -43,6 +43,7 @@ $app->group('/v1', function () {
         $this->put('/records/{recordId}', '\Controllers\Records:put');
 
         $this->get('/records/{recordId}/credentials', '\Controllers\Credentials:getList');
+        $this->post('/records/{recordId}/credentials', '\Controllers\Credentials:postNew');
     })->add('\Middlewares\Authentication');
 });
 
