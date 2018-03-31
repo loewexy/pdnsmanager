@@ -3,11 +3,10 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Mar 24, 2018 at 01:13 PM
+-- Generation Time: Mar 31, 2018 at 12:51 PM
 -- Server version: 5.7.21-0ubuntu0.16.04.1
 -- PHP Version: 7.0.28-0ubuntu0.16.04.1
 
-SET FOREIGN_KEY_CHECKS=0;
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
@@ -16,6 +15,10 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Database: `pdnsnew`
+--
 
 -- --------------------------------------------------------
 
@@ -145,6 +148,31 @@ INSERT INTO `records` (`id`, `domain_id`, `name`, `type`, `content`, `ttl`, `pri
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `remote`
+--
+
+DROP TABLE IF EXISTS `remote`;
+CREATE TABLE `remote` (
+  `id` int(11) NOT NULL,
+  `record` int(11) NOT NULL,
+  `description` varchar(255) NOT NULL,
+  `type` varchar(20) NOT NULL,
+  `security` varchar(2000) NOT NULL,
+  `nonce` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `remote`
+--
+
+INSERT INTO `remote` (`id`, `record`, `description`, `type`, `security`, `nonce`) VALUES
+(1, 1, 'Password Test', 'password', '$2y$10$5Gxh6yus9yi/FHpKD4k8Zez.OAhGZoa7JgwOWZ059/kDyBP3vI9aK', NULL),
+(2, 4, 'Key Test', 'key', '-----BEGIN PUBLIC KEY-----\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA5mu3aH90uSXY9sVLgVSz\nKj4FEctrpFDPyVC4ufbJa/44fuLABFe+IizgZUheNBBO7FjpLJYvsL24o6TEeht4\no5j0KHrRHXqp4WQuAL3ZREv/AhNaOC9/xyjoGwUkKkdC2bIfh0J/ACkezxvUrPsh\nbzhzY+co/M9PqlgTbjKjvlv/pRj2dSp98FzUme3HCh7Nn1EOM3yPMtaKNA9Qkkz1\noalfR3xmJjIanoS9zcK77/yyQ8VwI//CgxvnpnWbORZG0B9W2ZBoI8Bj4zprbbFG\nKNmrb403wfDijYF3MXpSMjKvJ5YVuZsn35EWIi5tqFc0oV7Ryy9nBHzKeoYN7Szs\nrXIS5+ZcQDLuN+pqJ7ByVaw4aVn85py8IdO0IYD5xeKd1i0iqm+KSoFTS1jiNSZu\n6iVl4odixWtW7oPLYBbd/vD2F7Ua5cLd12Rs+6kEVtlpnIf7txyFQL4QHYJxB7fI\ny+m70mfufVvKbFh/mHkhe+Arv71ERDMfAV3AD8++axLqYfU/LLFzanjwIBctAA9a\nj++G0lwl1adURwnBeq8+YrMU4/wg9efquKXLR40dU9nkMJOm5tPm+XHt4o3wio4X\n2FqnD57I7qJCWVc00HtpeWno5vHL+eJu0TdxjBuYXnQfwa1z9pWvGaoBtg7tyHgv\ng7YZJzF1MW5N9ZqnkdFJVEsCAwEAAQ==\n-----END PUBLIC KEY-----', NULL),
+(3, 1, 'Key Test 2', 'key', '-----BEGIN PUBLIC KEY-----\r\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA5mu3aH90uSXY9sVLgVSz\r\nKj4FEctrpFDPyVC4ufbJa/44fuLABFe+IizgZUheNBBO7FjpLJYvsL24o6TEeht4\r\no5j0KHrRHXqp4WQuAL3ZREv/AhNaOC9/xyjoGwUkKkdC2bIfh0J/ACkezxvUrPsh\r\nbzhzY+co/M9PqlgTbjKjvlv/pRj2dSp98FzUme3HCh7Nn1EOM3yPMtaKNA9Qkkz1\r\noalfR3xmJjIanoS9zcK77/yyQ8VwI//CgxvnpnWbORZG0B9W2ZBoI8Bj4zprbbFG\r\nKNmrb403wfDijYF3MXpSMjKvJ5YVuZsn35EWIi5tqFc0oV7Ryy9nBHzKeoYN7Szs\r\nrXIS5+ZcQDLuN+pqJ7ByVaw4aVn85py8IdO0IYD5xeKd1i0iqm+KSoFTS1jiNSZu\r\n6iVl4odixWtW7oPLYBbd/vD2F7Ua5cLd12Rs+6kEVtlpnIf7txyFQL4QHYJxB7fI\r\ny+m70mfufVvKbFh/mHkhe+Arv71ERDMfAV3AD8++axLqYfU/LLFzanjwIBctAA9a\r\nj++G0lwl1adURwnBeq8+YrMU4/wg9efquKXLR40dU9nkMJOm5tPm+XHt4o3wio4X\r\n2FqnD57I7qJCWVc00HtpeWno5vHL+eJu0TdxjBuYXnQfwa1z9pWvGaoBtg7tyHgv\r\ng7YZJzF1MW5N9ZqnkdFJVEsCAwEAAQ==\r\n-----END PUBLIC KEY-----', NULL);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `supermasters`
 --
 
@@ -229,7 +257,7 @@ ALTER TABLE `domains`
 -- Indexes for table `permissions`
 --
 ALTER TABLE `permissions`
-  ADD PRIMARY KEY (`user_id`, `domain_id`);
+  ADD PRIMARY KEY (`user_id`,`domain_id`);
 
 --
 -- Indexes for table `records`
@@ -239,6 +267,12 @@ ALTER TABLE `records`
   ADD KEY `nametype_index` (`name`,`type`),
   ADD KEY `domain_id` (`domain_id`),
   ADD KEY `ordername` (`ordername`);
+
+--
+-- Indexes for table `remote`
+--
+ALTER TABLE `remote`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `supermasters`
@@ -289,6 +323,11 @@ ALTER TABLE `domains`
 ALTER TABLE `records`
   MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
+-- AUTO_INCREMENT for table `remote`
+--
+ALTER TABLE `remote`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+--
 -- AUTO_INCREMENT for table `tsigkeys`
 --
 ALTER TABLE `tsigkeys`
@@ -297,8 +336,7 @@ ALTER TABLE `tsigkeys`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;SET FOREIGN_KEY_CHECKS=1;
-
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
