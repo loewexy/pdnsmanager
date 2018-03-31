@@ -44,6 +44,7 @@ $app->group('/v1', function () {
 
         $this->get('/records/{recordId}/credentials', '\Controllers\Credentials:getList');
         $this->post('/records/{recordId}/credentials', '\Controllers\Credentials:postNew');
+        $this->delete('/records/{recordId}/credentials/{credentialId}', '\Controllers\Credentials:delete');
     })->add('\Middlewares\Authentication');
 });
 

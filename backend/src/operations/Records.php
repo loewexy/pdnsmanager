@@ -214,6 +214,8 @@ class Records
         $query = $this->db->prepare('DELETE FROM records WHERE id=:id');
         $query->bindValue(':id', $id, \PDO::PARAM_INT);
         $query->execute();
+
+        $this->db->commit();
     }
 
     /**

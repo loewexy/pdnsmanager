@@ -194,6 +194,8 @@ class Domains
         $query = $this->db->prepare('DELETE FROM records WHERE domain_id=:id');
         $query->bindValue(':id', $id, \PDO::PARAM_INT);
         $query->execute();
+
+        $this->db->commit();
     }
 
     /**

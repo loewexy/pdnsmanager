@@ -205,11 +205,11 @@ test.run(async function () {
 
         //Delete existing domain
         var res = await req({
-            url: '/domains/1',
+            url: '/domains/8',
             method: 'delete'
         });
 
-        assert.equal(res.status, 204, 'Deletion of domain 1 should be successfull.');
+        assert.equal(res.status, 204, 'Deletion of domain 8 should be successfull.');
     });
 
     await test('user', async function (assert, req) {

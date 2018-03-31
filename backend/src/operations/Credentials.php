@@ -111,6 +111,39 @@ class Credentials
             unset($record['security']);
         }
 
+        $this->db->commit();
+
         return $record;
+    }
+
+    /**
+     * Delete credential
+     * 
+     * @param   $recordId       Id of the record
+     * @param   $credentialId   Id of the credential to delete
+     * 
+     * @return  void
+     * 
+     * @throws  NotFoundException   if credential does not exist
+     */
+    public function deleteCredential(int $recordId, int $credentialId) : void
+    {
+        $this->db->beginTransaction();
+
+        $query = $this->db->prepare('SELECT id FROM remote WHERE id=:id AND record=:record');
+        $query->bindValue(':id', $credentialId, \PDO::PARAM_INT);
+        $query->bindValue(':record', $recordId, \PDO::PARAM_INT);
+        $query->execute();
+
+        if ($query->fetch() === false) { //Credential does not exist
+            $this->db->rollBack();
+            throw new \Exceptions\NotFoundException();
+        }
+
+        $query = $this->db->prepare('DELETE FROM remote WHERE id=:id');
+        $query->bindValue(':id', $id, \PDO::PARAM_INT);
+        $query->execute();
+
+        $this->db->commit();
     }
 }

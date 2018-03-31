@@ -81,4 +81,28 @@ class Credentials
             return $res->withJson(['error' => 'The provided key is invalid.'], 400);
         }
     }
+
+    public function delete(Request $req, Response $res, array $args)
+    {
+        $userId = $req->getAttribute('userId');
+        $recordId = intval($args['recordId']);
+        $credentialId = intval($args['credentialId']);
+
+        $ac = new \Operations\AccessControl($this->c);
+        if (!$ac->canAccessRecord($userId, $recordId)) {
+            $this->logger->info('User tries to delete credential without permissions.');
+            return $res->withJson(['error' => 'You have no permission for this record'], 403);
+        }
+
+        $credentials = new \Operations\Credentials($this->c);
+
+        try {
+            $credentials->deleteCredential($recordId, $credentialId);
+
+            $this->logger->info('Deleted credential', ['id' => $credentialId]);
+            return $res->withStatus(204);
+        } catch (\Exceptions\NotFoundException $e) {
+            return $res->withJson(['error' => 'No credential found for id ' . $credentialId], 404);
+        }
+    }
 }

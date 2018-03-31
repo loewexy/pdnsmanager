@@ -99,6 +99,29 @@ test.run(async function () {
             type: 'password',
         }, 'Adding credential data fail.');
 
+        //Delete entry
+        var res = await req({
+            url: '/records/1/credentials/4',
+            method: 'delete'
+        });
+
+        assert.equal(res.status, 204, 'Deletion of entry should succeed.');
+
+        //Delete not existing entry
+        var res = await req({
+            url: '/records/1/credentials/100',
+            method: 'delete'
+        });
+
+        assert.equal(res.status, 404, 'Deletion of not existing entry should fail.');
+
+        //Delete entry via wrong record
+        var res = await req({
+            url: '/records/4/credentials/5',
+            method: 'delete'
+        });
+
+        assert.equal(res.status, 404, 'Deletion of entry via wrong record should fail.');
 
     });
 
@@ -133,5 +156,21 @@ test.run(async function () {
             description: 'Test Password',
             type: 'password',
         }, 'Adding credential data fail.');
+
+        //Delete entry
+        var res = await req({
+            url: '/records/1/credentials/6',
+            method: 'delete'
+        });
+
+        assert.equal(res.status, 204, 'Deletion of entry should succeed for user.');
+
+        //Delete entry without permission
+        var res = await req({
+            url: '/records/4/credentials/2',
+            method: 'delete'
+        });
+
+        assert.equal(res.status, 403, 'Deletion of entry without permission should fail.');
     });
 });
