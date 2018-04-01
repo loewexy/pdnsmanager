@@ -2,6 +2,8 @@
 
 namespace Operations;
 
+use function Monolog\Handler\error_log;
+
 require '../vendor/autoload.php';
 
 /**
@@ -178,6 +180,62 @@ class Credentials
         } else {
             unset($record['security']);
         }
+
+        return $record;
+    }
+
+    /**
+     * Add a new credential
+     * 
+     * @param   $record         Record for which this credential should be valid
+     * @param   $credential     Credential to update
+     * @param   $description    Description for this credential
+     * @param   $type           Type of the credential, can bei key or password
+     * @param   $key            Key if type is key, null otherwise
+     * @param   $password       Password if type was password, null otherwise
+     * 
+     * @return  array           The new credential entry.
+     */
+    public function updateCredential(int $record, int $credential, ? string $description, ? string $type, ? string $key, ? string $password) : array
+    {
+        if ($type === 'key') {
+            if (openssl_pkey_get_public($key) === false) {
+                throw new \Exceptions\InvalidKeyException();
+            }
+            $secret = $key;
+        } elseif ($type === 'password') {
+            $secret = password_hash($password, PASSWORD_DEFAULT);
+        } elseif ($type === null) {
+            $secret = null;
+        } else {
+            throw new \Exceptions\SemanticException();
+        }
+
+        $this->db->beginTransaction();
+
+        $query = $this->db->prepare('SELECT id,record,description,type,security FROM remote WHERE id=:id AND record=:record');
+        $query->bindValue(':id', $credential, \PDO::PARAM_INT);
+        $query->bindValue(':record', $record, \PDO::PARAM_INT);
+        $query->execute();
+
+        $record = $query->fetch();
+
+        if ($record === false) {
+            $this->db->rollBack();
+            throw new \Exceptions\NotFoundException();
+        }
+
+        $description = $description !== null ? $description : $record['description'];
+        $type = $type !== null ? $type : $record['type'];
+        $secret = $secret !== null ? $secret : $record['security'];
+
+        $query = $this->db->prepare('UPDATE remote SET description=:description,type=:type,security=:security');
+        $query->bindValue(':description', $description);
+        $query->bindValue(':type', $type);
+        $query->bindValue(':security', $secret);
+        $query->execute();
+
+        $this->db->commit();
 
         return $record;
     }

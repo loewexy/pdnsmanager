@@ -129,4 +129,46 @@ class Credentials
             return $res->withJson(['error' => 'No matching credential found.'], 404);
         }
     }
+
+    public function put(Request $req, Response $res, array $args)
+    {
+        $body = $req->getParsedBody();
+
+        if ((array_key_exists('type', $body) && $body['type'] === 'key' && !array_key_exists('key', $body))
+            || (array_key_exists('type', $body) && $body['type'] === 'password' && !array_key_exists('password', $body))) {
+            $this->logger->debug('One of the required fields is missing');
+            return $res->withJson(['error' => 'One of the required fields is missing'], 422);
+        }
+
+        $userId = $req->getAttribute('userId');
+        $recordId = intval($args['recordId']);
+        $credentialId = intval($args['credentialId']);
+
+        $ac = new \Operations\AccessControl($this->c);
+        if (!$ac->canAccessRecord($userId, $recordId)) {
+            $this->logger->info('User tries to update credential for record without permission.');
+            return $res->withJson(['error' => 'You have no permissions for the given record.'], 403);
+        }
+
+        $credentials = new \Operations\Credentials($this->c);
+
+        $key = array_key_exists('key', $body) ? $body['key'] : null;
+        $password = array_key_exists('password', $body) ? $body['password'] : null;
+        $description = array_key_exists('description', $body) ? $body['description'] : null;
+        $type = array_key_exists('type', $body) ? $body['type'] : null;
+
+        try {
+            $credentials->updateCredential($recordId, $credentialId, $description, $type, $key, $password);
+            return $res->withStatus(204);
+        } catch (\Exceptions\SemanticException $e) {
+            $this->logger->debug('User tries to update credential with wrong type.');
+            return $res->withJson(['error' => 'The type is invalid.'], 400);
+        } catch (\Exceptions\InvalidKeyException $e) {
+            $this->logger->debug('User tries to update invalid credential key.');
+            return $res->withJson(['error' => 'The provided key is invalid.'], 400);
+        } catch (\Exceptions\NotFoundException $e) {
+            $this->logger->debug('User tries to update not existent credential.');
+            return $res->withJson(['error' => 'The provided credential does not exist.'], 404);
+        }
+    }
 }

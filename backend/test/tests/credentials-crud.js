@@ -124,6 +124,104 @@ test.run(async function () {
             type: 'password',
         }, 'Added password does not match.');
 
+        //Update credential
+        var res = await req({
+            url: '/records/1/credentials/4',
+            method: 'put',
+            data: {
+                type: 'key',
+                key: '-----BEGIN PUBLIC KEY-----\nMDwwDQYJKoZIhvcNAQEBBQADKwAwKAIhAMTyWha8C93l2NAPMkLPZ2WnbkqWXOnH\no3RenmVJHn1tAgMBAAE=\n-----END PUBLIC KEY-----'
+            }
+        });
+
+        assert.equal(res.status, 204, 'Updating record should succeed.');
+
+        var res = await req({
+            url: '/records/1/credentials/4',
+            method: 'get'
+        });
+
+        assert.equal(res.status, 200, 'Updated credential should be found.');
+        assert.equal(res.data, {
+            id: 4,
+            description: 'Test Key',
+            type: 'key',
+            key: '-----BEGIN PUBLIC KEY-----\nMDwwDQYJKoZIhvcNAQEBBQADKwAwKAIhAMTyWha8C93l2NAPMkLPZ2WnbkqWXOnH\no3RenmVJHn1tAgMBAAE=\n-----END PUBLIC KEY-----'
+        }, 'Updated key does not match.');
+
+        // Change type to password
+        var res = await req({
+            url: '/records/1/credentials/4',
+            method: 'put',
+            data: {
+                description: 'Foo Bar',
+                type: 'password',
+                password: 'foo'
+            }
+        });
+
+        assert.equal(res.status, 204, 'Updating record should succeed.');
+
+        var res = await req({
+            url: '/records/1/credentials/4',
+            method: 'get'
+        });
+
+        assert.equal(res.status, 200, 'Updated credential should be found.');
+        assert.equal(res.data, {
+            id: 4,
+            description: 'Foo Bar',
+            type: 'password'
+        }, 'Added key does not match.');
+
+        //Test update fails
+        var res = await req({
+            url: '/records/1/credentials/4',
+            method: 'put',
+            data: {
+                type: 'foo'
+            }
+        });
+        assert.equal(res.status, 400, 'Invalid type should trigger error.');
+
+        var res = await req({
+            url: '/records/1/credentials/4',
+            method: 'put',
+            data: {
+                type: 'key',
+                key: 'foo'
+            }
+        });
+        assert.equal(res.status, 400, 'Invalid key should trigger error.');
+
+        var res = await req({
+            url: '/records/1/credentials/4',
+            method: 'put',
+            data: {
+                type: 'key'
+            }
+        });
+        assert.equal(res.status, 422, 'Missing key should trigger error.');
+
+        var res = await req({
+            url: '/records/1/credentials/4',
+            method: 'put',
+            data: {
+                type: 'password'
+            }
+        });
+        assert.equal(res.status, 422, 'Missing password should trigger error.');
+
+        var res = await req({
+            url: '/records/1/credentials/100',
+            method: 'put',
+            data: {
+                description: 'foo'
+            }
+        });
+        assert.equal(res.status, 404, 'Invalid credential should trigger error.');
+
+
         //Delete entry
         var res = await req({
             url: '/records/1/credentials/4',
