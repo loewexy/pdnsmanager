@@ -66,7 +66,21 @@ test.run(async function () {
 
         assert.equal(res.status, 204, 'Add of permission should succeed for not existing permission.');
 
+        // Revoke the new permission
+        var res = await req({
+            url: '/users/2/permissions/3',
+            method: 'delete'
+        });
 
+        assert.equal(res.status, 204, 'Revoking should succeed');
+
+        // Revoke the new permission again
+        var res = await req({
+            url: '/users/2/permissions/3',
+            method: 'delete'
+        });
+
+        assert.equal(res.status, 404, 'Second revocation of the same permission should fail');
     });
 
     await test('user', async function (assert, req) {
@@ -86,5 +100,12 @@ test.run(async function () {
         });
 
         assert.equal(res.status, 403, 'Add of permission should fail for user.');
+
+        var res = await req({
+            url: '/users/2/permissions/1',
+            method: 'delete'
+        });
+
+        assert.equal(res.status, 403, 'Revoke of permission should fail for user.');
     });
 });

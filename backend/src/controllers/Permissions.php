@@ -70,4 +70,27 @@ class Permissions
             return $res->withJson(['error' => 'Either domain or user were not found'], 404);
         }
     }
+
+    public function delete(Request $req, Response $res, array $args)
+    {
+        $ac = new \Operations\AccessControl($this->c);
+        if (!$ac->isAdmin($req->getAttribute('userId'))) {
+            $this->logger->info('Non admin user tries to add permissions');
+            return $res->withJson(['error' => 'You must be admin to use this feature'], 403);
+        }
+
+        $user = intval($args['user']);
+        $domainId = intval($args['domainId']);
+
+        $permissions = new \Operations\Permissions($this->c);
+
+        try {
+            $permissions->deletePermission($user, $domainId);
+
+            $this->logger->info('Permission was removed:', ['by' => $req->getAttribute('userId'), 'user' => $user, 'domain' => $domainId]);
+            return $res->withStatus(204);
+        } catch (\Exceptions\NotFoundException $e) {
+            return $res->withJson(['error' => 'Either domain or user were not found'], 404);
+        }
+    }
 }

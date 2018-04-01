@@ -73,6 +73,8 @@ class Permissions
      * @param   $domainId   Domain for which access should be granted
      * 
      * @return  void
+     * 
+     * @throws  NotFoundException If domain or user was not found
      */
     public function addPermission(int $userId, int $domainId) : void
     {
@@ -104,6 +106,37 @@ class Permissions
             $query->bindValue(':userId', $userId, \PDO::PARAM_INT);
             $query->execute();
         }
+
+        $this->db->commit();
+    }
+
+    /**
+     * Delete a permission
+     * 
+     * @param   $userId     User id
+     * @param   $domainId   Domain for which access should be revoked
+     * 
+     * @return  void
+     * 
+     * @throws  NotFoundException   if the entry was not found
+     */
+    public function deletePermission(int $userId, int $domainId) : void
+    {
+        $this->db->beginTransaction();
+
+        $query = $this->db->prepare('SELECT * FROM permissions WHERE domain_id=:domainId AND user_id=:userId');
+        $query->bindValue(':domainId', $domainId, \PDO::PARAM_INT);
+        $query->bindValue(':userId', $userId, \PDO::PARAM_INT);
+        $query->execute();
+        if ($query->fetch() === false) {
+            $this->db->rollBack();
+            throw new \Exceptions\NotFoundException();
+        }
+
+        $query = $this->db->prepare('DELETE FROM permissions WHERE domain_id=:domainId AND user_id=:userId');
+        $query->bindValue(':domainId', $domainId, \PDO::PARAM_INT);
+        $query->bindValue(':userId', $userId, \PDO::PARAM_INT);
+        $query->execute();
 
         $this->db->commit();
     }

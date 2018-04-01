@@ -50,6 +50,7 @@ $app->group('/v1', function () {
 
         $this->get('/users/{user}/permissions', '\Controllers\Permissions:getList');
         $this->post('/users/{user}/permissions', '\Controllers\Permissions:postNew');
+        $this->delete('/users/{user}/permissions/{domainId}', '\Controllers\Permissions:delete');
     })->add('\Middlewares\Authentication');
 });
 
