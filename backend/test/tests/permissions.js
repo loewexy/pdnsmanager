@@ -33,6 +33,39 @@ test.run(async function () {
             }
         ], 'Get permissions result fail');
 
+        //Add permission with missing field
+        var res = await req({
+            url: '/users/2/permissions',
+            method: 'post',
+            data: {
+                foo: 100
+            }
+        });
+
+        assert.equal(res.status, 422, 'Add of permission should fail for missing field.');
+
+        //Add permission which exists
+        var res = await req({
+            url: '/users/2/permissions',
+            method: 'post',
+            data: {
+                domainId: 1
+            }
+        });
+
+        assert.equal(res.status, 204, 'Add of permission should succeed for existing permission.');
+
+        //Add permission which does not exist
+        var res = await req({
+            url: '/users/2/permissions',
+            method: 'post',
+            data: {
+                domainId: 3
+            }
+        });
+
+        assert.equal(res.status, 204, 'Add of permission should succeed for not existing permission.');
+
 
     });
 
@@ -43,5 +76,15 @@ test.run(async function () {
         });
 
         assert.equal(res.status, 403, 'Get of permissions should fail for user.');
+
+        var res = await req({
+            url: '/users/2/permissions',
+            method: 'post',
+            data: {
+                domainId: 100
+            }
+        });
+
+        assert.equal(res.status, 403, 'Add of permission should fail for user.');
     });
 });

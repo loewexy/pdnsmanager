@@ -65,4 +65,46 @@ class Permissions
 
         return $data;
     }
+
+    /**
+     * Add a new permission
+     * 
+     * @param   $userId     User id
+     * @param   $domainId   Domain for which access should be granted
+     * 
+     * @return  void
+     */
+    public function addPermission(int $userId, int $domainId) : void
+    {
+        $this->db->beginTransaction();
+
+        $query = $this->db->prepare('SELECT id FROM users WHERE id=:userId');
+        $query->bindValue(':userId', $userId, \PDO::PARAM_INT);
+        $query->execute();
+        if ($query->fetch() === false) {
+            $this->db->rollBack();
+            throw new \Exceptions\NotFoundException();
+        }
+
+        $query = $this->db->prepare('SELECT id FROM domains WHERE id=:domainId');
+        $query->bindValue(':domainId', $domainId, \PDO::PARAM_INT);
+        $query->execute();
+        if ($query->fetch() === false) {
+            $this->db->rollBack();
+            throw new \Exceptions\NotFoundException();
+        }
+
+        $query = $this->db->prepare('SELECT * FROM permissions WHERE domain_id=:domainId AND user_id=:userId');
+        $query->bindValue(':domainId', $domainId, \PDO::PARAM_INT);
+        $query->bindValue(':userId', $userId, \PDO::PARAM_INT);
+        $query->execute();
+        if ($query->fetch() === false) {
+            $query = $this->db->prepare('INSERT INTO permissions (domain_id,user_id) VALUES (:domainId, :userId)');
+            $query->bindValue(':domainId', $domainId, \PDO::PARAM_INT);
+            $query->bindValue(':userId', $userId, \PDO::PARAM_INT);
+            $query->execute();
+        }
+
+        $this->db->commit();
+    }
 }

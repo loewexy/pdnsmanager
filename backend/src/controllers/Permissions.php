@@ -41,4 +41,33 @@ class Permissions
             'results' => $results
         ], 200);
     }
+
+    public function postNew(Request $req, Response $res, array $args)
+    {
+        $ac = new \Operations\AccessControl($this->c);
+        if (!$ac->isAdmin($req->getAttribute('userId'))) {
+            $this->logger->info('Non admin user tries to add permissions');
+            return $res->withJson(['error' => 'You must be admin to use this feature'], 403);
+        }
+
+        $body = $req->getParsedBody();
+
+        if (!array_key_exists('domainId', $body)) {
+            $this->logger->debug('One of the required fields is missing');
+            return $res->withJson(['error' => 'One of the required fields is missing'], 422);
+        }
+
+        $user = intval($args['user']);
+
+        $permissions = new \Operations\Permissions($this->c);
+
+        try {
+            $permissions->addPermission($user, $body['domainId']);
+
+            $this->logger->info('Permission was added:', ['by' => $req->getAttribute('userId'), 'user' => $user, 'domain' => $body['domainId']]);
+            return $res->withStatus(204);
+        } catch (\Exceptions\NotFoundException $e) {
+            return $res->withJson(['error' => 'Either domain or user were not found'], 404);
+        }
+    }
 }

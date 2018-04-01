@@ -49,6 +49,7 @@ $app->group('/v1', function () {
         $this->put('/records/{recordId}/credentials/{credentialId}', '\Controllers\Credentials:put');
 
         $this->get('/users/{user}/permissions', '\Controllers\Permissions:getList');
+        $this->post('/users/{user}/permissions', '\Controllers\Permissions:postNew');
     })->add('\Middlewares\Authentication');
 });
 
