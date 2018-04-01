@@ -47,6 +47,8 @@ $app->group('/v1', function () {
         $this->delete('/records/{recordId}/credentials/{credentialId}', '\Controllers\Credentials:delete');
         $this->get('/records/{recordId}/credentials/{credentialId}', '\Controllers\Credentials:getSingle');
         $this->put('/records/{recordId}/credentials/{credentialId}', '\Controllers\Credentials:put');
+
+        $this->get('/users/{user}/permissions', '\Controllers\Permissions:getList');
     })->add('\Middlewares\Authentication');
 });
 
