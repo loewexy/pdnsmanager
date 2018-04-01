@@ -143,7 +143,7 @@ class Credentials
         }
 
         $query = $this->db->prepare('DELETE FROM remote WHERE id=:id');
-        $query->bindValue(':id', $id, \PDO::PARAM_INT);
+        $query->bindValue(':id', $credentialId, \PDO::PARAM_INT);
         $query->execute();
 
         $this->db->commit();

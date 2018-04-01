@@ -72,7 +72,7 @@ class Records
             $this->logger->debug('User tries to add record for invalid domain.');
             return $res->withJson(['error' => 'The domain does not exist or is neighter MASTER nor NATIVE.'], 404);
         } catch (\Exceptions\SemanticException $e) {
-            $this->logger->debug('User tries to add record with invalid type.', ['type' => $type]);
+            $this->logger->debug('User tries to add record with invalid type.', ['type' => $body['type']]);
             return $res->withJson(['error' => 'The provided type is invalid.'], 400);
         }
     }
@@ -118,7 +118,7 @@ class Records
             $this->logger->debug('Get record info', ['id' => $recordId]);
             return $res->withJson($result, 200);
         } catch (\Exceptions\NotFoundException $e) {
-            return $res->withJson(['error' => 'No record found for id ' . $domainId], 404);
+            return $res->withJson(['error' => 'No record found for id ' . $recordId], 404);
         }
     }
 
