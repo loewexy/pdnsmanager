@@ -98,6 +98,14 @@ class Credentials
 
         $this->db->beginTransaction();
 
+        $query = $this->db->prepare('SELECT id FROM records WHERE id=:recordId');
+        $query->bindValue(':recordId', $record, \PDO::PARAM_INT);
+        $query->execute();
+        if ($query->fetch() === false) {
+            $this->db->rollBack();
+            throw new \Exceptions\NotFoundException();
+        }
+
         $query = $this->db->prepare('INSERT INTO remote (record, description, type, security) VALUES (:record, :description, :type, :security)');
         $query->bindValue(':record', $record, \PDO::PARAM_INT);
         $query->bindValue(':description', $description, \PDO::PARAM_STR);

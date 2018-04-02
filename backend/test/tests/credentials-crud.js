@@ -62,6 +62,19 @@ test.run(async function () {
 
         assert.equal(res.status, 400);
 
+        //Test invalid record
+        var res = await req({
+            url: '/records/100/credentials',
+            method: 'post',
+            data: {
+                description: 'Test',
+                type: 'password',
+                password: 'foo'
+            }
+        });
+
+        assert.equal(res.status, 404, 'Not existent record should trigger error.');
+
         //Add key (key is intensionally very short but valid) and get it
         var res = await req({
             url: '/records/1/credentials',

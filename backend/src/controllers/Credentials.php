@@ -79,6 +79,9 @@ class Credentials
         } catch (\Exceptions\InvalidKeyException $e) {
             $this->logger->debug('User tries to add invalid credential key.');
             return $res->withJson(['error' => 'The provided key is invalid.'], 400);
+        } catch (\Exceptions\NotFoundException $e) {
+            $this->logger->debug('User tries to add credential for not existing record.');
+            return $res->withJson(['error' => 'The provided record does not exist.'], 404);
         }
     }
 
