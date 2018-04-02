@@ -191,11 +191,18 @@ class Domains
             throw new \Exceptions\NotFoundException();
         }
 
-        $query = $this->db->prepare('DELETE FROM domains WHERE id=:id');
+        $query = $this->db->prepare('
+            DELETE E FROM remote E
+            LEFT OUTER JOIN records R ON R.id=E.record
+            WHERE R.domain_id=:id');
         $query->bindValue(':id', $id, \PDO::PARAM_INT);
         $query->execute();
 
         $query = $this->db->prepare('DELETE FROM records WHERE domain_id=:id');
+        $query->bindValue(':id', $id, \PDO::PARAM_INT);
+        $query->execute();
+
+        $query = $this->db->prepare('DELETE FROM domains WHERE id=:id');
         $query->bindValue(':id', $id, \PDO::PARAM_INT);
         $query->execute();
 

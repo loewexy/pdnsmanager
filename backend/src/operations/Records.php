@@ -215,6 +215,10 @@ class Records
             throw new \Exceptions\NotFoundException();
         }
 
+        $query = $this->db->prepare('DELETE FROM remote WHERE record=:id');
+        $query->bindValue(':id', $id, \PDO::PARAM_INT);
+        $query->execute();
+
         $query = $this->db->prepare('DELETE FROM records WHERE id=:id');
         $query->bindValue(':id', $id, \PDO::PARAM_INT);
         $query->execute();
