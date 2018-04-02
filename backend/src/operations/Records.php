@@ -49,6 +49,8 @@ class Records
         ? string $queryContent,
         ? string $sort
     ) : array {
+        $this->db->beginTransaction();
+
         $ac = new \Operations\AccessControl($this->c);
         $userIsAdmin = $ac->isAdmin($userId);
 
@@ -118,6 +120,8 @@ class Records
         $query->execute();
 
         $data = $query->fetchAll();
+
+        $this->db->commit();
 
         return array_map(function ($item) {
             $item['id'] = intval($item['id']);

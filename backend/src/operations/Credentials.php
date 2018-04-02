@@ -37,6 +37,8 @@ class Credentials
      */
     public function getCredentials(\Utils\PagingInfo &$pi, int $recordId) : array
     {
+        $this->db->beginTransaction();
+
         //Count elements
         if ($pi->pageSize === null) {
             $pi->totalPages = 1;
@@ -61,6 +63,8 @@ class Credentials
         $query->execute();
 
         $data = $query->fetchAll();
+
+        $this->db->commit();
 
         return array_map(function ($item) {
             $item['id'] = intval($item['id']);

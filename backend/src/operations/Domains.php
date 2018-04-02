@@ -38,6 +38,8 @@ class Domains
      */
     public function getDomains(\Utils\PagingInfo &$pi, int $userId, ? string $query, ? string $sorting, ? string $type) : array
     {
+        $this->db->beginTransaction();
+
         $ac = new \Operations\AccessControl($this->c);
         $userIsAdmin = $ac->isAdmin($userId);
 
@@ -98,6 +100,8 @@ class Domains
         $query->execute();
 
         $data = $query->fetchAll();
+
+        $this->db->commit();
 
         return array_map(function ($item) {
             if ($item['type'] != 'SLAVE') {

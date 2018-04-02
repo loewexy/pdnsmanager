@@ -35,6 +35,8 @@ class Permissions
      */
     public function getPermissions(\Utils\PagingInfo &$pi, int $userId) : array
     {
+        $this->db->beginTransaction();
+
         //Count elements
         if ($pi->pageSize === null) {
             $pi->totalPages = 1;
@@ -62,6 +64,8 @@ class Permissions
         $query->execute();
 
         $data = $query->fetchAll();
+
+        $this->db->commit();
 
         return $data;
     }
