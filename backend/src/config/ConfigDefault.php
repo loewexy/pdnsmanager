@@ -18,8 +18,9 @@ $defaultConfig = [
         'config' => null
     ],
     'authentication' => [
-        'default' => [
+        'native' => [
             'plugin' => 'native',
+            'prefix' => 'default',
             'config' => null
         ]
     ],

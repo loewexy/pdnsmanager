@@ -5,16 +5,21 @@ namespace Plugins\UserAuth;
 require '../vendor/autoload.php';
 
 /**
- * This provides the native authentication done in the
- * PDNSManager database.
+ * This provides a simple user auth mechanism where users can be
+ * stored in the config file. The config property therefore should
+ * be a array mapping usernames to results of password_hash()
  */
-class Native implements InterfaceUserAuth
+
+class Config implements InterfaceUserAuth
 {
     /** @var \Monolog\Logger */
     private $logger;
 
     /** @var \PDO */
     private $db;
+
+    /** @var array */
+    private $userList;
 
     /**
      * Construct the object
@@ -27,6 +32,7 @@ class Native implements InterfaceUserAuth
     {
         $this->logger = $logger;
         $this->db = $db;
+        $this->userList = $config ? $config : [];
     }
 
     /**
@@ -39,16 +45,10 @@ class Native implements InterfaceUserAuth
      */
     public function authenticate(string $username, string $password) : bool
     {
-        $query = $this->db->prepare('SELECT id, password FROM users WHERE name=:name AND backend=\'native\'');
-        $query->bindValue(':name', $username, \PDO::PARAM_STR);
-        $query->execute();
-
-        $record = $query->fetch();
-
-        if ($record === false) {
+        if (!array_key_exists($username, $this->userList)) {
             return false;
         }
 
-        return password_verify($password, $record['password']);
+        return password_verify($password, $this->userList[$username]);
     }
 }

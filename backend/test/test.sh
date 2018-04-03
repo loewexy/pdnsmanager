@@ -18,13 +18,17 @@ return [
         'path' => '../../test/logfile.log'
     ],
     'authentication' => [
-        'default' => [
+        'native' => [
             'plugin' => 'native',
+            'prefix' => 'default',
             'config' => null
         ],
         'foo' => [
-            'plugin' => 'native',
-            'config' => null
+            'plugin' => 'config',
+            'prefix' => 'foo',
+            'config' => [
+                'admin' => '\$2y\$10\$u9ji0cGRpd/doYEF/AztkOP3qmaaDYOGXzs0PmnGbMF7sJYzODDbO'
+            ]
         ]
     ]
 ];

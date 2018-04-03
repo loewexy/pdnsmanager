@@ -49,7 +49,7 @@ test.run(async function () {
 
         assert.equal(res.status, 422, 'Status not valid');
 
-        //Try to login with invalid username and password
+        //Try to login with prefix
         var res = await req({
             url: '/sessions',
             method: 'post',

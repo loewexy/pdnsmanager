@@ -22,8 +22,8 @@ interface InterfaceUserAuth
     /**
      * Authenticate user.
      * 
-     * @param   $username   The key for the entry
-     * @param   $password   The value for the entry
+     * @param   $username   The username for authentication
+     * @param   $password   The password for authentication
      * 
      * @return  true if valid false otherwise
      */

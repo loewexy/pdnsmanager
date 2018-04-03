@@ -43,18 +43,19 @@ class UserAuth
     public function authenticate(string $username, string $password) : int
     {
         if (strpos($username, '/') === false) { // no explicit backend specification
-            $backend = 'default';
+            $prefix = 'default';
             $name = $username;
         } else {
             $parts = preg_split('/\//', $username, 2);
-            $backend = $parts[0];
+            $prefix = $parts[0];
             $name = $parts[1];
         }
 
-        $this->logger->debug('Trying to authenticate with info', ['backend' => $backend, 'name' => $name]);
+        $this->logger->debug('Trying to authenticate with info', ['prefix' => $prefix, 'name' => $name]);
 
         try {
-            if ($this->authenticateBackend($backend, $name, $password)) {
+            $backend = '';
+            if ($this->authenticateBackend($prefix, $name, $password, $backend)) {
                 return $this->localUser($backend, $name, $password);
             } else {
                 return -1;
@@ -71,23 +72,32 @@ class UserAuth
      * @param   $backend    The name of the backend to use
      * @param   $username   The username to use
      * @param   $password   The password to use
+     * @param   $backendId  Output to return the backend id used
      * 
      * @return  bool true if authentication successfull false otherwise
      * 
      * @throws \Exceptions\PluginNotFoundExecption if no matching backend can be found
      */
-    private function authenticateBackend(string $backend, string $username, string $password) : bool
+    private function authenticateBackend(string $backend, string $username, string $password, string &$backendId) : bool
     {
         $config = $this->c['config']['authentication'];
 
-        if (!array_key_exists($backend, $config)) { // Check if backend is configured for prefix
+        $configForPrefix = array_filter($config, function ($v, $k) use ($backend) {
+            return $backend === $v['prefix'];
+        }, ARRAY_FILTER_USE_BOTH);
+
+        if (count($configForPrefix) === 0) { // Check if backend is configured for prefix
             $this->logger->warning('No authentication backend configured for prefix', ['prefix' => $backend]);
             throw new PluginNotFoundException('No authentication backend configured for this user.');
+        } elseif (count($configForPrefix) > 1) {
+            $this->logger->error('Two authentication backends configured for prefix.', ['prefix' => $backend]);
         }
 
-        $plugin = $config[$backend]['plugin'];
+        $backendId = array_keys($configForPrefix)[0];
+
+        $plugin = $config[$backendId]['plugin'];
         $pluginClass = '\\Plugins\\UserAuth\\' . $plugin;
-        $pluginConfig = $config[$backend]['config'];
+        $pluginConfig = $config[$backendId]['config'];
 
         if (!class_exists($pluginClass)) { // Check if given backend class exists
             $this->logger->error('The configured UserAuth plugin does not exist', ['prefix' => $backend, 'plugin' => $plugin]);
@@ -102,7 +112,7 @@ class UserAuth
             throw new PluginNotFoundException('The authentication request can not be processed.');
         }
 
-        $this->logger->debug("UserAuth plugin was loaded", ['plugin' => $plugin, 'prefix' => $backend]);
+        $this->logger->debug("UserAuth plugin was loaded", ['plugin' => $plugin, 'prefix' => $backend, 'backend' => $backendId]);
 
         return $backendObj->authenticate($username, $password);
     }
