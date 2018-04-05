@@ -297,7 +297,8 @@ class Records
         $priority = $priority === null ? intval($record['prio']) : $priority;
         $ttl = $ttl === null ? intval($record['ttl']) : $ttl;
 
-        $query = $this->db->prepare('UPDATE records SET name=:name,type=:type,content=:content,prio=:priority,ttl=:ttl');
+        $query = $this->db->prepare('UPDATE records SET name=:name,type=:type,content=:content,prio=:priority,ttl=:ttl WHERE id=:recordId');
+        $query->bindValue('recordId', $recordId);
         $query->bindValue(':name', $name);
         $query->bindValue(':type', $type);
         $query->bindValue(':content', $content);
