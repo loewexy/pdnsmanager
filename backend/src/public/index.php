@@ -48,6 +48,8 @@ $app->group('/v1', function () {
         $this->get('/records/{recordId}/credentials/{credentialId}', '\Controllers\Credentials:getSingle');
         $this->put('/records/{recordId}/credentials/{credentialId}', '\Controllers\Credentials:put');
 
+        $this->get('/users', '\Controllers\Users:getList');
+
         $this->get('/users/{user}/permissions', '\Controllers\Permissions:getList');
         $this->post('/users/{user}/permissions', '\Controllers\Permissions:postNew');
         $this->delete('/users/{user}/permissions/{domainId}', '\Controllers\Permissions:delete');
