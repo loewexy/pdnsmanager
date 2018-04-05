@@ -54,8 +54,20 @@ test.run(async function () {
             url: '/sessions',
             method: 'post',
             data: {
-                username: 'foo/admin',
-                password: 'admin'
+                username: 'config/configuser',
+                password: 'configuser'
+            }
+        });
+
+        assert.equal(res.status, 201, 'Status not valid');
+
+        //Try to login with prefix but no db entry
+        var res = await req({
+            url: '/sessions',
+            method: 'post',
+            data: {
+                username: 'config/notindb',
+                password: 'notindb'
             }
         });
 

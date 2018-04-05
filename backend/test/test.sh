@@ -23,11 +23,12 @@ return [
             'prefix' => 'default',
             'config' => null
         ],
-        'foo' => [
+        'config' => [
             'plugin' => 'config',
-            'prefix' => 'foo',
+            'prefix' => 'config',
             'config' => [
-                'admin' => '\$2y\$10\$u9ji0cGRpd/doYEF/AztkOP3qmaaDYOGXzs0PmnGbMF7sJYzODDbO'
+                'configuser' => '\$2y\$10\$twlIJ0hYeaHqMsiM7OdLr.4HkV6/EEQneDg9uZiU.l7yn1bpxSD1.',
+                'notindb' => '\$2y\$10\$z1dD1Q5u68l5iqEmqnOAVuoR5VWR77HUfxMUycJ9TdDG3H5dLZGVW'
             ]
         ]
     ]
