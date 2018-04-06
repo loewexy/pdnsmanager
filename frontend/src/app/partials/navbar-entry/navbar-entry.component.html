@@ -1,7 +1,0 @@
-<li class="nav-item" [routerLinkActive]="neverActive === false ? 'active' : ''">
-    <a [routerLink]="target" class="nav-link">
-        <app-fa-icon *ngIf="icon" [icon]="icon"></app-fa-icon>
-        <span *ngIf="icon"> </span>
-        <ng-content></ng-content>
-    </a>
-</li>
