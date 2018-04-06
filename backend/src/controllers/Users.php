@@ -48,35 +48,36 @@ class Users
     {
         $ac = new \Operations\AccessControl($this->c);
         if (!$ac->isAdmin($req->getAttribute('userId'))) {
-            $this->logger->info('Non admin user tries to add domain');
+            $this->logger->info('Non admin user tries to add user');
             return $res->withJson(['error' => 'You must be admin to use this feature'], 403);
         }
 
         $body = $req->getParsedBody();
 
         if (!array_key_exists('name', $body) ||
-            !array_key_exists('type', $body) || ($body['type'] === 'SLAVE' && !array_key_exists('master', $body))) {
+            !array_key_exists('type', $body) ||
+            !array_key_exists('password', $body)) {
             $this->logger->debug('One of the required fields is missing');
             return $res->withJson(['error' => 'One of the required fields is missing'], 422);
         }
 
         $name = $body['name'];
         $type = $body['type'];
-        $master = isset($body['master']) ? $body['master'] : null;
+        $password = $body['password'];
 
-        $domains = new \Operations\Domains($this->c);
+        $users = new \Operations\Users($this->c);
 
         try {
-            $result = $domains->addDomain($name, $type, $master);
+            $result = $users->addUser($name, $type, $password);
 
-            $this->logger->info('Created domain', $result);
+            $this->logger->info('Created user', $result);
             return $res->withJson($result, 201);
         } catch (\Exceptions\AlreadyExistentException $e) {
-            $this->logger->debug('Zone with name ' . $name . ' already exists.');
-            return $res->withJson(['error' => 'Zone with name ' . $name . ' already exists.'], 409);
+            $this->logger->debug('User with name ' . $name . ' already exists.');
+            return $res->withJson(['error' => 'User with name ' . $name . ' already exists.'], 409);
         } catch (\Exceptions\SemanticException $e) {
-            $this->logger->info('Invalid type for new domain', ['type' => $type]);
-            return $res->withJson(['error' => 'Invalid type allowed are MASTER, NATIVE and SLAVE'], 400);
+            $this->logger->info('Invalid type for new user', ['type' => $type]);
+            return $res->withJson(['error' => 'Invalid type allowed are admin and user'], 400);
         }
     }
 
@@ -84,147 +85,81 @@ class Users
     {
         $ac = new \Operations\AccessControl($this->c);
         if (!$ac->isAdmin($req->getAttribute('userId'))) {
-            $this->logger->info('Non admin user tries to delete domain');
+            $this->logger->info('Non admin user tries to delete user');
             return $res->withJson(['error' => 'You must be admin to use this feature'], 403);
         }
 
-        $domains = new \Operations\Domains($this->c);
+        $users = new \Operations\Users($this->c);
 
-        $domainId = intval($args['domainId']);
+        $user = intval($args['user']);
 
         try {
-            $domains->deleteDomain($domainId);
+            $users->deleteDomain($user);
 
-            $this->logger->info('Deleted domain', ['id' => $domainId]);
+            $this->logger->info('Deleted user', ['id' => $user]);
             return $res->withStatus(204);
         } catch (\Exceptions\NotFoundException $e) {
-            return $res->withJson(['error' => 'No domain found for id ' . $domainId], 404);
+            return $res->withJson(['error' => 'No user found for id ' . $domainId], 404);
         }
     }
 
     public function getSingle(Request $req, Response $res, array $args)
     {
-        $userId = $req->getAttribute('userId');
-        $domainId = intval($args['domainId']);
-
         $ac = new \Operations\AccessControl($this->c);
-        if (!$ac->canAccessDomain($userId, $domainId)) {
-            $this->logger->info('Non admin user tries to get domain without permission.');
-            return $res->withJson(['error' => 'You have no permissions for this domain.'], 403);
+        if ($args['user'] === 'me') {
+            $user = $req->getAttribute('userId');
+        } elseif ($ac->isAdmin($req->getAttribute('userId'))) {
+            $user = intval($args['user']);
+        } else {
+            $this->logger->info('Non admin user tries to get other user');
+            return $res->withJson(['error' => 'You must be admin to use this feature'], 403);
         }
 
-        $domains = new \Operations\Domains($this->c);
+        $users = new \Operations\Users($this->c);
 
         try {
-            $result = $domains->getDomain($domainId);
+            $result = $users->getUser($user);
 
-            $this->logger->debug('Get domain info', ['id' => $domainId]);
+            $this->logger->debug('Get user info', ['id' => $user]);
             return $res->withJson($result, 200);
         } catch (\Exceptions\NotFoundException $e) {
-            return $res->withJson(['error' => 'No domain found for id ' . $domainId], 404);
+            return $res->withJson(['error' => 'No user found for id ' . $user], 404);
         }
     }
 
     public function put(Request $req, Response $res, array $args)
     {
+        $body = $req->getParsedBody();
+
+        $name = array_key_exists('name', $body) ? $body['name'] : null;
+        $type = array_key_exists('type', $body) ? $body['type'] : null;
+        $password = array_key_exists('password', $body) ? $body['password'] : null;
+
         $ac = new \Operations\AccessControl($this->c);
-        if (!$ac->isAdmin($req->getAttribute('userId'))) {
-            $this->logger->info('Non admin user tries to delete domain');
+        if ($args['user'] === 'me') {
+            $user = $req->getAttribute('userId');
+            $name = null;
+            $type = null;
+        } elseif ($ac->isAdmin($req->getAttribute('userId'))) {
+            $user = intval($args['user']);
+        } else {
+            $this->logger->info('Non admin user tries to get other user');
             return $res->withJson(['error' => 'You must be admin to use this feature'], 403);
         }
 
-        $body = $req->getParsedBody();
-
-        if (!array_key_exists('master', $body)) {
-            $this->logger->debug('One of the required fields is missing');
-            return $res->withJson(['error' => 'One of the required fields is missing'], 422);
-        }
-
-        $domainId = $args['domainId'];
-        $master = $body['master'];
-
-        $domains = new \Operations\Domains($this->c);
+        $users = new \Operations\Users($this->c);
 
         try {
-            $result = $domains->updateSlave($domainId, $master);
+            $result = $users->updateUser($user, $name, $type, $password);
 
-            $this->logger->debug('Update master', ['id' => $domainId]);
+            $this->logger->debug('Update user', ['id' => $user]);
             return $res->withStatus(204);
         } catch (\Exceptions\NotFoundException $e) {
-            $this->logger->debug('Trying to update non existing slave zone', ['id' => $domainId]);
-            return $res->withJson(['error' => 'No domain found for id ' . $domainId], 404);
-        } catch (\Exceptions\SemanticException $e) {
-            $this->logger->debug('Trying to update non slave zone', ['id' => $domainId]);
-            return $res->withJson(['error' => 'Domain is not a slave zone'], 405);
-        }
-    }
-
-    public function putSoa(Request $req, Response $res, array $args)
-    {
-        $userId = $req->getAttribute('userId');
-        $domainId = $args['domainId'];
-
-        $ac = new \Operations\AccessControl($this->c);
-        if (!$ac->canAccessDomain($userId, $domainId)) {
-            $this->logger->info('Non admin user tries to get domain without permission.');
-            return $res->withJson(['error' => 'You have no permissions for this domain.'], 403);
-        }
-
-        $body = $req->getParsedBody();
-
-        if (!array_key_exists('primary', $body) ||
-            !array_key_exists('email', $body) ||
-            !array_key_exists('refresh', $body) ||
-            !array_key_exists('retry', $body) ||
-            !array_key_exists('expire', $body) ||
-            !array_key_exists('ttl', $body)) {
-            $this->logger->debug('One of the required fields is missing');
-            return $res->withJson(['error' => 'One of the required fields is missing'], 422);
-        }
-
-        $soa = new \Operations\Soa($this->c);
-
-        try {
-            $soa->setSoa(
-                intval($domainId),
-                $body['email'],
-                $body['primary'],
-                intval($body['refresh']),
-                intval($body['retry']),
-                intval($body['expire']),
-                intval($body['ttl'])
-            );
-
-            return $res->withStatus(204);
-        } catch (\Exceptions\NotFoundException $e) {
-            $this->logger->warning('Trying to set soa for not existing domain.', ['domainId' => $domainId]);
-            return $res->withJson(['error' => 'No domain found for id ' . $domainId], 404);
-        } catch (\Exceptions\SemanticException $e) {
-            $this->logger->warning('Trying to set soa for slave domain.', ['domainId' => $domainId]);
-            return $res->withJson(['error' => 'SOA can not be set for slave domains'], 405);
-        }
-    }
-
-    public function getSoa(Request $req, Response $res, array $args)
-    {
-        $userId = $req->getAttribute('userId');
-        $domainId = $args['domainId'];
-
-        $ac = new \Operations\AccessControl($this->c);
-        if (!$ac->canAccessDomain($userId, $domainId)) {
-            $this->logger->info('Non admin user tries to get domain without permission.');
-            return $res->withJson(['error' => 'You have no permissions for this domain.'], 403);
-        }
-
-        $soa = new \Operations\Soa($this->c);
-
-        try {
-            $soaArray = $soa->getSoa($domainId);
-
-            return $res->withJson($soaArray, 200);
-        } catch (\Exceptions\NotFoundException $e) {
-            $this->logger->debug('User tried to get non existing soa.', ['domainId' => $domainId]);
-            return $res->withJson(['error' => 'This domain has no soa record.'], 404);
+            $this->logger->debug('Trying to update non existing user', ['id' => $user]);
+            return $res->withJson(['error' => 'No user found for id ' . $user], 404);
+        } catch (\Exceptions\AlreadyExistentException $e) {
+            $this->logger->debug('Trying to rename user to conflicting name', ['id' => $user]);
+            return $res->withJson(['error' => 'The new name already exists.'], 409);
         }
     }
 }

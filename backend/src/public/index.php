@@ -49,6 +49,10 @@ $app->group('/v1', function () {
         $this->put('/records/{recordId}/credentials/{credentialId}', '\Controllers\Credentials:put');
 
         $this->get('/users', '\Controllers\Users:getList');
+        $this->post('/users', '\Controllers\Users:postNew');
+        $this->delete('/users/{user}', '\Controllers\Users:delete');
+        $this->get('/users/{user}', '\Controllers\Users:getSingle');
+        $this->put('/users/{user}', '\Controllers\Users:put');
 
         $this->get('/users/{user}/permissions', '\Controllers\Permissions:getList');
         $this->post('/users/{user}/permissions', '\Controllers\Permissions:postNew');

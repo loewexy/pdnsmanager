@@ -120,26 +120,26 @@ class Users
     }
 
     /**
-     * Add new domain
+     * Add new user
      * 
      * @param   $name       Name of the new zone
      * @param   $type       Type of the new zone
-     * @param   $master     Master for slave zones, otherwise null
+     * @param   $password   Password for the new user
      * 
-     * @return  array       New domain entry
+     * @return  array       New user entry
      * 
-     * @throws  AlreadyExistenException it the domain exists already
+     * @throws  AlreadyExistenException it the user exists already
      */
-    public function addDomain(string $name, string $type, ? string $master) : array
+    public function addUser(string $name, string $type, string $password) : array
     {
-        if (!in_array($type, [' MASTER ', ' SLAVE ', ' NATIVE '])) {
+        if (!in_array($type, ['admin', 'user'])) {
             throw new \Exceptions\SemanticException();
         }
 
         $this->db->beginTransaction();
 
-        $query = $this->db->prepare(' SELECT id FROM domains WHERE name = : name ');
-        $query->bindValue(' : name ', $name, \PDO::PARAM_STR);
+        $query = $this->db->prepare('SELECT id FROM users WHERE name=:name AND backend=\'native\'');
+        $query->bindValue(':name', $name, \PDO::PARAM_STR);
         $query->execute();
 
         $record = $query->fetch();
@@ -149,26 +149,20 @@ class Users
             throw new \Exceptions\AlreadyExistentException();
         }
 
-        if ($type === ' SLAVE ') {
-            $query = $this->db->prepare(' INSERT INTO domains (name, type, master) VALUES(: name, : type, : master) ');
-            $query->bindValue(' : master ', $master, \PDO::PARAM_STR);
-        } else {
-            $query = $this->db->prepare(' INSERT INTO domains (name, type) VALUES (: name, : type) ');
-        }
-        $query->bindValue(' : name ', $name, \PDO::PARAM_STR);
-        $query->bindValue(' : type ', $type, \PDO::PARAM_STR);
+        $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+
+        $query = $this->db->prepare('INSERT INTO users (name, backend, type, password) VALUES(:name, \'native\', :type, :password)');
+        $query->bindValue(':name', $name, \PDO::PARAM_STR);
+        $query->bindValue(':type', $type, \PDO::PARAM_STR);
+        $query->bindValue(':password', $passwordHash, \PDO::PARAM_STR);
         $query->execute();
 
-
-        $query = $this->db->prepare(' SELECT id, name, type, master FROM domains WHERE name = : name ');
-        $query->bindValue(' : name ', $name, \PDO::PARAM_STR);
+        $query = $this->db->prepare('SELECT id,name,type FROM users WHERE name=:name AND backend=\'native\'');
+        $query->bindValue(':name', $name, \PDO::PARAM_STR);
         $query->execute();
 
         $record = $query->fetch();
-        $record[' id '] = intval($record[' id ']);
-        if ($type !== ' SLAVE ') {
-            unset($record[' master ']);
-        }
+        $record['id'] = intval($record['id']);
 
         $this->db->commit();
 
@@ -176,63 +170,53 @@ class Users
     }
 
     /**
-     * Delete domain
+     * Delete user
      * 
-     * @param   $id     Id of the domain to delete
+     * @param   $id     Id of the user to delete
      * 
      * @return  void
      * 
-     * @throws  NotFoundException   if domain does not exist
+     * @throws  NotFoundException   if user does not exist
      */
     public function deleteDomain(int $id) : void
     {
         $this->db->beginTransaction();
 
-        $query = $this->db->prepare(' SELECT id FROM domains WHERE id = : id ');
-        $query->bindValue(' : id ', $id, \PDO::PARAM_INT);
+        $query = $this->db->prepare('SELECT id FROM users WHERE id=:id');
+        $query->bindValue(':id', $id, \PDO::PARAM_INT);
         $query->execute();
 
-        if ($query->fetch() === false) { //Domain does not exist
+        if ($query->fetch() === false) { //User does not exist
             $this->db->rollBack();
             throw new \Exceptions\NotFoundException();
         }
 
-        $query = $this->db->prepare('
-            DELETE E FROM remote E
-            LEFT OUTER JOIN records R ON R . id = E . record
-            WHERE R . domain_id = : id ');
-        $query->bindValue(' : id ', $id, \PDO::PARAM_INT);
+        $query = $this->db->prepare('DELETE FROM permissions WHERE user_id=:id');
+        $query->bindValue(':id', $id, \PDO::PARAM_INT);
         $query->execute();
 
-        $query = $this->db->prepare(' DELETE FROM records WHERE domain_id = : id ');
-        $query->bindValue(' : id ', $id, \PDO::PARAM_INT);
-        $query->execute();
-
-        $query = $this->db->prepare(' DELETE FROM domains WHERE id = : id ');
-        $query->bindValue(' : id ', $id, \PDO::PARAM_INT);
+        $query = $this->db->prepare('DELETE FROM users WHERE id=:id');
+        $query->bindValue(':id', $id, \PDO::PARAM_INT);
         $query->execute();
 
         $this->db->commit();
     }
 
     /**
-     * Get domain
+     * Get user
      * 
-     * @param   $id     Id of the domain to get
+     * @param   $id     Id of the user to get
      * 
-     * @return  array   Domain data
+     * @return  array   User data
      * 
-     * @throws  NotFoundException   if domain does not exist
+     * @throws  NotFoundException   if user does not exist
      */
-    public function getDomain(int $id) : array
+    public function getUser(int $id) : array
     {
-        $query = $this->db->prepare('
-            SELECT D . id, D . name, D . type, D . master, COUNT (R . domain_id) as records FROM domains D
-            LEFT OUTER JOIN records R ON D . id = R . domain_id
-            WHERE D . id = : id
-            GROUP BY D . id, D . name, D . type, D . master
-            ');
-        $query->bindValue(' : id ', $id, \PDO::PARAM_INT);
+        $config = $this->c['config']['authentication'];
+
+        $query = $this->db->prepare('SELECT id,name,type,backend FROM users WHERE id=:id');
+        $query->bindValue(':id', $id, \PDO::PARAM_INT);
         $query->execute();
 
         $record = $query->fetch();
@@ -241,58 +225,84 @@ class Users
             throw new \Exceptions\NotFoundException();
         }
 
-        $record[' id '] = intval($record[' id ']);
-        $record[' records '] = intval($record[' records ']);
-        if ($record[' type '] !== ' SLAVE ') {
-            unset($record[' master ']);
+        if (!array_key_exists($record['backend'], $config)) {
+            throw new \Exceptions\NotFoundException();
         }
-
-        return $record;
-    }
-
-    /**
-     * Get type of given domain
-     * 
-     * @param   int     Domain id
-     * 
-     * @return  string  Domain type
-     * 
-     * @throws  NotFoundException   if domain does not exist
-     */
-    public function getDomainType(int $id) : string
-    {
-        $query = $this->db->prepare(' SELECT type FROM domains WHERE id = : id ');
-        $query->bindValue(' : id ', $id, \PDO::PARAM_INT);
-        $query->execute();
-        $record = $query->fetch();
-
-        if ($record === false) {
+        if (!array_key_exists('prefix', $config[$record['backend']])) {
             throw new \Exceptions\NotFoundException();
         }
 
-        return $record[' type '];
+        $prefix = $config[$record['backend']]['prefix'];
+
+        if ($prefix === 'default') {
+            $name = $record['name'];
+        } else {
+            $name = $prefix . '/' . $record['name'];
+        }
+
+        return [
+            'id' => intval($record['id']),
+            'name' => $name,
+            'type' => $record['type'],
+            'native' => $record['backend'] === 'native'
+        ];
     }
 
-    /**
-     * Update master for slave zone
+    /** Update user
      * 
-     * @param   int     Domain id
-     * @param   string  New master
+     * If params are null do not change. If user is not native, name and password are ignored.
+     * 
+     * @param   $userId     User to update
+     * @param   $name       New name
+     * @param   $type       New type
+     * @param   $password   New password
      * 
      * @return  void
      * 
-     * @throws  NotFoundException   if domain does not exist
-     * @throws  SemanticException   if domain is no slave zone
+     * @throws  NotFoundException           The given record does not exist
+     * @throws  AlreadyExistentException    The given record name does already exist
      */
-    public function updateSlave(int $id, string $master)
+    public function updateUser(int $userId, ? string $name, ? string $type, ? string $password)
     {
-        if ($this->getDomainType($id) !== ' SLAVE ') {
-            throw new \Exceptions\SemanticException();
+        $this->db->beginTransaction();
+
+        $query = $this->db->prepare('SELECT id,name,type,backend,password FROM users WHERE id=:userId');
+        $query->bindValue(':userId', $userId);
+        $query->execute();
+
+        $record = $query->fetch();
+
+        if ($record === false) {
+            $this->db->rollBack();
+            throw new \Exceptions\NotFoundException();
         }
 
-        $query = $this->db->prepare(' UPDATE domains SET master = : master WHERE id = : id ');
-        $query->bindValue(' : id ', $id, \PDO::PARAM_INT);
-        $query->bindValue(' : master', $master, \PDO::PARAM_STR);
+        if ($record['backend'] !== 'native') {
+            $name = null;
+            $password = null;
+        }
+
+        if ($record['backend'] === 'native' && $name !== null) {
+            //Check if user already exists
+            $query = $this->db->prepare('SELECT id FROM users WHERE name=:name AND backend=\'native\'');
+            $query->bindValue(':name', $name);
+            $query->execute();
+            if ($query->fetch() !== false) {
+                throw new \Exceptions\AlreadyExistentException();
+            }
+        }
+
+        $name = $name === null ? $record['name'] : $name;
+        $type = $type === null ? $record['type'] : $type;
+        $password = $password === null ? $record['password'] : password_hash($password, PASSWORD_DEFAULT);
+
+        $query = $this->db->prepare('UPDATE users SET name=:name,type=:type,password=:password WHERE id=:userId');
+        $query->bindValue(':userId', $userId);
+        $query->bindValue(':name', $name);
+        $query->bindValue(':type', $type);
+        $query->bindValue(':password', $password);
         $query->execute();
+
+        $this->db->commit();
     }
 }
