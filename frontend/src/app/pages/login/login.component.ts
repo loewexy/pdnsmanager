@@ -11,12 +11,12 @@ import { SessionOperation } from '../../operations/session.operation';
     styleUrls: ['./login.component.scss']
 })
 export class LoginComponent {
-    loginForm: FormGroup;
+    public loginForm: FormGroup;
 
-    loginError = false;
+    public loginError = false;
 
     constructor(private router: Router, private fb: FormBuilder, public gs: StateService,
-        public sessions: SessionOperation, private route: ActivatedRoute) {
+        private sessions: SessionOperation, private route: ActivatedRoute) {
         this.createForm();
     }
 

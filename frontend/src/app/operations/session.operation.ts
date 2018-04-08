@@ -2,7 +2,6 @@ import { UserApitype } from './../apitypes/User.apitype';
 import { Injectable } from '@angular/core';
 import { HttpService } from '../services/http.service';
 import { StateService } from '../services/state.service';
-import { AxiosResponse, AxiosError } from 'axios';
 import { SessionApitype } from '../apitypes/Session.apitype';
 
 @Injectable()

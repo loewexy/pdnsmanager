@@ -1,3 +1,4 @@
+import { PasswordOperation } from './operations/password.operations';
 import { AuthGuard } from './services/auth-guard.service';
 import { FocusDirective } from './utils/Focus.directive';
 import { BrowserModule } from '@angular/platform-browser';
@@ -19,6 +20,7 @@ import { StateService } from './services/state.service';
 import { HttpService } from './services/http.service';
 import { SessionOperation } from './operations/session.operation';
 import { DomainsComponent } from './pages/domains/domains.component';
+import { PasswordComponent } from './pages/password/password.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +34,8 @@ import { DomainsComponent } from './pages/domains/domains.component';
     ModalContainerComponent,
     LoginComponent,
     DomainsComponent,
-    FocusDirective
+    FocusDirective,
+    PasswordComponent
   ],
   imports: [
     BrowserModule,
@@ -44,6 +47,7 @@ import { DomainsComponent } from './pages/domains/domains.component';
     StateService,
     HttpService,
     SessionOperation,
+    PasswordOperation,
     AuthGuard
   ],
   bootstrap: [AppComponent]

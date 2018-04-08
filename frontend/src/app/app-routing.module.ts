@@ -1,3 +1,4 @@
+import { PasswordComponent } from './pages/password/password.component';
 import { AuthGuard } from './services/auth-guard.service';
 import { DomainsComponent } from './pages/domains/domains.component';
 import { NgModule } from '@angular/core';
@@ -23,6 +24,10 @@ const routes: Routes = [
             {
                 path: 'domains',
                 component: DomainsComponent
+            },
+            {
+                path: 'password',
+                component: PasswordComponent
             },
             {
                 path: '**',

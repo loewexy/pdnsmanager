@@ -16,7 +16,6 @@ export class HttpService {
     }
 
     public async get(url: string, params: Object = {}): Promise<any> {
-        console.log('Get request');
         const parts = [];
         for (const [k, v] of Object.entries(params)) {
             let value;
