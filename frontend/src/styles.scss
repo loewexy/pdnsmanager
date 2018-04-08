@@ -1,0 +1,29 @@
+/* Bootstrap and customizations */
+@import '~bootstrap/scss/bootstrap.scss';
+
+/* Add font awesome */
+$fa-font-path: "~font-awesome/fonts";
+@import '~font-awesome/scss/font-awesome';
+
+/* Custom global rules */
+.no-shadow {
+    box-shadow: none !important;
+    border-color: #CCC !important;
+}
+
+/* Add validation rules for angular classes */
+.ng-dirty.ng-invalid.auto-invalid {
+    @extend .is-invalid;
+}
+
+.ng-dirty.ng-invalid.auto-validstate {
+    @extend .is-invalid;
+}
+
+.ng-dirty.ng-valid.auto-valid {
+    @extend .is-valid;
+}
+
+.ng-dirty.ng-valid.auto-validstate {
+    @extend .is-valid;
+}

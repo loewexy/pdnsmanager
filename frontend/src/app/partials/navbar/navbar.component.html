@@ -1,0 +1,19 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-3">
+    <div class="container">
+
+        <a class="navbar-brand" href="#">{{ brand }}</a>
+
+        <button *ngIf="true" class="navbar-toggler navbar-toggler-right" (click)="toggleMenu()">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="navbar-collapse" [class.collapse]="!open">
+            <ul #navbarEntries class="navbar-nav mr-auto">
+                <ng-content select="app-navbar-entry:not([right])"></ng-content>
+            </ul>
+            <ul #navbarEntriesRight class="navbar-nav">
+                <ng-content select="app-navbar-entry[right]"></ng-content>
+            </ul>
+        </div>
+    </div>
+</nav>

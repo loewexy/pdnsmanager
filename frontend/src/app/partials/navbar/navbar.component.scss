@@ -1,0 +1,6 @@
+/* Workaround for bootstrap 4 alpha 6*/
+@media(max-width:768px){
+    .navbar .container {
+        width: 100%;
+    }
+}

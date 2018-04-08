@@ -19,5 +19,6 @@ before_script:
     - .travis/backend-start-server.sh > /dev/null 2>&1 &
 script:
     - .travis/frontend-lint.sh
+    - .travis/frontend-build.sh
     - .travis/backend-lint.sh
     - .travis/backend-test.sh

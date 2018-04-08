@@ -1,0 +1,17 @@
+<div class="modal fade" [class.show]="animate" [class.in]="animate" [hidden]="!show" (click)="onDismis()">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{options.heading}}</h5>
+            </div>
+            <div class="modal-body">
+                <p>{{options.body}}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" (click)="onDismis()">{{options.dismisText}}</button>
+                <button type="button" class="btn" [ngClass]="'btn-' + options.acceptClass" (click)="onAccept()">{{options.acceptText}}</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-backdrop fade" [hidden]="!show" [class.show]="animate" [class.in]="animate"></div>
