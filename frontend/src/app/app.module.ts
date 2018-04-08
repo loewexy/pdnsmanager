@@ -1,3 +1,5 @@
+import { AuthGuard } from './services/auth-guard.service';
+import { FocusDirective } from './utils/Focus.directive';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -29,7 +31,8 @@ import { DomainsComponent } from './pages/domains/domains.component';
     SortComponent,
     ModalContainerComponent,
     LoginComponent,
-    DomainsComponent
+    DomainsComponent,
+    FocusDirective
   ],
   imports: [
     BrowserModule,
@@ -40,7 +43,8 @@ import { DomainsComponent } from './pages/domains/domains.component';
     ModalService,
     StateService,
     HttpService,
-    SessionOperation
+    SessionOperation,
+    AuthGuard
   ],
   bootstrap: [AppComponent]
 })

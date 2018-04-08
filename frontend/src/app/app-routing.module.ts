@@ -1,3 +1,4 @@
+import { AuthGuard } from './services/auth-guard.service';
 import { DomainsComponent } from './pages/domains/domains.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
@@ -6,18 +7,28 @@ import { LoginComponent } from './pages/login/login.component';
 const routes: Routes = [
     {
         path: '',
-        pathMatch: 'full',
-        component: LoginComponent
+        component: LoginComponent,
+        pathMatch: 'full'
     },
     {
-        path: 'domains',
-        pathMatch: 'full',
-        component: DomainsComponent
+        path: 'logout',
+        component: LoginComponent,
+        data: { logout: true }
     },
     {
         path: '',
-        redirectTo: '/',
-        pathMatch: 'prefix'
+        pathMatch: 'prefix',
+        canActivate: [AuthGuard],
+        children: [
+            {
+                path: 'domains',
+                component: DomainsComponent
+            },
+            {
+                path: '**',
+                redirectTo: '/'
+            }
+        ]
     }
 ];
 

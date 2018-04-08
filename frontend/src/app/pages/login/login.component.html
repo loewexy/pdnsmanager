@@ -5,10 +5,14 @@
                 <h3>Login</h3>
             </div>
             <div class="card-body">
+                <p *ngIf="isLogoutPage()" class="text-success">
+                    You have been successfully logged out.
+                </p>
+
                 <form autocomplete="off" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
                     <div class="form-group">
                         <label>Username</label>
-                        <input type="text" class="form-control auto-invalid" formControlName="username" autofocus />
+                        <input type="text" class="form-control auto-invalid" formControlName="username" appFocus />
                         <div class="invalid-feedback">
                             Username is required.
                         </div>

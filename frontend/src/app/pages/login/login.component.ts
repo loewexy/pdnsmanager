@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { StateService } from '../../services/state.service';
 import { HttpService } from '../../services/http.service';
@@ -16,7 +16,7 @@ export class LoginComponent {
     loginError = false;
 
     constructor(private router: Router, private fb: FormBuilder, public gs: StateService,
-        public sessions: SessionOperation) {
+        public sessions: SessionOperation, private route: ActivatedRoute) {
         this.createForm();
     }
 
@@ -36,5 +36,9 @@ export class LoginComponent {
         } else {
             this.loginError = true;
         }
+    }
+
+    public isLogoutPage() {
+        return this.route.snapshot.data.logout;
     }
 }

@@ -14,6 +14,6 @@ export class AppComponent {
 
   public async onLogout() {
     await this.session.logout();
-    this.router.navigate(['/']);
+    this.router.navigate(['/logout']);
   }
 }
