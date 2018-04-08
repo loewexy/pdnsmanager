@@ -27,6 +27,7 @@ export class PasswordComponent {
 
     public async onSubmit() {
         this.changeSuccessfull = await this.password.changePassword(this.passwordForm.value.password);
+        this.passwordForm.reset();
         setTimeout(() => this.changeSuccessfull = false, 3000);
     }
 }
