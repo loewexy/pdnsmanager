@@ -1,6 +1,6 @@
 <app-navbar *ngIf="gs.isLoggedIn" brand="PDNS Manager">
   <app-navbar-entry icon="navicon" target="/domains">Domains</app-navbar-entry>
-  <app-navbar-entry icon="key" target="/password">Password</app-navbar-entry>
+  <app-navbar-entry *ngIf="gs.isNative" icon="key" target="/password">Password</app-navbar-entry>
 
   <app-navbar-entry icon="sign-out" right (click)="onLogout()" neverActive>Logout</app-navbar-entry>
 </app-navbar>
