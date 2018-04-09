@@ -232,7 +232,7 @@ test.run(async function () {
 
         assert.equal(res.status, 403, 'Domain deletion should be forbidden for users.');
 
-        //Test insufficient permissions
+        //Test update for domain with permissions
         var res = await req({
             url: '/domains/2',
             method: 'put',
@@ -241,7 +241,18 @@ test.run(async function () {
             }
         });
 
-        assert.equal(res.status, 403, 'Update of slave zone should be forbidden for non admins.');
+        assert.equal(res.status, 204, 'Update of slave zone should work if user has permissions.');
+
+        //Test insufficient permissions
+        var res = await req({
+            url: '/domains/3',
+            method: 'put',
+            data: {
+                master: '9.8.7.6'
+            }
+        });
+
+        assert.equal(res.status, 403, 'Update of slave zone should fail without permissions.');
 
         //Test insufficient privileges for get
         var res = await req({

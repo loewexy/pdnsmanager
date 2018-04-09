@@ -123,10 +123,12 @@ class Domains
 
     public function put(Request $req, Response $res, array $args)
     {
+        $userId = $req->getAttribute('userId');
+        $domainId = intval($args['domainId']);
         $ac = new \Operations\AccessControl($this->c);
-        if (!$ac->isAdmin($req->getAttribute('userId'))) {
-            $this->logger->info('Non admin user tries to delete domain');
-            return $res->withJson(['error' => 'You must be admin to use this feature'], 403);
+        if (!$ac->canAccessDomain($userId, $domainId)) {
+            $this->logger->info('User tries to update domain without permission');
+            return $res->withJson(['error' => 'You have no permissions for this domain.'], 403);
         }
 
         $body = $req->getParsedBody();
@@ -136,7 +138,6 @@ class Domains
             return $res->withJson(['error' => 'One of the required fields is missing'], 422);
         }
 
-        $domainId = $args['domainId'];
         $master = $body['master'];
 
         $domains = new \Operations\Domains($this->c);
