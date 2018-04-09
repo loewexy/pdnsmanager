@@ -1,12 +1,10 @@
-<div class="row">
-    <nav class="mr-3 ml-auto">
-        <ul class="pagination pagination-sm">
-            <li class="disabled page-item">
-                <span class="page-link">Entries per page</span>
-            </li>
-            <li *ngFor="let i of pagesizes" class="page-item" [class.active]="i === currentPagesize" (click)="newPagesize(i)">
-                <span class="page-link">{{ i }}</span>
-            </li>
-        </ul>
-    </nav>
-</div>
+<nav class="mr-3 ml-auto">
+    <ul class="pagination pagination-sm">
+        <li class="disabled page-item">
+            <span class="page-link">Entries per page</span>
+        </li>
+        <li *ngFor="let i of pagesizes" class="page-item" [class.active]="i === currentPagesize" (click)="newPagesize(i)">
+            <span class="page-link">{{ i }}</span>
+        </li>
+    </ul>
+</nav>

@@ -1,3 +1,17 @@
-<p>
-    edit-slave works!
-</p>
+<div class="row">
+    <div class="col-12 col-md-6 col-lg-3">
+        <p class="font-weight-bold">Master for {{ domainName }}</p>
+
+        <form autocomplete="off" [formGroup]="slaveForm" (ngSubmit)="onSubmit()">
+            <div class="form-group">
+                <label>Master</label>
+                <input type="text" class="form-control auto-invalid" formControlName="master" />
+                <div class="invalid-feedback">
+                    Master can not be empty.
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary float-right" [disabled]="!slaveForm.valid || slaveForm.pristine">Save</button>
+        </form>
+    </div>
+</div>

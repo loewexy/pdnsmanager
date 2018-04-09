@@ -1,4 +1,6 @@
-<app-pagesize [pagesizes]="gs.pageSizes" [currentPagesize]="gs.pageSize" (pagesizeChange)="onPagesizeChange($event)"></app-pagesize>
+<div class="row">
+    <app-pagesize class="ml-auto" [pagesizes]="gs.pageSizes" [currentPagesize]="gs.pageSize" (pagesizeChange)="onPagesizeChange($event)"></app-pagesize>
+</div>
 <div class="row">
     <div class="col-12">
         <div class="table-responsive-lg">

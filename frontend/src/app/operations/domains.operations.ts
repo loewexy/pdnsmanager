@@ -35,4 +35,26 @@ export class DomainsOperation {
             return false;
         }
     }
+
+    public async getSingle(domainId: number): Promise<DomainApitype> {
+        try {
+            return new DomainApitype(await this.http.get(['/domains', domainId.toString()]));
+        } catch (e) {
+            console.error(e);
+            return new DomainApitype({});
+        }
+    }
+
+    public async updateMaster(domainId: number, master: string): Promise<boolean> {
+        try {
+            await this.http.put(['/domains', domainId.toString()], {
+                master: master
+            });
+
+            return true;
+        } catch (e) {
+            console.error(e);
+            return false;
+        }
+    }
 }

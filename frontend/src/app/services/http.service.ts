@@ -15,7 +15,7 @@ export class HttpService {
         });
     }
 
-    public async get(url: string, params: Object = {}): Promise<any> {
+    public async get(url: string | Array<string>, params: Object = {}): Promise<any> {
         const parts = [];
         for (const [k, v] of Object.entries(params)) {
             if (v === undefined || v === null) {
@@ -34,7 +34,7 @@ export class HttpService {
 
         const queryStr = parts.join('&');
 
-        const reqUrl = queryStr.length > 0 ? this.makeUrl(url) + '?' + queryStr : url;
+        const reqUrl = queryStr.length > 0 ? this.makeUrl(url) + '?' + queryStr : this.makeUrl(url);
 
         return (await this.http({
             url: reqUrl,

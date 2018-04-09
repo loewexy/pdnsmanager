@@ -78,8 +78,6 @@ export class SelectComponent implements OnInit, ControlValueAccessor {
     }
 
     public writeValue(obj: any): void {
-        console.log('input obj ' + JSON.stringify(obj));
-        console.log(obj);
         if (obj === null) {
             this.selections = [];
         } else if (obj instanceof Array) {
