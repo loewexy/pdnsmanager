@@ -39,7 +39,7 @@
                         <td>{{ domain.type }}</td>
                         <td>{{ domain.records }}</td>
                         <td *ngIf="gs.isAdmin">
-                            <app-fa-icon class="cursor-pointer" icon="trash" (click)="onDeleteDomain(domain)"></app-fa-icon>
+                            <app-fa-icon class="cursor-pointer" icon="trash" appStopPropagateClick (click)="onDeleteDomain(domain)"></app-fa-icon>
                         </td>
                     </tr>
                 </tbody>

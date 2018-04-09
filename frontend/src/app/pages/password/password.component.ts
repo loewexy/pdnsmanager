@@ -1,5 +1,5 @@
 import { PasswordOperation } from './../../operations/password.operations';
-import { PasswordValidationUtil } from './../../utils/PasswordValidation.util';
+import { PasswordValidationUtil } from './../../utils/password-validation.util';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
 

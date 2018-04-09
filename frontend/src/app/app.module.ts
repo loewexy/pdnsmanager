@@ -1,9 +1,10 @@
+import { StopPropagateClickDirective } from './utils/stop-propagate-click.directive';
 import { PagesizeComponent } from './partials/pagesize/pagesize.component';
 import { PagingComponent } from './partials/paging/paging.component';
 import { DomainsOperation } from './operations/domains.operations';
 import { PasswordOperation } from './operations/password.operations';
 import { AuthGuard } from './services/auth-guard.service';
-import { FocusDirective } from './utils/Focus.directive';
+import { FocusDirective } from './utils/focus.directive';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -46,7 +47,8 @@ import { SelectComponent } from './partials/select/select.component';
     PagesizeComponent,
     EditSlaveComponent,
     EditAuthComponent,
-    SelectComponent
+    SelectComponent,
+    StopPropagateClickDirective
   ],
   imports: [
     BrowserModule,
