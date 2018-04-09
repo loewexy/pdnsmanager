@@ -57,4 +57,27 @@ export class DomainsOperation {
             return false;
         }
     }
+
+    public async create(name: string, type: string, master?: string): Promise<DomainApitype> {
+        let result: DomainApitype;
+        try {
+            if (type === 'SLAVE') {
+                result = new DomainApitype(await this.http.post('/domains', {
+                    name: name,
+                    type: type,
+                    master: master
+                }));
+            } else {
+                result = new DomainApitype(await this.http.post('/domains', {
+                    name: name,
+                    type: type
+                }));
+            }
+
+            return result;
+        } catch (e) {
+            console.error(e);
+            return new DomainApitype({});
+        }
+    }
 }

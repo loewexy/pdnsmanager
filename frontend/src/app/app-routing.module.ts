@@ -1,3 +1,4 @@
+import { CreateSlaveComponent } from './pages/create-slave/create-slave.component';
 import { EditSlaveComponent } from './pages/edit-slave/edit-slave.component';
 import { PasswordComponent } from './pages/password/password.component';
 import { AuthGuard } from './services/auth-guard.service';
@@ -34,6 +35,10 @@ const routes: Routes = [
             {
                 path: 'domains/auth/:domainId',
                 component: EditAuthComponent
+            },
+            {
+                path: 'domains/create/slave',
+                component: CreateSlaveComponent
             },
             {
                 path: 'password',

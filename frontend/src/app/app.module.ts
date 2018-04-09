@@ -28,6 +28,7 @@ import { PasswordComponent } from './pages/password/password.component';
 import { EditSlaveComponent } from './pages/edit-slave/edit-slave.component';
 import { EditAuthComponent } from './pages/edit-auth/edit-auth.component';
 import { SelectComponent } from './partials/select/select.component';
+import { CreateSlaveComponent } from './pages/create-slave/create-slave.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { SelectComponent } from './partials/select/select.component';
     EditSlaveComponent,
     EditAuthComponent,
     SelectComponent,
-    StopPropagateClickDirective
+    StopPropagateClickDirective,
+    CreateSlaveComponent
   ],
   imports: [
     BrowserModule,
