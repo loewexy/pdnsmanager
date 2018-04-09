@@ -58,3 +58,9 @@ $fa-font-path: "~font-awesome/fonts";
 .cursor-pointer {
     cursor: pointer;
 }
+
+/* Remove glow from inputs */
+.no-shadow { 
+    box-shadow: none!important;
+    border-color: #CCC!important;
+}

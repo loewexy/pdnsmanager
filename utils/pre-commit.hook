@@ -8,11 +8,20 @@ then
 fi
 cd ..
 
+cd frontend
+if ! npm run build
+then
+    echo "Frontend build failed"
+    exit 2
+fi
+rm -rf dist/
+cd ..
+
 cd backend/src
 if ! composer run-script lint
 then
     echo "Backend lint failed"
-    exit 2
+    exit 3
 fi
 cd ../..
 
@@ -20,7 +29,7 @@ cd backend/test
 if ! ./test.sh all
 then
     echo "Backend test failed"
-    exit 3
+    exit 4
 fi
 cd ../..
 

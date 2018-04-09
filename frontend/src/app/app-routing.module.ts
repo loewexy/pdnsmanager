@@ -1,9 +1,11 @@
+import { EditSlaveComponent } from './pages/edit-slave/edit-slave.component';
 import { PasswordComponent } from './pages/password/password.component';
 import { AuthGuard } from './services/auth-guard.service';
 import { DomainsComponent } from './pages/domains/domains.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { LoginComponent } from './pages/login/login.component';
+import { EditAuthComponent } from './pages/edit-auth/edit-auth.component';
 
 const routes: Routes = [
     {
@@ -24,6 +26,14 @@ const routes: Routes = [
             {
                 path: 'domains',
                 component: DomainsComponent
+            },
+            {
+                path: 'domains/slave/:domainId',
+                component: EditSlaveComponent
+            },
+            {
+                path: 'domains/auth/:domainId',
+                component: EditAuthComponent
             },
             {
                 path: 'password',

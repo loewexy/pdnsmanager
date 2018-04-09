@@ -10,12 +10,15 @@ export class DomainsOperation {
 
     constructor(private http: HttpService, private gs: StateService) { }
 
-    public async getList(page?: number, pageSize?: number, query?: string, sort?: Array<String>): Promise<ListApitype<DomainApitype>> {
+    public async getList(page?: number, pageSize?: number, query?: string,
+        sort?: Array<String> | string, type?: string): Promise<ListApitype<DomainApitype>> {
         try {
             return new ListApitype<DomainApitype>(await this.http.get('/domains', {
                 page: page,
                 pagesize: pageSize,
-                query: query
+                query: query,
+                sort: sort,
+                type: type
             }));
         } catch (e) {
             console.error(e);

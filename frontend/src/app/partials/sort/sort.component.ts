@@ -12,6 +12,9 @@ export class SortComponent {
     @Output() sort = new EventEmitter<SortEventDatatype>();
 
     @Input() field: string;
+
+    @Input() activeFields: Array<string> | string = null;
+
     public order = 0;
 
     constructor() { }
@@ -51,6 +54,21 @@ export class SortComponent {
             field: this.field,
             order: this.order
         }));
+    }
+
+    /**
+     * Determines if field is active
+     */
+    public isActive() {
+        if (this.activeFields === null) {
+            return false;
+        } else {
+            if (this.activeFields instanceof Array) {
+                return this.activeFields.includes(this.field);
+            } else {
+                return this.activeFields === this.field;
+            }
+        }
     }
 
 }

@@ -5,11 +5,34 @@
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th class="w-5">ID</th>
-                        <th>Name</th>
-                        <th class="w-25">Type</th>
-                        <th class="w-15">Records</th>
-                        <th *ngIf="gs.isAdmin" class="w-5"></th>
+                        <th class="w-10 align-middle">
+                            <span>ID</span>
+                            <app-sort field="id" [activeFields]="sortField" (sort)="onSortEvent($event)"></app-sort>
+                        </th>
+                        <th class="align-middle">
+                            <div class="form-inline">
+                                <span>Name</span>
+                                <app-sort field="name" [activeFields]="sortField" (sort)="onSortEvent($event)"></app-sort>
+                                <input class="form-control form-control-sm no-shadow" type="text" placeholder="Search" [formControl]="searchInput">
+                            </div>
+                        </th>
+                        <th class="w-20 align-middle">
+                            <div class="form-inline">
+                                <span>Name</span>
+                                <app-sort field="type" [activeFields]="sortField" (sort)="onSortEvent($event)"></app-sort>
+                                <select class="form-control form-control-sm" [formControl]="typeFilter">
+                                    <option value="">No filter...</option>
+                                    <option value="MASTER">MASTER</option>
+                                    <option value="NATIVE">NATIVE</option>
+                                    <option value="SLAVE">SLAVE</option>
+                                </select>
+                            </div>
+                        </th>
+                        <th class="w-15 align-middle">
+                            <span>Records</span>
+                            <app-sort field="records" [activeFields]="sortField" (sort)="onSortEvent($event)"></app-sort>
+                        </th>
+                        <th *ngIf="gs.isAdmin" class="w-5 align-middle"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -25,6 +48,7 @@
                 </tbody>
             </table>
         </div>
+
     </div>
 </div>
 <app-paging [pagingInfo]="pagingInfo" [pageWidth]="3" (pageChange)="onPageChange($event)"></app-paging>
