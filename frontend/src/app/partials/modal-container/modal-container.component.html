@@ -8,7 +8,7 @@
                 <p>{{options.body}}</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" (click)="onDismis()">{{options.dismisText}}</button>
+                <button type="button" class="btn btn-secondary" (click)="onDismis()">{{options.dismisText}}</button>
                 <button type="button" class="btn" [ngClass]="'btn-' + options.acceptClass" (click)="onAccept()">{{options.acceptText}}</button>
             </div>
         </div>

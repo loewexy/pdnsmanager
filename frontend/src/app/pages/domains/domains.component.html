@@ -20,12 +20,7 @@
                             <div class="form-inline">
                                 <span>Name</span>
                                 <app-sort field="type" [activeFields]="sortField" (sort)="onSortEvent($event)"></app-sort>
-                                <select class="form-control form-control-sm" [formControl]="typeFilter">
-                                    <option value="">No filter...</option>
-                                    <option value="MASTER">MASTER</option>
-                                    <option value="NATIVE">NATIVE</option>
-                                    <option value="SLAVE">SLAVE</option>
-                                </select>
+                                <app-select [options]="typeFilterOptions" [formControl]="typeFilter"></app-select>
                             </div>
                         </th>
                         <th class="w-15 align-middle">
@@ -48,7 +43,6 @@
                 </tbody>
             </table>
         </div>
-
     </div>
 </div>
 <app-paging [pagingInfo]="pagingInfo" [pageWidth]="3" (pageChange)="onPageChange($event)"></app-paging>

@@ -28,6 +28,7 @@ export class DomainsComponent implements OnInit {
 
     public searchInput: FormControl;
     public typeFilter: FormControl;
+    public typeFilterOptions = ['MASTER', 'NATIVE', 'SLAVE'];
 
     constructor(private domains: DomainsOperation, public gs: StateService, private modal: ModalService, private router: Router) { }
 
@@ -35,7 +36,7 @@ export class DomainsComponent implements OnInit {
         this.searchInput = new FormControl('');
         this.searchInput.valueChanges.debounceTime(500).subscribe(() => this.loadData());
 
-        this.typeFilter = new FormControl('');
+        this.typeFilter = new FormControl(null);
         this.typeFilter.valueChanges.subscribe(() => this.loadData());
 
         this.loadData();
@@ -44,7 +45,7 @@ export class DomainsComponent implements OnInit {
     public async loadData() {
         const sortStr = this.sortField !== '' ? this.sortField + '-' + this.sortOrder : null;
         const searchStr = this.searchInput.value !== '' ? this.searchInput.value : null;
-        const typeFilter = this.typeFilter.value !== '' ? this.typeFilter.value : null;
+        const typeFilter = this.typeFilter.value;
 
         const res = await this.domains.getList(this.pageRequested, this.gs.pageSize, searchStr, sortStr, typeFilter);
 

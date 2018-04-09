@@ -26,6 +26,7 @@ import { DomainsComponent } from './pages/domains/domains.component';
 import { PasswordComponent } from './pages/password/password.component';
 import { EditSlaveComponent } from './pages/edit-slave/edit-slave.component';
 import { EditAuthComponent } from './pages/edit-auth/edit-auth.component';
+import { SelectComponent } from './partials/select/select.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import { EditAuthComponent } from './pages/edit-auth/edit-auth.component';
     PagingComponent,
     PagesizeComponent,
     EditSlaveComponent,
-    EditAuthComponent
+    EditAuthComponent,
+    SelectComponent
   ],
   imports: [
     BrowserModule,
