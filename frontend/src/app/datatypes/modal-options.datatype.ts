@@ -11,7 +11,13 @@ export class ModalOptionsDatatype {
 
     public acceptClass: 'primary';
 
-    constructor(init: Object) {
+    constructor(init: {
+        heading: string
+        body: string
+        acceptText: string
+        dismisText: string,
+        acceptClass?: string
+    }) {
         Object.assign(this, init);
     }
 }

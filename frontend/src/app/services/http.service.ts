@@ -18,6 +18,10 @@ export class HttpService {
     public async get(url: string, params: Object = {}): Promise<any> {
         const parts = [];
         for (const [k, v] of Object.entries(params)) {
+            if (v === undefined || v === null) {
+                continue;
+            }
+
             let value;
             if (v instanceof Array) {
                 value = v.join(',');

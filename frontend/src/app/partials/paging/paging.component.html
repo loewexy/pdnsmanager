@@ -1,0 +1,21 @@
+<div *ngIf="pagingInfo.total > 1" class="row">
+    <nav class="mx-auto">
+        <ul class="pagination">
+            <li *ngIf="pagingInfo.page > 1" class="page-item" (click)="previous()">
+                <app-fa-icon class="page-link" icon="angle-left"></app-fa-icon>
+            </li>
+            <li *ngIf="truncatesLeft()" class="page-item disabled">
+                <app-fa-icon class="page-link" icon="ellipsis-h"></app-fa-icon>
+            </li>
+            <li *ngFor="let i of createNumbers()" class="page-item" [class.active]="i === pagingInfo.page" (click)="newPage(i)">
+                <span class="page-link">{{ i }}</span>
+            </li>
+            <li *ngIf="truncatesRight()" class="page-item disabled">
+                <app-fa-icon class="page-link" icon="ellipsis-h"></app-fa-icon>
+            </li>
+            <li *ngIf="pagingInfo.page < pagingInfo.total" class="page-item " (click)="next()">
+                <app-fa-icon class="page-link " icon="angle-right "></app-fa-icon>
+            </li>
+        </ul>
+    </nav>
+</div>

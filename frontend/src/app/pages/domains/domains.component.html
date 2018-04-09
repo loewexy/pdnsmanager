@@ -1,3 +1,30 @@
-<p>
-  domains works!
-</p>
+<app-pagesize [pagesizes]="gs.pageSizes" [currentPagesize]="gs.pageSize" (pagesizeChange)="onPagesizeChange($event)"></app-pagesize>
+<div class="row">
+    <div class="col-12">
+        <div class="table-responsive-lg">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th class="w-5">ID</th>
+                        <th>Name</th>
+                        <th class="w-25">Type</th>
+                        <th class="w-15">Records</th>
+                        <th *ngIf="gs.isAdmin" class="w-5"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let domain of domainList" class="cursor-pointer" (click)="onDomainClick(domain)">
+                        <td>{{ domain.id }}</td>
+                        <td>{{ domain.name }}</td>
+                        <td>{{ domain.type }}</td>
+                        <td>{{ domain.records }}</td>
+                        <td *ngIf="gs.isAdmin">
+                            <app-fa-icon class="cursor-pointer" icon="trash" (click)="onDeleteDomain(domain)"></app-fa-icon>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<app-paging [pagingInfo]="pagingInfo" [pageWidth]="3" (pageChange)="onPageChange($event)"></app-paging>

@@ -1,3 +1,6 @@
+import { PagesizeComponent } from './partials/pagesize/pagesize.component';
+import { PagingComponent } from './partials/paging/paging.component';
+import { DomainsOperation } from './operations/domains.operations';
 import { PasswordOperation } from './operations/password.operations';
 import { AuthGuard } from './services/auth-guard.service';
 import { FocusDirective } from './utils/Focus.directive';
@@ -21,6 +24,7 @@ import { HttpService } from './services/http.service';
 import { SessionOperation } from './operations/session.operation';
 import { DomainsComponent } from './pages/domains/domains.component';
 import { PasswordComponent } from './pages/password/password.component';
+import { EditSlaveComponent } from './pages/edit-slave/edit-slave.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +39,10 @@ import { PasswordComponent } from './pages/password/password.component';
     LoginComponent,
     DomainsComponent,
     FocusDirective,
-    PasswordComponent
+    PasswordComponent,
+    PagingComponent,
+    PagesizeComponent,
+    EditSlaveComponent
   ],
   imports: [
     BrowserModule,
@@ -48,6 +55,7 @@ import { PasswordComponent } from './pages/password/password.component';
     HttpService,
     SessionOperation,
     PasswordOperation,
+    DomainsOperation,
     AuthGuard
   ],
   bootstrap: [AppComponent]
