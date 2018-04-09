@@ -3,7 +3,7 @@
 
         <a class="navbar-brand" href="#">{{ brand }}</a>
 
-        <button *ngIf="true" class="navbar-toggler navbar-toggler-right" (click)="toggleMenu()">
+        <button *ngIf="!isEmpty()" class="navbar-toggler navbar-toggler-right" (click)="toggleMenu()">
             <span class="navbar-toggler-icon"></span>
         </button>
 

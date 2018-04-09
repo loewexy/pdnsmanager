@@ -1,5 +1,15 @@
-<div class="row">
-    <app-pagesize class="ml-auto" [pagesizes]="gs.pageSizes" [currentPagesize]="gs.pageSize" (pagesizeChange)="onPagesizeChange($event)"></app-pagesize>
+<div class="row justify-content-end">
+    <div class="col-12 col-md-6" *ngIf="gs.isAdmin">
+        <div class="btn-group btn-group-sm">
+            <button disabled class="btn btn-secondary">Add domain</button>
+            <button class="btn btn-secondary">MASTER</button>
+            <button class="btn btn-secondary">NATIVE</button>
+            <button class="btn btn-secondary">SLAVE</button>
+        </div>
+    </div>
+    <div class="col-12 col-md-6 mt-2 mt-md-0">
+        <app-pagesize class="float-md-right" [pagesizes]="gs.pageSizes" [currentPagesize]="gs.pageSize" (pagesizeChange)="onPagesizeChange($event)"></app-pagesize>
+    </div>
 </div>
 <div class="row">
     <div class="col-12">
