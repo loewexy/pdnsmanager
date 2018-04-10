@@ -1,3 +1,4 @@
+import { CreateAuthComponent } from './pages/create-auth/create-auth.component';
 import { StopPropagateClickDirective } from './utils/stop-propagate-click.directive';
 import { PagesizeComponent } from './partials/pagesize/pagesize.component';
 import { PagingComponent } from './partials/paging/paging.component';
@@ -50,7 +51,8 @@ import { CreateSlaveComponent } from './pages/create-slave/create-slave.componen
     EditAuthComponent,
     SelectComponent,
     StopPropagateClickDirective,
-    CreateSlaveComponent
+    CreateSlaveComponent,
+    CreateAuthComponent
   ],
   imports: [
     BrowserModule,

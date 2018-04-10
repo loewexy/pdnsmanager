@@ -76,8 +76,31 @@ export class DomainsOperation {
 
             return result;
         } catch (e) {
+            if (e.response.status || e.response.status === 409) {
+                throw new Error('Domain already exists!');
+            } else {
+                console.error(e);
+                return new DomainApitype({});
+            }
+        }
+    }
+
+    public async setSoa(domainId: number, primary: string, email: string, refresh: number,
+        retry: number, expire: number, ttl: number): Promise<boolean> {
+        try {
+            await this.http.put(['/domains', domainId.toString(), 'soa'], {
+                primary: primary,
+                email: email,
+                refresh: refresh,
+                retry: retry,
+                expire: expire,
+                ttl: ttl
+            });
+
+            return true;
+        } catch (e) {
             console.error(e);
-            return new DomainApitype({});
+            return false;
         }
     }
 }

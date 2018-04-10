@@ -1,3 +1,4 @@
+import { CreateAuthComponent } from './pages/create-auth/create-auth.component';
 import { CreateSlaveComponent } from './pages/create-slave/create-slave.component';
 import { EditSlaveComponent } from './pages/edit-slave/edit-slave.component';
 import { PasswordComponent } from './pages/password/password.component';
@@ -33,12 +34,28 @@ const routes: Routes = [
                 component: EditSlaveComponent
             },
             {
-                path: 'domains/auth/:domainId',
-                component: EditAuthComponent
+                path: 'domains/master/:domainId',
+                component: EditAuthComponent,
+                data: { type: 'MASTER' }
+            },
+            {
+                path: 'domains/native/:domainId',
+                component: EditAuthComponent,
+                data: { type: 'NATIVE' }
             },
             {
                 path: 'domains/create/slave',
                 component: CreateSlaveComponent
+            },
+            {
+                path: 'domains/create/master',
+                component: CreateAuthComponent,
+                data: { type: 'MASTER' }
+            },
+            {
+                path: 'domains/create/native',
+                component: CreateAuthComponent,
+                data: { type: 'NATIVE' }
             },
             {
                 path: 'password',

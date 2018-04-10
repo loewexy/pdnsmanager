@@ -15,7 +15,7 @@ export class ModalOptionsDatatype {
         heading: string
         body: string
         acceptText: string
-        dismisText: string,
+        dismisText?: string,
         acceptClass?: string
     }) {
         Object.assign(this, init);

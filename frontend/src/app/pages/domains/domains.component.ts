@@ -84,8 +84,10 @@ export class DomainsComponent implements OnInit {
     public async onDomainClick(domain: DomainApitype) {
         if (domain.type === 'SLAVE') {
             this.router.navigate(['/domains/slave/', domain.id.toString()]);
-        } else if (domain.type === 'MASTER' || domain.type === 'NATIVE') {
-            this.router.navigate(['/domains/auth/', domain.id.toString()]);
+        } else if (domain.type === 'MASTER') {
+            this.router.navigate(['/domains/master/', domain.id.toString()]);
+        } else if (domain.type === 'NATIVE') {
+            this.router.navigate(['/domains/native/', domain.id.toString()]);
         }
     }
 

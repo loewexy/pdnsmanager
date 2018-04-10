@@ -2,8 +2,8 @@
     <div class="col-12 col-md-6" *ngIf="gs.isAdmin">
         <div class="btn-group btn-group-sm">
             <button disabled class="btn btn-secondary">Add domain</button>
-            <button class="btn btn-secondary">MASTER</button>
-            <button class="btn btn-secondary">NATIVE</button>
+            <button routerLink="create/master" class="btn btn-secondary">MASTER</button>
+            <button routerLink="create/native" class="btn btn-secondary">NATIVE</button>
             <button routerLink="create/slave" class="btn btn-secondary">SLAVE</button>
         </div>
     </div>
