@@ -25,7 +25,7 @@ export class CreateUserComponent implements OnInit {
     private createForm() {
         this.userForm = this.fb.group({
             name: ['', Validators.required],
-            type: ['user', Validators.required],
+            type: ['user'],
             password: ['', Validators.required],
             password2: ['']
         }, { validator: PasswordValidationUtil.matchPassword });

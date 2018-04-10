@@ -9,7 +9,8 @@
             </div>
             <div class="modal-footer">
                 <button type="button" *ngIf="options.dismisText.length > 0" class="btn btn-secondary" (click)="onDismis()">{{options.dismisText}}</button>
-                <button type="button" class="btn" [ngClass]="'btn-' + options.acceptClass" (click)="onAccept()">{{options.acceptText}}</button>
+                <button type="button" #acceptButton class="btn" [ngClass]="'btn-' + options.acceptClass" (click)="onAccept()"
+                    appFocus>{{options.acceptText}}</button>
             </div>
         </div>
     </div>

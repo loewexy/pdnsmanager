@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { ModalService } from '../../services/modal.service';
 import { ModalOptionsDatatype } from '../../datatypes/modal-options.datatype';
 
@@ -16,6 +16,8 @@ export class ModalContainerComponent implements OnInit {
         dismisText: '',
         acceptClass: 'primary'
     });
+
+    @ViewChild('acceptButton') private acceptButton: ElementRef;
 
     public show = false;
     public animate = false;
@@ -42,6 +44,8 @@ export class ModalContainerComponent implements OnInit {
         this.show = true;
         window.setTimeout(() => this.animate = true, 50);
 
+        window.setTimeout(() => this.acceptButton.nativeElement.focus(), 50);
+
         return new Promise<void>((resolve, reject) => {
             this.currentResolve = resolve;
             this.currentReject = reject;
@@ -61,6 +65,10 @@ export class ModalContainerComponent implements OnInit {
      */
     onDismis() {
         this.hideModal();
+        if (this.options.dismisText.length === 0) {
+            this.onAccept();
+            return;
+        }
         if (this.currentReject) {
             this.currentReject();
             this.currentResolve = null;

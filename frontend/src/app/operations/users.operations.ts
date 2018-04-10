@@ -62,8 +62,12 @@ export class UsersOperation {
 
             return true;
         } catch (e) {
-            console.error(e);
-            return false;
+            if (e.response.status || e.response.status === 409) {
+                throw new Error('User with that name already exists!');
+            } else {
+                console.error(e);
+                return false;
+            }
         }
     }
 

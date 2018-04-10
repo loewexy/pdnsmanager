@@ -1,3 +1,38 @@
-<p>
-    Edit user works!
-</p>
+<div class="row">
+    <div class="col-12 col-md-6 col-lg-3">
+        <p class="font-weight-bold">Edit user {{ username }}</p>
+
+        <form autocomplete="off" [formGroup]="userForm" (ngSubmit)="onSubmit()">
+
+            <div class="form-group" *ngIf="isNative">
+                <label>Name</label>
+                <input type="text" class="form-control auto-invalid" formControlName="name" />
+                <div class="invalid-feedback">
+                    Name can not be empty.
+                </div>
+            </div>
+
+            <div class="form-group" *ngIf="isNative">
+                <label>Password</label>
+                <input type="password" class="form-control auto-valid" formControlName="password" placeholder="(unchanged)"
+                />
+            </div>
+
+            <div class="form-group" *ngIf="isNative">
+                <label>Repeat password</label>
+                <input type="password" class="form-control auto-validstate" formControlName="password2" placeholder="(unchanged)"
+                />
+                <div class="invalid-feedback">
+                    Passwords do not match.
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Type</label>
+                <app-select [options]="['user', 'admin']" notNull formControlName="type"></app-select>
+            </div>
+
+            <button type="submit" class="btn btn-primary float-right" [disabled]="!userForm.valid || userForm.pristine">Save</button>
+        </form>
+    </div>
+</div>
