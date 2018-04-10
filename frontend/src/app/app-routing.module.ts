@@ -1,3 +1,6 @@
+import { EditUserComponent } from './pages/edit-user/edit-user.component';
+import { AdminGuard } from './services/admin-guard.service';
+import { UsersComponent } from './pages/users/users.component';
 import { CreateAuthComponent } from './pages/create-auth/create-auth.component';
 import { CreateSlaveComponent } from './pages/create-slave/create-slave.component';
 import { EditSlaveComponent } from './pages/edit-slave/edit-slave.component';
@@ -56,6 +59,20 @@ const routes: Routes = [
                 path: 'domains/create/native',
                 component: CreateAuthComponent,
                 data: { type: 'NATIVE' }
+            },
+            {
+                path: '',
+                canActivate: [AdminGuard],
+                children: [
+                    {
+                        path: 'users',
+                        component: UsersComponent
+                    },
+                    {
+                        path: 'users/:userId',
+                        component: EditUserComponent
+                    }
+                ]
             },
             {
                 path: 'password',

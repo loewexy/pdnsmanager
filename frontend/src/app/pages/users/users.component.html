@@ -1,11 +1,6 @@
 <div class="row justify-content-end">
-    <div class="col-12 col-md-6" *ngIf="gs.isAdmin">
-        <div class="btn-group btn-group-sm">
-            <button disabled class="btn btn-secondary">Add domain</button>
-            <button routerLink="create/master" class="btn btn-secondary">MASTER</button>
-            <button routerLink="create/native" class="btn btn-secondary">NATIVE</button>
-            <button routerLink="create/slave" class="btn btn-secondary">SLAVE</button>
-        </div>
+    <div class="col-12 col-md-6">
+        <button class="btn btn-secondary btn-sm">Add user</button>
     </div>
     <div class="col-12 col-md-6 mt-2 mt-md-0">
         <app-pagesize class="float-md-right" [pagesizes]="gs.pageSizes" [currentPagesize]="gs.pageSize" (pagesizeChange)="onPagesizeChange($event)"></app-pagesize>
@@ -35,21 +30,16 @@
                                 <app-select [options]="typeFilterOptions" [formControl]="typeFilter"></app-select>
                             </div>
                         </th>
-                        <th class="w-15 align-middle">
-                            <span>Records</span>
-                            <app-sort field="records" [activeFields]="sortField" (sort)="onSortEvent($event)"></app-sort>
-                        </th>
-                        <th *ngIf="gs.isAdmin" class="w-5 align-middle"></th>
+                        <th class="w-5 align-middle"></th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let domain of domainList" class="cursor-pointer" (click)="onDomainClick(domain)">
-                        <td>{{ domain.id }}</td>
-                        <td>{{ domain.name }}</td>
-                        <td>{{ domain.type }}</td>
-                        <td>{{ domain.records }}</td>
-                        <td *ngIf="gs.isAdmin">
-                            <app-fa-icon class="cursor-pointer" icon="trash" appStopPropagateClick (click)="onDeleteDomain(domain)"></app-fa-icon>
+                    <tr *ngFor="let user of userList" class="cursor-pointer" (click)="onUserClick(user)">
+                        <td>{{ user.id }}</td>
+                        <td>{{ user.name }}</td>
+                        <td>{{ user.type }}</td>
+                        <td>
+                            <app-fa-icon class="cursor-pointer" icon="trash" appStopPropagateClick (click)="onDeleteUser(user)"></app-fa-icon>
                         </td>
                     </tr>
                 </tbody>

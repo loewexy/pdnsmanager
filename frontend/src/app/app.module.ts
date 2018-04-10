@@ -1,3 +1,6 @@
+import { EditUserComponent } from './pages/edit-user/edit-user.component';
+import { UsersOperation } from './operations/users.operations';
+import { AdminGuard } from './services/admin-guard.service';
 import { CreateAuthComponent } from './pages/create-auth/create-auth.component';
 import { StopPropagateClickDirective } from './utils/stop-propagate-click.directive';
 import { PagesizeComponent } from './partials/pagesize/pagesize.component';
@@ -30,6 +33,7 @@ import { EditSlaveComponent } from './pages/edit-slave/edit-slave.component';
 import { EditAuthComponent } from './pages/edit-auth/edit-auth.component';
 import { SelectComponent } from './partials/select/select.component';
 import { CreateSlaveComponent } from './pages/create-slave/create-slave.component';
+import { UsersComponent } from './pages/users/users.component';
 
 @NgModule({
   declarations: [
@@ -52,7 +56,9 @@ import { CreateSlaveComponent } from './pages/create-slave/create-slave.componen
     SelectComponent,
     StopPropagateClickDirective,
     CreateSlaveComponent,
-    CreateAuthComponent
+    CreateAuthComponent,
+    UsersComponent,
+    EditUserComponent
   ],
   imports: [
     BrowserModule,
@@ -66,7 +72,9 @@ import { CreateSlaveComponent } from './pages/create-slave/create-slave.componen
     SessionOperation,
     PasswordOperation,
     DomainsOperation,
-    AuthGuard
+    UsersOperation,
+    AuthGuard,
+    AdminGuard
   ],
   bootstrap: [AppComponent]
 })
