@@ -99,7 +99,7 @@ class Users
             $this->logger->info('Deleted user', ['id' => $user]);
             return $res->withStatus(204);
         } catch (\Exceptions\NotFoundException $e) {
-            return $res->withJson(['error' => 'No user found for id ' . $domainId], 404);
+            return $res->withJson(['error' => 'No user found for id ' . $user], 404);
         }
     }
 
