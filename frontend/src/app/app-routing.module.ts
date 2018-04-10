@@ -1,3 +1,4 @@
+import { CreateUserComponent } from './pages/create-user/create-user.component';
 import { EditUserComponent } from './pages/edit-user/edit-user.component';
 import { AdminGuard } from './services/admin-guard.service';
 import { UsersComponent } from './pages/users/users.component';
@@ -67,6 +68,10 @@ const routes: Routes = [
                     {
                         path: 'users',
                         component: UsersComponent
+                    },
+                    {
+                        path: 'users/create',
+                        component: CreateUserComponent
                     },
                     {
                         path: 'users/:userId',

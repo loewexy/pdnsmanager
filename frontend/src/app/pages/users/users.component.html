@@ -1,6 +1,6 @@
 <div class="row justify-content-end">
     <div class="col-12 col-md-6">
-        <button class="btn btn-secondary btn-sm">Add user</button>
+        <button routerLink="create/" class="btn btn-secondary btn-sm">Add user</button>
     </div>
     <div class="col-12 col-md-6 mt-2 mt-md-0">
         <app-pagesize class="float-md-right" [pagesizes]="gs.pageSizes" [currentPagesize]="gs.pageSize" (pagesizeChange)="onPagesizeChange($event)"></app-pagesize>

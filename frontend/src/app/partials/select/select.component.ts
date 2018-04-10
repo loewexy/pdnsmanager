@@ -16,6 +16,7 @@ export class SelectComponent implements OnInit, ControlValueAccessor {
     @Input() options: Array<string> = [];
     @Input() emptyText = 'Choose..';
     @Input() multiple = false;
+    @Input() notNull = false;
 
     public open = false;
 
