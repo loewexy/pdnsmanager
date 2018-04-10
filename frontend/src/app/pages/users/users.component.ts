@@ -51,6 +51,11 @@ export class UsersComponent implements OnInit {
 
         this.pagingInfo = res.paging;
         this.userList = res.results;
+
+        if (res.paging.total < this.pageRequested && res.paging.total > 1) {
+            this.pageRequested = Math.max(1, res.paging.total);
+            await this.loadData();
+        }
     }
 
     public async onDeleteUser(user: UserApitype) {

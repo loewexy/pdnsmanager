@@ -1,3 +1,4 @@
+import { PermissionApitype } from './../apitypes/Permission.apitype';
 import { UserApitype } from './../apitypes/User.apitype';
 import { ListApitype } from './../apitypes/List.apitype';
 import { Injectable } from '@angular/core';
@@ -87,6 +88,36 @@ export class UsersOperation {
                 console.error(e);
                 return new UserApitype({});
             }
+        }
+    }
+
+    public async getPermissions(page: number, pagesize: number, userId: number): Promise<ListApitype<PermissionApitype>> {
+        try {
+            return new ListApitype<PermissionApitype>(await this.http.get(['/users', userId.toString(), 'permissions'], {
+                page: page,
+                pagesize: pagesize
+            }));
+        } catch (e) {
+            console.error(e);
+            return new ListApitype<PermissionApitype>({ paging: {}, results: [] });
+        }
+    }
+
+    public async removePermission(userId: number, domainId: number): Promise<void> {
+        try {
+            await this.http.delete(['/users', userId.toString(), 'permissions', domainId.toString()]);
+        } catch (e) {
+            console.error(e);
+            return;
+        }
+    }
+
+    public async addPermission(userId: number, domainId: number): Promise<void> {
+        try {
+            await this.http.post(['/users', userId.toString(), 'permissions'], { domainId: domainId });
+        } catch (e) {
+            console.error(e);
+            return;
         }
     }
 }

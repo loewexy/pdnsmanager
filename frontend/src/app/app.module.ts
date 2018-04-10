@@ -1,3 +1,4 @@
+import { SearchComponent } from './partials/search/search.component';
 import { CreateUserComponent } from './pages/create-user/create-user.component';
 import { EditUserComponent } from './pages/edit-user/edit-user.component';
 import { UsersOperation } from './operations/users.operations';
@@ -60,7 +61,8 @@ import { UsersComponent } from './pages/users/users.component';
     CreateAuthComponent,
     UsersComponent,
     EditUserComponent,
-    CreateUserComponent
+    CreateUserComponent,
+    SearchComponent
   ],
   imports: [
     BrowserModule,

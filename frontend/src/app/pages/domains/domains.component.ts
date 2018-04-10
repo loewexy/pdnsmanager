@@ -51,6 +51,10 @@ export class DomainsComponent implements OnInit {
 
         this.pagingInfo = res.paging;
         this.domainList = res.results;
+        if (res.paging.total < this.pageRequested && res.paging.total > 1) {
+            this.pageRequested = Math.max(1, res.paging.total);
+            await this.loadData();
+        }
     }
 
     public async onDeleteDomain(domain: DomainApitype) {

@@ -1,0 +1,10 @@
+<div class="dropdown">
+    <input type="text" class="form-control no-shadow" (focus)="open = true" (blur)="onBlur()" [formControl]="inputControl"
+        (keyup.enter)="onEnter()">
+    <div class="dropdown-menu" [class.show]="open">
+        <span *ngIf="hintText()" class="dropdown-item font-italic">{{ hintText() }}
+        </span>
+        <span *ngFor="let result of searchResults; let i=index" class="dropdown-item cursor-pointer" [class.active]="i === 0"
+            (click)="onClick(result.id)">{{ result.text }}</span>
+    </div>
+</div>

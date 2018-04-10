@@ -1,5 +1,5 @@
 <div class="row">
-    <div class="col-12 col-md-6 col-lg-3">
+    <div class="col-12 col-md-4 col-lg-3">
         <p class="font-weight-bold">Edit user {{ username }}</p>
 
         <form autocomplete="off" [formGroup]="userForm" (ngSubmit)="onSubmit()">
@@ -34,5 +34,33 @@
 
             <button type="submit" class="btn btn-primary float-right" [disabled]="!userForm.valid || userForm.pristine">Save</button>
         </form>
+    </div>
+    <div class="col-12 col-md-8 col-lg-8 offset-lg-1">
+        <div class="row no-gutters">
+            <div class="col-12 col-md-8 col-lg-4">
+                <p class="font-weight-bold">Add permission for domain</p>
+                <app-search (resultClicked)="addPermissionFor($event)" [searchService]="domains"></app-search>
+            </div>
+        </div>
+
+        <div class="row no-gutters mt-3">
+            <div class="col-12 col-lg-8">
+                <p class="font-weight-bold">Manage existing permissions</p>
+                <app-pagesize class="float-md-right" [pagesizes]="gs.pageSizes" [currentPagesize]="gs.pageSize" (pagesizeChange)="onPagesizeChange($event)"></app-pagesize>
+                <table class="table table-hover">
+                    <tbody>
+                        <tr *ngFor="let permission of permissions">
+                            <td>{{ permission.domainName }}</td>
+                            <td class="w-10">
+                                <app-fa-icon class="cursor-pointer" icon="times" appStopPropagateClick (click)="onRemovePermission(permission)"></app-fa-icon>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p *ngIf="permissions.length === 0" class="text-center">There are currently no permission for this user!</p>
+                <app-paging [pagingInfo]="pagingInfo" [pageWidth]="3" (pageChange)="onPageChange($event)"></app-paging>
+            </div>
+        </div>
+
     </div>
 </div>

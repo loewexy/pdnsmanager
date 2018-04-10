@@ -1,3 +1,7 @@
+import { PagingApitype } from './../../apitypes/Paging.apitype';
+import { StateService } from './../../services/state.service';
+import { PermissionApitype } from './../../apitypes/Permission.apitype';
+import { DomainsOperation } from './../../operations/domains.operations';
 import { UsersOperation } from './../../operations/users.operations';
 import { ModalService } from './../../services/modal.service';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
@@ -15,12 +19,17 @@ export class EditUserComponent implements OnInit {
 
     public userForm: FormGroup;
 
+    public permissions: PermissionApitype[];
+
+    public pageRequested = 1;
+    public pagingInfo = new PagingApitype({});
+
     public isNative = false;
     public username = '';
     public userId = 0;
 
     constructor(private fb: FormBuilder, private route: ActivatedRoute, private users: UsersOperation,
-        private router: Router, private modal: ModalService) { }
+        private router: Router, private modal: ModalService, public domains: DomainsOperation, public gs: StateService) { }
 
     ngOnInit() {
         this.createForm();
@@ -30,6 +39,8 @@ export class EditUserComponent implements OnInit {
 
     private async initControl(params: ParamMap) {
         this.userId = +params.get('userId');
+
+        this.loadPermissions();
 
         const user = await this.users.getSingle(this.userId);
 
@@ -78,5 +89,36 @@ export class EditUserComponent implements OnInit {
                 acceptClass: 'warning'
             }));
         }
+    }
+
+    public async loadPermissions() {
+        const res = await this.users.getPermissions(this.pageRequested, this.gs.pageSize, this.userId);
+        this.permissions = res.results;
+        this.pagingInfo = res.paging;
+        if (res.paging.total < this.pageRequested && res.paging.total > 1) {
+            this.pageRequested = Math.max(1, res.paging.total);
+            await this.loadPermissions();
+        }
+    }
+
+    public async onRemovePermission(permission: PermissionApitype) {
+        await this.users.removePermission(this.userId, permission.domainId);
+        await this.loadPermissions();
+    }
+
+    public async addPermissionFor(domainId: number) {
+        await this.users.addPermission(this.userId, domainId);
+        await this.loadPermissions();
+    }
+
+    public async onPagesizeChange(pagesize: number) {
+        this.pageRequested = 1;
+        this.gs.pageSize = pagesize;
+        await this.loadPermissions();
+    }
+
+    public async onPageChange(page: number) {
+        this.pageRequested = page;
+        await this.loadPermissions();
     }
 }

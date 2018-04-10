@@ -1,3 +1,4 @@
+import { SearchService, SearchServiceResult } from './../utils/search-service.interface';
 import { DomainApitype } from './../apitypes/Domain.apitype';
 import { ListApitype } from './../apitypes/List.apitype';
 import { Injectable } from '@angular/core';
@@ -6,9 +7,15 @@ import { StateService } from '../services/state.service';
 import { SessionApitype } from '../apitypes/Session.apitype';
 
 @Injectable()
-export class DomainsOperation {
+export class DomainsOperation implements SearchService {
 
     constructor(private http: HttpService, private gs: StateService) { }
+
+    public async search(query: string): Promise<SearchServiceResult[]> {
+        const result = await this.getList(1, 10, query, null);
+
+        return result.results.map((v: DomainApitype) => ({ id: v.id, text: v.name }));
+    }
 
     public async getList(page?: number, pageSize?: number, query?: string,
         sort?: Array<String> | string, type?: string): Promise<ListApitype<DomainApitype>> {
