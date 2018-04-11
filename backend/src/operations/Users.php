@@ -287,7 +287,8 @@ class Users
             $query = $this->db->prepare('SELECT id FROM users WHERE name=:name AND backend=\'native\'');
             $query->bindValue(':name', $name);
             $query->execute();
-            if ($query->fetch() !== false) {
+            $record = $query->fetch();
+            if ($record !== false && intval($record['id']) !== $userId) {
                 throw new \Exceptions\AlreadyExistentException();
             }
         }
