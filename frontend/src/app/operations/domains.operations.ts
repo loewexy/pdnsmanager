@@ -1,3 +1,4 @@
+import { SoaApitype } from './../apitypes/Soa.apitype';
 import { SearchService, SearchServiceResult } from './../utils/search-service.interface';
 import { DomainApitype } from './../apitypes/Domain.apitype';
 import { ListApitype } from './../apitypes/List.apitype';
@@ -105,6 +106,15 @@ export class DomainsOperation implements SearchService {
             });
 
             return true;
+        } catch (e) {
+            console.error(e);
+            return false;
+        }
+    }
+
+    public async getSoa(domainId: number) {
+        try {
+            return new SoaApitype(await this.http.get(['/domains', domainId.toString(), 'soa']));
         } catch (e) {
             console.error(e);
             return false;
