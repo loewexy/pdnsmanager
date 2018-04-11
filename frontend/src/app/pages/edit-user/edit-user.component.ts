@@ -19,7 +19,7 @@ export class EditUserComponent implements OnInit {
 
     public userForm: FormGroup;
 
-    public permissions: PermissionApitype[];
+    public permissions: PermissionApitype[] = [];
 
     public pageRequested = 1;
     public pagingInfo = new PagingApitype({});
