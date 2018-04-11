@@ -4,7 +4,7 @@
     <div class="dropdown-menu" [class.show]="open">
         <span *ngIf="hintText()" class="dropdown-item font-italic">{{ hintText() }}
         </span>
-        <span *ngFor="let result of searchResults; let i=index" class="dropdown-item cursor-pointer" [class.active]="i === 0"
+        <span *ngFor="let result of searchResults; let i=index" class="dropdown-item cursor-pointer" [class.dropdown-item-hover]="i === 0"
             (click)="onClick(result.id)">{{ result.text }}</span>
     </div>
 </div>

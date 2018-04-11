@@ -27,6 +27,10 @@ $sizes: (
 
 @import '~bootstrap/scss/bootstrap.scss';
 
+.dropdown-item-hover {
+    @extend .dropdown-item:hover;
+}
+
 /* Add font awesome */
 $fa-font-path: "~font-awesome/fonts";
 @import '~font-awesome/scss/font-awesome';
