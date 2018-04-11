@@ -1,3 +1,5 @@
+import { LoggedOutGuard } from './services/logged-out-guard.service';
+import { NativeGuard } from './services/native-guard.service';
 import { SearchComponent } from './partials/search/search.component';
 import { CreateUserComponent } from './pages/create-user/create-user.component';
 import { EditUserComponent } from './pages/edit-user/edit-user.component';
@@ -78,7 +80,9 @@ import { UsersComponent } from './pages/users/users.component';
     DomainsOperation,
     UsersOperation,
     AuthGuard,
-    AdminGuard
+    AdminGuard,
+    NativeGuard,
+    LoggedOutGuard
   ],
   bootstrap: [AppComponent]
 })

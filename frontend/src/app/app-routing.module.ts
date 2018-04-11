@@ -1,3 +1,5 @@
+import { NativeGuard } from './services/native-guard.service';
+import { LoggedOutGuard } from './services/logged-out-guard.service';
 import { CreateUserComponent } from './pages/create-user/create-user.component';
 import { EditUserComponent } from './pages/edit-user/edit-user.component';
 import { AdminGuard } from './services/admin-guard.service';
@@ -17,12 +19,14 @@ const routes: Routes = [
     {
         path: '',
         component: LoginComponent,
-        pathMatch: 'full'
+        pathMatch: 'full',
+        canActivate: [LoggedOutGuard]
     },
     {
         path: 'logout',
         component: LoginComponent,
-        data: { logout: true }
+        data: { logout: true },
+        canActivate: [LoggedOutGuard]
     },
     {
         path: '',
@@ -48,23 +52,23 @@ const routes: Routes = [
                 data: { type: 'NATIVE' }
             },
             {
-                path: 'domains/create/slave',
-                component: CreateSlaveComponent
-            },
-            {
-                path: 'domains/create/master',
-                component: CreateAuthComponent,
-                data: { type: 'MASTER' }
-            },
-            {
-                path: 'domains/create/native',
-                component: CreateAuthComponent,
-                data: { type: 'NATIVE' }
-            },
-            {
                 path: '',
                 canActivate: [AdminGuard],
                 children: [
+                    {
+                        path: 'domains/create/slave',
+                        component: CreateSlaveComponent
+                    },
+                    {
+                        path: 'domains/create/master',
+                        component: CreateAuthComponent,
+                        data: { type: 'MASTER' }
+                    },
+                    {
+                        path: 'domains/create/native',
+                        component: CreateAuthComponent,
+                        data: { type: 'NATIVE' }
+                    },
                     {
                         path: 'users',
                         component: UsersComponent
@@ -81,7 +85,8 @@ const routes: Routes = [
             },
             {
                 path: 'password',
-                component: PasswordComponent
+                component: PasswordComponent,
+                canActivate: [NativeGuard]
             },
             {
                 path: '**',
