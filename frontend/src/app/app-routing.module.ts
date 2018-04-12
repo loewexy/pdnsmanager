@@ -1,3 +1,4 @@
+import { EditCredentialsComponent } from './pages/edit-credentials/edit-credentials.component';
 import { NativeGuard } from './services/native-guard.service';
 import { LoggedOutGuard } from './services/logged-out-guard.service';
 import { CreateUserComponent } from './pages/create-user/create-user.component';
@@ -49,6 +50,16 @@ const routes: Routes = [
             {
                 path: 'domains/native/:domainId',
                 component: EditAuthComponent,
+                data: { type: 'NATIVE' }
+            },
+            {
+                path: 'domains/master/:domainId/records/:recordId/credentials',
+                component: EditCredentialsComponent,
+                data: { type: 'MASTER' }
+            },
+            {
+                path: 'domains/native/:domainId/records/:recordId/credentials',
+                component: EditCredentialsComponent,
                 data: { type: 'NATIVE' }
             },
             {

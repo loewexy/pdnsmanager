@@ -1,3 +1,5 @@
+import { CredentialsOperation } from './operations/credentials.operations';
+import { EditCredentialsComponent } from './pages/edit-credentials/edit-credentials.component';
 import { EditAuthAddComponent } from './pages/edit-auth/edit-auth-add.component';
 import { EditAuthLineComponent } from './pages/edit-auth/edit-auth-line.component';
 import { RecordsOperation } from './operations/records.operations';
@@ -69,7 +71,8 @@ import { UsersComponent } from './pages/users/users.component';
     CreateUserComponent,
     SearchComponent,
     EditAuthLineComponent,
-    EditAuthAddComponent
+    EditAuthAddComponent,
+    EditCredentialsComponent
   ],
   imports: [
     BrowserModule,
@@ -85,6 +88,7 @@ import { UsersComponent } from './pages/users/users.component';
     DomainsOperation,
     UsersOperation,
     RecordsOperation,
+    CredentialsOperation,
     AuthGuard,
     AdminGuard,
     NativeGuard,

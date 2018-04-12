@@ -1,3 +1,4 @@
+import { Router, ActivationEnd, ActivatedRoute } from '@angular/router';
 import { ModalOptionsDatatype } from './../../datatypes/modal-options.datatype';
 import { ModalService } from './../../services/modal.service';
 import { RecordsOperation } from './../../operations/records.operations';
@@ -28,7 +29,8 @@ export class EditAuthLineComponent implements OnInit, OnChanges {
     public inputPriority: FormControl;
     public inputTtl: FormControl;
 
-    constructor(private fb: FormBuilder, public gs: StateService, private records: RecordsOperation, private modal: ModalService) {
+    constructor(private fb: FormBuilder, public gs: StateService, private records: RecordsOperation,
+        private modal: ModalService, private router: Router, private route: ActivatedRoute) {
         this.setupFormControls();
     }
 
@@ -87,7 +89,7 @@ export class EditAuthLineComponent implements OnInit, OnChanges {
             await this.modal.showMessage(new ModalOptionsDatatype({
                 heading: 'Confirm deletion',
                 body: 'Are you shure you want to delete the ' + this.inputType.value +
-                ' record ' + this.fullName() + ' with content ' + this.inputContent.value + '?',
+                    ' record ' + this.fullName() + ' with content ' + this.inputContent.value + '?',
                 acceptText: 'Delete',
                 dismisText: 'Cancel',
                 acceptClass: 'danger'
@@ -101,6 +103,6 @@ export class EditAuthLineComponent implements OnInit, OnChanges {
     }
 
     public async onRemoteClick() {
-
+        this.router.navigate(['./records', this.entry.id.toString(), 'credentials'], { relativeTo: this.route });
     }
 }
