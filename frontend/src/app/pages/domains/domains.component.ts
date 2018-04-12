@@ -49,7 +49,7 @@ export class DomainsComponent implements OnInit {
 
         const res = await this.domains.getList(this.pageRequested, this.gs.pageSize, searchStr, sortStr, typeFilter);
 
-        if (res.paging.total < this.pageRequested) {
+        if (res.paging.total < this.pageRequested && res.paging.total > 0) {
             this.pageRequested = Math.max(1, res.paging.total);
             await this.loadData();
         } else {
