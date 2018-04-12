@@ -1,3 +1,4 @@
+import { EditAuthAddComponent } from './pages/edit-auth/edit-auth-add.component';
 import { EditAuthLineComponent } from './pages/edit-auth/edit-auth-line.component';
 import { RecordsOperation } from './operations/records.operations';
 import { LoggedOutGuard } from './services/logged-out-guard.service';
@@ -67,7 +68,8 @@ import { UsersComponent } from './pages/users/users.component';
     EditUserComponent,
     CreateUserComponent,
     SearchComponent,
-    EditAuthLineComponent
+    EditAuthLineComponent,
+    EditAuthAddComponent
   ],
   imports: [
     BrowserModule,

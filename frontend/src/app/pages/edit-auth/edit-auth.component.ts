@@ -75,7 +75,7 @@ export class EditAuthComponent implements OnInit {
         this.typeFilter.reset();
     }
 
-    private async updateSerial() {
+    public async updateSerial() {
         const soa = await this.domains.getSoa(this.domainId);
         if (soa !== false) {
             this.soaForm.controls['serial'].reset(soa.serial);

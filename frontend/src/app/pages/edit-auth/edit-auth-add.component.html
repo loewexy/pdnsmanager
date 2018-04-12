@@ -1,0 +1,36 @@
+<td>Add</td>
+<td class="align-middle py-0">
+    <div class="input-group input-group-sm">
+        <input class="form-control" type="text" [formControl]="inputName">
+        <div class="input-group-append">
+            <span class="input-group-text">.{{ domain.name }}</span>
+        </div>
+    </div>
+</td>
+<td class="align-middle py-0">
+    <app-select [options]="gs.recordTypes" notNull [formControl]="inputType"></app-select>
+</td>
+<td class="align-middle py-0">
+    <input class="form-control form-control-sm" type="text" [formControl]="inputContent">
+</td>
+<td class="align-middle py-0">
+    <div class="form-group m-0 position-relative">
+        <input class="form-control form-control-sm auto-invalid" type="text" [formControl]="inputPriority">
+        <div class="invalid-tooltip w-200 mw-200">
+            Must be positive integer.
+        </div>
+    </div>
+</td>
+<td class="align-middle py-0">
+    <div class="form-group m-0 position-relative">
+        <input class="form-control form-control-sm auto-invalid" type="text" [formControl]="inputTtl">
+        <div class="invalid-tooltip w-200 mw-200">
+            Must be positive integer.
+        </div>
+    </div>
+</td>
+<td class="align-middle text-center py-0">
+    <span>
+        <button class="btn btn-primary btn-sm w-100" (click)="onSave()">Add</button>
+    </span>
+</td>
