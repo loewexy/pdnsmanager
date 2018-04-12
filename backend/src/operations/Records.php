@@ -188,6 +188,9 @@ class Records
         $record['ttl'] = intval($record['ttl']);
         $record['domain'] = intval($record['domain']);
 
+        $soa = new \Operations\Soa($this->c);
+        $soa->updateSerial($domain);
+
         $this->db->commit();
 
         return $record;
@@ -206,14 +209,18 @@ class Records
     {
         $this->db->beginTransaction();
 
-        $query = $this->db->prepare('SELECT id FROM records WHERE id=:id');
+        $query = $this->db->prepare('SELECT id,domain_id FROM records WHERE id=:id');
         $query->bindValue(':id', $id, \PDO::PARAM_INT);
         $query->execute();
 
-        if ($query->fetch() === false) { //Domain does not exist
+        $record = $query->fetch();
+
+        if ($record === false) { //Domain does not exist
             $this->db->rollBack();
             throw new \Exceptions\NotFoundException();
         }
+
+        $domainId = intval($record['domain_id']);
 
         $query = $this->db->prepare('DELETE FROM remote WHERE record=:id');
         $query->bindValue(':id', $id, \PDO::PARAM_INT);
@@ -222,6 +229,9 @@ class Records
         $query = $this->db->prepare('DELETE FROM records WHERE id=:id');
         $query->bindValue(':id', $id, \PDO::PARAM_INT);
         $query->execute();
+
+        $soa = new \Operations\Soa($this->c);
+        $soa->updateSerial($domainId);
 
         $this->db->commit();
     }
@@ -276,7 +286,7 @@ class Records
     {
         $this->db->beginTransaction();
 
-        $query = $this->db->prepare('SELECT id,name,type,content,prio,ttl FROM records WHERE id=:recordId');
+        $query = $this->db->prepare('SELECT id,domain_id,name,type,content,prio,ttl FROM records WHERE id=:recordId');
         $query->bindValue(':recordId', $recordId);
         $query->execute();
 
@@ -290,6 +300,8 @@ class Records
         if ($type !== null && !in_array($type, $this->c['config']['records']['allowedTypes'])) {
             throw new \Exceptions\SemanticException();
         }
+
+        $domainId = intval($record['domain_id']);
 
         $name = $name === null ? $record['name'] : $name;
         $type = $type === null ? $record['type'] : $type;
@@ -305,6 +317,9 @@ class Records
         $query->bindValue(':priority', $priority);
         $query->bindValue(':ttl', $ttl);
         $query->execute();
+
+        $soa = new \Operations\Soa($this->c);
+        $soa->updateSerial($domainId);
 
         $this->db->commit();
     }
