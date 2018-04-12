@@ -116,7 +116,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr app-edit-auth-line *ngFor="let record of recordList" [entry]="record" [domain]="domain" (recordUpdated)="updateSerial()"></tr>
+                    <tr app-edit-auth-line *ngFor="let record of recordList" [entry]="record" [domain]="domain" (recordUpdated)="updateSerial()"
+                        (recordDeleted)="updateSerial(); loadRecords();"></tr>
                 </tbody>
                 <tfoot>
                     <tr app-edit-auth-add [domain]="domain" (recordAdded)="updateSerial(); loadRecords();"></tr>

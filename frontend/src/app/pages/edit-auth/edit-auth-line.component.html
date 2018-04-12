@@ -39,8 +39,8 @@
 <td class="align-middle text-center py-0">
     <span *ngIf="!editMode">
         <app-fa-icon class="cursor-pointer mx-1" icon="edit" appStopPropagateClick (click)="onEditClick()"></app-fa-icon>
-        <app-fa-icon class="cursor-pointer mx-1" icon="trash" appStopPropagateClick></app-fa-icon>
-        <app-fa-icon class="cursor-pointer mx-1" icon="key" appStopPropagateClick></app-fa-icon>
+        <app-fa-icon class="cursor-pointer mx-1" icon="trash" appStopPropagateClick (click)="onDeleteClick()"></app-fa-icon>
+        <app-fa-icon class="cursor-pointer mx-1" icon="key" appStopPropagateClick (click)="onRemoteClick()"></app-fa-icon>
     </span>
     <span *ngIf="editMode">
         <button class="btn btn-primary btn-sm w-100" (click)="onSave()">Save</button>

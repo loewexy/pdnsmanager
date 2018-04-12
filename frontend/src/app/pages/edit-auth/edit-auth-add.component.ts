@@ -31,10 +31,19 @@ export class EditAuthAddComponent implements OnInit {
 
     public async setupFormControls() {
         this.inputName = this.fb.control('');
-        this.inputType = this.fb.control('A');
+        this.inputType = this.fb.control('');
         this.inputContent = this.fb.control('');
-        this.inputPriority = this.fb.control('0', [Validators.required, Validators.pattern(/^[0-9]+$/)]);
-        this.inputTtl = this.fb.control('86400', [Validators.required, Validators.pattern(/^[0-9]+$/)]);
+        this.inputPriority = this.fb.control('', [Validators.required, Validators.pattern(/^[0-9]+$/)]);
+        this.inputTtl = this.fb.control('', [Validators.required, Validators.pattern(/^[0-9]+$/)]);
+        this.resetForm();
+    }
+
+    private resetForm() {
+        this.inputName.reset('');
+        this.inputType.reset('A');
+        this.inputContent.reset('');
+        this.inputPriority.reset('0');
+        this.inputTtl.reset('86400');
     }
 
     public fullName(): string {
@@ -50,5 +59,7 @@ export class EditAuthAddComponent implements OnInit {
             this.inputContent.value, this.inputPriority.value, this.inputTtl.value);
 
         this.recordAdded.emit();
+
+        this.resetForm();
     }
 }

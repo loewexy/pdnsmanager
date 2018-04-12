@@ -1,3 +1,5 @@
+import { ModalOptionsDatatype } from './../../datatypes/modal-options.datatype';
+import { ModalService } from './../../services/modal.service';
 import { RecordsOperation } from './../../operations/records.operations';
 import { StateService } from './../../services/state.service';
 import { DomainApitype } from './../../apitypes/Domain.apitype';
@@ -16,6 +18,7 @@ export class EditAuthLineComponent implements OnInit, OnChanges {
     @Input() domain: DomainApitype;
 
     @Output() recordUpdated = new EventEmitter<void>();
+    @Output() recordDeleted = new EventEmitter<number>();
 
     public editMode = false;
 
@@ -25,7 +28,7 @@ export class EditAuthLineComponent implements OnInit, OnChanges {
     public inputPriority: FormControl;
     public inputTtl: FormControl;
 
-    constructor(private fb: FormBuilder, public gs: StateService, private records: RecordsOperation) {
+    constructor(private fb: FormBuilder, public gs: StateService, private records: RecordsOperation, private modal: ModalService) {
         this.setupFormControls();
     }
 
@@ -77,5 +80,27 @@ export class EditAuthLineComponent implements OnInit, OnChanges {
 
         this.editMode = false;
         this.recordUpdated.emit();
+    }
+
+    public async onDeleteClick() {
+        try {
+            await this.modal.showMessage(new ModalOptionsDatatype({
+                heading: 'Confirm deletion',
+                body: 'Are you shure you want to delete the ' + this.inputType.value +
+                ' record ' + this.fullName() + ' with content ' + this.inputContent.value + '?',
+                acceptText: 'Delete',
+                dismisText: 'Cancel',
+                acceptClass: 'danger'
+            }));
+
+            await this.records.delete(this.entry.id);
+
+            this.recordDeleted.emit(this.entry.id);
+        } catch (e) {
+        }
+    }
+
+    public async onRemoteClick() {
+
     }
 }

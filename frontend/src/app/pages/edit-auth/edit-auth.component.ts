@@ -119,11 +119,12 @@ export class EditAuthComponent implements OnInit {
         const res = await this.records.getListForDomain(this.domainId, this.pageRequested,
             this.gs.pageSize, queryName, typeFilter, queryContent, sortStr);
 
-        this.pagingInfo = res.paging;
-        this.recordList = res.results;
-        if (res.paging.total < this.pageRequested && res.paging.total > 1) {
+        if (res.paging.total < this.pageRequested) {
             this.pageRequested = Math.max(1, res.paging.total);
             await this.loadRecords();
+        } else {
+            this.pagingInfo = res.paging;
+            this.recordList = res.results;
         }
     }
 
