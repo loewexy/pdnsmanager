@@ -210,19 +210,6 @@ class Credentials
      */
     public function updateCredential(int $record, int $credential, ? string $description, ? string $type, ? string $key, ? string $password) : array
     {
-        if ($type === 'key') {
-            if (openssl_pkey_get_public($key) === false) {
-                throw new \Exceptions\InvalidKeyException();
-            }
-            $secret = $key;
-        } elseif ($type === 'password') {
-            $secret = password_hash($password, PASSWORD_DEFAULT);
-        } elseif ($type === null) {
-            $secret = null;
-        } else {
-            throw new \Exceptions\SemanticException();
-        }
-
         $this->db->beginTransaction();
 
         $query = $this->db->prepare('SELECT id,record,description,type,security FROM remote WHERE id=:id AND record=:record');
@@ -241,10 +228,24 @@ class Credentials
         $type = $type !== null ? $type : $record['type'];
         $secret = $secret !== null ? $secret : $record['security'];
 
-        $query = $this->db->prepare('UPDATE remote SET description=:description,type=:type,security=:security');
+        if ($type === 'key') {
+            if (openssl_pkey_get_public($key) === false) {
+                throw new \Exceptions\InvalidKeyException();
+            }
+            $secret = $key;
+        } elseif ($type === 'password') {
+            $secret = password_hash($password, PASSWORD_DEFAULT);
+        } elseif ($type === null) {
+            $secret = null;
+        } else {
+            throw new \Exceptions\SemanticException();
+        }
+
+        $query = $this->db->prepare('UPDATE remote SET description=:description,type=:type,security=:security WHERE id=:credential');
         $query->bindValue(':description', $description);
         $query->bindValue(':type', $type);
         $query->bindValue(':security', $secret);
+        $query->bindValue(':credential', $credential);
         $query->execute();
 
         $this->db->commit();
