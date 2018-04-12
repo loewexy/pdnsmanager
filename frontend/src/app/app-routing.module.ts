@@ -15,6 +15,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { LoginComponent } from './pages/login/login.component';
 import { EditAuthComponent } from './pages/edit-auth/edit-auth.component';
+import { SetupComponent } from './pages/setup/setup.component';
 
 const routes: Routes = [
     {
@@ -28,6 +29,10 @@ const routes: Routes = [
         component: LoginComponent,
         data: { logout: true },
         canActivate: [LoggedOutGuard]
+    },
+    {
+        path: 'setup',
+        component: SetupComponent
     },
     {
         path: '',

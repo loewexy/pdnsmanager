@@ -43,6 +43,7 @@ import { EditAuthComponent } from './pages/edit-auth/edit-auth.component';
 import { SelectComponent } from './partials/select/select.component';
 import { CreateSlaveComponent } from './pages/create-slave/create-slave.component';
 import { UsersComponent } from './pages/users/users.component';
+import { SetupComponent } from './pages/setup/setup.component';
 
 @NgModule({
   declarations: [
@@ -72,7 +73,8 @@ import { UsersComponent } from './pages/users/users.component';
     SearchComponent,
     EditAuthLineComponent,
     EditAuthAddComponent,
-    EditCredentialsComponent
+    EditCredentialsComponent,
+    SetupComponent
   ],
   imports: [
     BrowserModule,
