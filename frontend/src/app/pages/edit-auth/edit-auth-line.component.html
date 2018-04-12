@@ -1,0 +1,48 @@
+<td>
+    <span>{{ entry.id }}</span>
+</td>
+<td class="align-middle py-0">
+    <div class="text-nowrap text-truncate" *ngIf="!editMode">{{ fullName() }}</div>
+    <div class="input-group input-group-sm" *ngIf="editMode">
+        <input class="form-control" type="text" [formControl]="inputName">
+        <div class="input-group-append">
+            <span class="input-group-text">{{ domainPart() }}</span>
+        </div>
+    </div>
+</td>
+<td class="align-middle py-0">
+    <span *ngIf="!editMode">{{ inputType.value }}</span>
+    <app-select *ngIf="editMode" [options]="gs.recordTypes" notNull [formControl]="inputType"></app-select>
+</td>
+<td class="align-middle py-0">
+    <div class="text-nowrap text-truncate" *ngIf="!editMode">{{ inputContent.value }}</div>
+    <input *ngIf="editMode" class="form-control form-control-sm" type="text" [formControl]="inputContent">
+</td>
+<td class="align-middle py-0">
+    <span *ngIf="!editMode">{{ inputPriority.value }}</span>
+    <div *ngIf="editMode" class="form-group m-0 position-relative">
+        <input class="form-control form-control-sm auto-invalid" type="text" [formControl]="inputPriority">
+        <div class="invalid-tooltip w-200 mw-200">
+            Must be positive integer.
+        </div>
+    </div>
+</td>
+<td class="align-middle py-0">
+    <span *ngIf="!editMode">{{ inputTtl.value }}</span>
+    <div *ngIf="editMode" class="form-group m-0 position-relative">
+        <input class="form-control form-control-sm auto-invalid" type="text" [formControl]="inputTtl">
+        <div class="invalid-tooltip w-200 mw-200">
+            Must be positive integer.
+        </div>
+    </div>
+</td>
+<td class="align-middle text-center py-0">
+    <span *ngIf="!editMode">
+        <app-fa-icon class="cursor-pointer mx-1" icon="edit" appStopPropagateClick (click)="onEditClick()"></app-fa-icon>
+        <app-fa-icon class="cursor-pointer mx-1" icon="trash" appStopPropagateClick></app-fa-icon>
+        <app-fa-icon class="cursor-pointer mx-1" icon="key" appStopPropagateClick></app-fa-icon>
+    </span>
+    <span *ngIf="editMode">
+        <button class="btn btn-primary btn-sm w-100" (click)="onSave()">Save</button>
+    </span>
+</td>

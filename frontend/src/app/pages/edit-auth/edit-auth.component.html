@@ -1,9 +1,9 @@
 <div class="row">
     <div class="col-12">
-        <p class="font-weight-bold">Update SOA data for {{ domainName }}</p>
+        <p class="font-weight-bold">Update SOA data for {{ domain.name }}</p>
     </div>
 </div>
-<form [formGroup]="soaForm" (submit)="onSubmit()">
+<form [formGroup]="soaForm" (submit)="onSoaSubmit()">
     <div class="row">
         <div class="col-12 col-md-4 col-lg-3">
             <div class="form-group">
@@ -68,3 +68,58 @@
         </div>
     </div>
 </form>
+<div class="row justify-content-end">
+    <div class="col-12 col-md-6 mt-2 mt-md-0">
+        <app-pagesize class="float-md-right" [pagesizes]="gs.pageSizes" [currentPagesize]="gs.pageSize" (pagesizeChange)="onPagesizeChange($event)"></app-pagesize>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="table-responsive-lg">
+            <table class="table table-hover table-layout-fixed table-triple">
+                <thead>
+                    <tr>
+                        <th class="w-6 align-middle">
+                            <span>ID</span>
+                            <app-sort field="id" [activeFields]="sortField" (sort)="onSortEvent($event)"></app-sort>
+                        </th>
+                        <th class="w-25 align-middle">
+                            <div class="form-inline">
+                                <span>Name</span>
+                                <app-sort field="name" [activeFields]="sortField" (sort)="onSortEvent($event)"></app-sort>
+                                <input class="form-control form-control-sm no-shadow" type="text" placeholder="Search" [formControl]="queryNameInput">
+                            </div>
+                        </th>
+                        <th class="w-15 align-middle">
+                            <div class="form-inline">
+                                <span>Type</span>
+                                <app-sort field="type" [activeFields]="sortField" (sort)="onSortEvent($event)"></app-sort>
+                                <app-select class="w-60" [options]="gs.recordTypes" [formControl]="typeFilter" multiple></app-select>
+                            </div>
+                        </th>
+                        <th class="align-middle">
+                            <div class="form-inline">
+                                <span>Content</span>
+                                <app-sort field="content" [activeFields]="sortField" (sort)="onSortEvent($event)"></app-sort>
+                                <input class="form-control form-control-sm no-shadow" type="text" placeholder="Search" [formControl]="queryContentInput">
+                            </div>
+                        </th>
+                        <th class="w-10 align-middle">
+                            <span>Priority</span>
+                            <app-sort field="priority" [activeFields]="sortField" (sort)="onSortEvent($event)"></app-sort>
+                        </th>
+                        <th class="w-8 align-middle">
+                            <span>TTL</span>
+                            <app-sort field="ttl" [activeFields]="sortField" (sort)="onSortEvent($event)"></app-sort>
+                        </th>
+                        <th class="w-9 align-middle"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr app-edit-auth-line *ngFor="let record of recordList" [entry]="record" [domain]="domain" (recordUpdated)="updateSerial()"></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<app-paging [pagingInfo]="pagingInfo" [pageWidth]="3" (pageChange)="onPageChange($event)"></app-paging>

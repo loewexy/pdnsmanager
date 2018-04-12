@@ -3,7 +3,15 @@ $table-cell-padding: .60rem !default;
 
 $sizes: (
   0: 0%,
+  1: 1%,
+  2: 2%,
+  3: 3%,
+  4: 4%,
   5: 5%,
+  6: 6%,
+  7: 7%,
+  8: 8%,
+  9: 9%,
   10: 10%,
   15: 15%,
   20: 20%,
@@ -22,7 +30,11 @@ $sizes: (
   85: 85%,
   90: 90%,
   95: 95%,
-  100: 100%
+  100: 100%,
+  150: 150%,
+  200: 200%,
+  250: 250%,
+  300: 300%
 );
 
 @import '~bootstrap/scss/bootstrap.scss';
@@ -30,6 +42,12 @@ $sizes: (
 .dropdown-item-hover {
     @extend .dropdown-item:hover;
 }
+
+@each $prop, $abbrev in (max-width: w, max-height: h) {
+    @each $size, $length in $sizes {
+      .m#{$abbrev}-#{$size} { #{$prop}: $length !important; }
+    }
+  }
 
 /* Add font awesome */
 $fa-font-path: "~font-awesome/fonts";
@@ -67,4 +85,25 @@ $fa-font-path: "~font-awesome/fonts";
 .no-shadow { 
     box-shadow: none!important;
     border-color: #CCC!important;
+}
+
+/* Table with fixed layout */
+.table-layout-fixed {
+    table-layout: fixed;
+}
+
+/* Dropdown with toggle carret left */
+.dropdown-toggle-left::before {
+    @extend .dropdown-toggle::after;
+    margin-left: unset;
+    margin-right: 0.255em;
+}
+
+/* Make table wider for small screens */
+@include media-breakpoint-down(sm) {
+    .table-triple {
+        min-width: 100%;
+        max-width: 300%;
+        width: auto;
+    }
 }

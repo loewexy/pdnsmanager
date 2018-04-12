@@ -1,11 +1,13 @@
 <div class="dropdown">
-    <a class="btn btn-sm dropdown-toggle no-shadow" (click)="toggleOpen()" [class.disabled]="!enabled">
+    <a class="btn btn-sm dropdown-toggle-left no-shadow mw-100 text-truncate" (click)="toggleOpen()" [class.disabled]="!enabled">
         {{ buttonText() }}
     </a>
-    <div class="dropdown-menu" [class.show]="open">
+    <div class="dropdown-menu" [class.show]="open" style="overflow-y: auto;">
         <span class="dropdown-item cursor-pointer" *ngIf="notNull === false" (click)="reset()">Clear</span>
         <div class="dropdown-divider" *ngIf="notNull === false"></div>
-        <span *ngFor="let option of options" [class.active]="isActive(option)" class="dropdown-item cursor-pointer"
-            (click)="onClick(option)">{{ option }}</span>
+        <div class="scrolling">
+            <span *ngFor="let option of options" [class.active]="isActive(option)" class="dropdown-item cursor-pointer"
+                (click)="onClick(option)">{{ option }}</span>
+        </div>
     </div>
 </div>

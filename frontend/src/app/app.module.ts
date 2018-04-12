@@ -1,3 +1,5 @@
+import { EditAuthLineComponent } from './pages/edit-auth/edit-auth-line.component';
+import { RecordsOperation } from './operations/records.operations';
 import { LoggedOutGuard } from './services/logged-out-guard.service';
 import { NativeGuard } from './services/native-guard.service';
 import { SearchComponent } from './partials/search/search.component';
@@ -64,7 +66,8 @@ import { UsersComponent } from './pages/users/users.component';
     UsersComponent,
     EditUserComponent,
     CreateUserComponent,
-    SearchComponent
+    SearchComponent,
+    EditAuthLineComponent
   ],
   imports: [
     BrowserModule,
@@ -79,6 +82,7 @@ import { UsersComponent } from './pages/users/users.component';
     PasswordOperation,
     DomainsOperation,
     UsersOperation,
+    RecordsOperation,
     AuthGuard,
     AdminGuard,
     NativeGuard,
