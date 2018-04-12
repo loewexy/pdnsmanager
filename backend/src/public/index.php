@@ -8,6 +8,12 @@ use \Slim\Http\Response as Response;
 // Load config
 $config = require('../config/ConfigDefault.php');
 
+// If no config exists load installer
+if ($config === false) {
+    require('setup.php');
+    exit();
+}
+
 // Prepare dependency container
 $container = new \Slim\Container($config);
 
