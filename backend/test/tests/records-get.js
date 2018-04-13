@@ -38,6 +38,8 @@ test.run(async function () {
             });
 
             assert.equal(res.data.results, sortedData, 'Sort failed for ' + res.config.url);
+
+            assert.equal(res.data.results.filter((i) => i.type === 'SOA').length, 0, 'No soa should be in records');
         }
 
         //Test paging
@@ -91,7 +93,8 @@ test.run(async function () {
             priority: 0,
             ttl: 86400,
             domain: 3
-        }], 'Result fail for ' + res.config.url);
+        },
+        ], 'Result fail for ' + res.config.url);
 
         //Type filter
         var res = await req({
@@ -126,24 +129,26 @@ test.run(async function () {
         });
 
         assert.equal(res.status, 200, 'Status should be OK');
-        assert.equal(res.data.results, [{
-            id: 1,
-            name: 'test.example.com',
-            type: 'A',
-            content: '12.34.56.78',
-            priority: 0,
-            ttl: 86400,
-            domain: 1
-        },
-        {
-            id: 4,
-            name: 'foo.de',
-            type: 'A',
-            content: '9.8.7.6',
-            priority: 0,
-            ttl: 86400,
-            domain: 3
-        }], 'Result fail for ' + res.config.url);
+        assert.equal(res.data.results, [
+            {
+                id: 1,
+                name: 'test.example.com',
+                type: 'A',
+                content: '12.34.56.78',
+                priority: 0,
+                ttl: 86400,
+                domain: 1
+            },
+            {
+                id: 4,
+                name: 'foo.de',
+                type: 'A',
+                content: '9.8.7.6',
+                priority: 0,
+                ttl: 86400,
+                domain: 3
+            }
+        ], 'Result fail for ' + res.config.url);
     });
 
     await test('user', async function (assert, req) {

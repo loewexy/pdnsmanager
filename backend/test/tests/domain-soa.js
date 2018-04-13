@@ -50,7 +50,7 @@ test.run(async function () {
 
         //Getting soa data from master zone without soa should fail
         var res = await req({
-            url: '/domains/1/soa',
+            url: '/domains/4/soa',
             method: 'get'
         });
 
@@ -58,7 +58,7 @@ test.run(async function () {
 
         //Getting soa data from slave zone should fail
         var res = await req({
-            url: '/domains/1/soa',
+            url: '/domains/2/soa',
             method: 'get'
         });
 

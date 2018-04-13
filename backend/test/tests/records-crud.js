@@ -78,7 +78,7 @@ test.run(async function () {
 
         assert.equal(res.status, 201, 'Adding of record should succeed.');
         assert.equal(res.data, {
-            id: 5,
+            id: 6,
             name: 'dns.example.com',
             type: 'A',
             content: '1.2.3.4',
@@ -97,13 +97,13 @@ test.run(async function () {
 
         //Get created record
         var res = await req({
-            url: '/records/5',
+            url: '/records/6',
             method: 'get'
         });
 
         assert.equal(res.status, 200, 'Get of created record should succeed.');
         assert.equal(res.data, {
-            id: 5,
+            id: 6,
             name: 'dns.example.com',
             type: 'A',
             content: '1.2.3.4',
@@ -115,7 +115,7 @@ test.run(async function () {
 
         //Update record
         var res = await req({
-            url: '/records/5',
+            url: '/records/6',
             method: 'put',
             data: {
                 name: 'foo.example.com'
@@ -126,13 +126,13 @@ test.run(async function () {
 
         //Get updated record
         var res = await req({
-            url: '/records/5',
+            url: '/records/6',
             method: 'get'
         });
 
         assert.equal(res.status, 200, 'Get updated record should succeed.');
         assert.equal(res.data, {
-            id: 5,
+            id: 6,
             name: 'foo.example.com',
             type: 'A',
             content: '1.2.3.4',
@@ -151,7 +151,7 @@ test.run(async function () {
 
         //Delete existing record
         var res = await req({
-            url: '/records/5',
+            url: '/records/6',
             method: 'delete'
         });
 
@@ -212,7 +212,7 @@ test.run(async function () {
 
         assert.equal(res.status, 201, 'Adding of record should succeed.');
         assert.equal(res.data, {
-            id: 6,
+            id: 7,
             name: 'dns.example.com',
             type: 'A',
             content: '1.2.3.4',
@@ -223,13 +223,13 @@ test.run(async function () {
 
         //Get created record
         var res = await req({
-            url: '/records/6',
+            url: '/records/7',
             method: 'get'
         });
 
         assert.equal(res.status, 200, 'Get of created record should succeed.');
         assert.equal(res.data, {
-            id: 6,
+            id: 7,
             name: 'dns.example.com',
             type: 'A',
             content: '1.2.3.4',
@@ -241,7 +241,7 @@ test.run(async function () {
 
         //Update record
         var res = await req({
-            url: '/records/6',
+            url: '/records/7',
             method: 'put',
             data: {
                 name: 'foo.example.com',
@@ -253,13 +253,13 @@ test.run(async function () {
 
         //Get updated record
         var res = await req({
-            url: '/records/6',
+            url: '/records/7',
             method: 'get'
         });
 
         assert.equal(res.status, 200, 'Get updated record should succeed.');
         assert.equal(res.data, {
-            id: 6,
+            id: 7,
             name: 'foo.example.com',
             type: 'A',
             content: '1.2.3.4',
@@ -270,7 +270,7 @@ test.run(async function () {
 
         //Delete existing record
         var res = await req({
-            url: '/records/6',
+            url: '/records/7',
             method: 'delete'
         });
 

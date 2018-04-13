@@ -143,7 +143,8 @@ INSERT INTO `records` (`id`, `domain_id`, `name`, `type`, `content`, `ttl`, `pri
 (1, 1, 'test.example.com', 'A', '12.34.56.78', 86400, 0, 1521645110, 0, NULL, 1),
 (2, 1, 'sdfdf.example.com', 'TXT', 'foo bar baz', 60, 10, 1522321931, 0, NULL, 1),
 (3, 1, 'foo.example.com', 'AAAA', '::1', 86400, 0, 1522321902, 0, NULL, 1),
-(4, 3, 'foo.de', 'A', '9.8.7.6', 86400, 0, 1522321989, 0, NULL, 1);
+(4, 3, 'foo.de', 'A', '9.8.7.6', 86400, 0, 1522321989, 0, NULL, 1),
+(5, 1, 'example.com', 'SOA', 'ns1.example.com hostmaster.example.com 2018041300 3600 900 604800 86400', 86400, NULL, 1523629358, 0, NULL, 1);
 
 -- --------------------------------------------------------
 

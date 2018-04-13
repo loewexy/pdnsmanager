@@ -72,7 +72,8 @@ class Records
                 (R.domain_id IN ' . $setDomains . ' OR :noDomainFilter) AND
                 (R.name LIKE :queryName) AND
                 (R.type IN ' . $setTypes . ' OR :noTypeFilter) AND
-                (R.content LIKE :queryContent)
+                (R.content LIKE :queryContent) AND
+                R.type <> \'SOA\'
             ');
 
             $query->bindValue(':userId', $userId, \PDO::PARAM_INT);
@@ -107,7 +108,8 @@ class Records
             (R.domain_id IN ' . $setDomains . ' OR :noDomainFilter) AND
             (R.name LIKE :queryName) AND
             (R.type IN ' . $setTypes . ' OR :noTypeFilter) AND
-            (R.content LIKE :queryContent)
+            (R.content LIKE :queryContent)  AND
+            R.type <> \'SOA\'
             GROUP BY R.id' . $ordStr . $pageStr);
 
         $query->bindValue(':userId', $userId, \PDO::PARAM_INT);
