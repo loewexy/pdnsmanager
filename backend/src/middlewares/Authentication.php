@@ -38,7 +38,7 @@ class Authentication
             return $next($req, $res);
         } else {
             $this->logger->warning('No valid authentication token found');
-            return $res->withJson(['error' => 'No valid authentication token suplied'], 403);
+            return $res->withJson(['error' => 'No valid authentication token suplied', 'code' => 'invalid_session'], 403);
         }
     }
 }
