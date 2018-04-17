@@ -54,7 +54,7 @@ class Sessions
                 'token' => $secretString
             ], 201);
         } else {
-            $this->logger->info('User failed to authenticate', ['username' => $body['username']]);
+            $this->logger->info('User failed to authenticate', ['username' => $body['username'], 'ip' => $req->getAttribute('clientIp')]);
             return $res->withJson(['error' => 'Username or password is invalid'], 403);
         }
     }
