@@ -31,7 +31,8 @@ return [
                 'notindb' => '\$2y\$10\$z1dD1Q5u68l5iqEmqnOAVuoR5VWR77HUfxMUycJ9TdDG3H5dLZGVW'
             ]
         ]
-    ]
+    ],
+    'proxys' => ['127.0.0.1']
 ];
 EOM
 }

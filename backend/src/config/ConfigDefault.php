@@ -33,7 +33,8 @@ $defaultConfig = [
             'OPT', 'PTR', 'RKEY', 'RP', 'RRSIG', 'SIG', 'SPF',
             'SRV', 'TKEY', 'SSHFP', 'TLSA', 'TSIG', 'TXT', 'WKS', 'MBOXFW', 'URL'
         ]
-    ]
+    ],
+    'proxys' => []
 ];
 
 if (file_exists('../config/ConfigOverride.php')) {

@@ -30,6 +30,8 @@ $app = new \Slim\App($container);
 $app->group('/v1', function () {
     $this->post('/sessions', '\Controllers\Sessions:post');
 
+    $this->get('/remote/ip', '\Controllers\Remote:ip');
+
     $this->group('', function () {
         $this->delete('/sessions/{sessionId}', '\Controllers\Sessions:delete');
 
@@ -69,6 +71,7 @@ $app->group('/v1', function () {
 // Add global middlewares
 $app->add('\Middlewares\LogRequests');
 $app->add('\Middlewares\RejectEmptyBody');
+$app->add('\Middlewares\ClientIp');
 
 // Run application
 $app->run();
