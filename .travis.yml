@@ -22,3 +22,4 @@ script:
     - .travis/frontend-build.sh
     - .travis/backend-lint.sh
     - .travis/backend-test.sh
+    - .travis/build-package.sh
