@@ -54,6 +54,33 @@ class Remote
         return $res->withStatus(204);
     }
 
+    public function updateKey(Request $req, Response $res, array $args)
+    {
+        $record = $req->getParsedBodyParam('record');
+        $content = $req->getParsedBodyParam('content');
+        $time = $req->getParsedBodyParam('time');
+        $signature = $req->getParsedBodyParam('signature');
+
+        if ($record === null || $content === null || $time === null || $signature === null) {
+            return $res->withJson(['error' => 'One of the required fields is missing.'], 422);
+        }
+
+        $remote = new \Operations\Remote($this->c);
+
+        try {
+            $remote->updateKey($record, $content, $time, $signature);
+        } catch (\Exceptions\NotFoundException $e) {
+            $this->logger->debug('User tried to update non existent record via changekey api.');
+            return $res->withJson(['error' => 'The given record does not exist.'], 404);
+        } catch (\Exceptions\ForbiddenException $e) {
+            $this->logger->debug('User tried to update an record via changekey api with incorrect password.');
+            return $res->withJson(['error' => 'The provided password was invalid.'], 403);
+        }
+
+        $this->logger->info('Record ' . $record . ' was changed via the changekey api.');
+        return $res->withStatus(204);
+    }
+
     public function servertime(Request $req, Response $res, array $args)
     {
         return $res->withJson([

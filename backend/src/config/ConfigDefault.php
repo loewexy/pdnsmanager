@@ -24,6 +24,9 @@ $defaultConfig = [
             'config' => null
         ]
     ],
+    'remote' => [
+        'timestampWindow' => 15
+    ],
     'records' => [
         'allowedTypes' => [
             'A', 'A6', 'AAAA', 'AFSDB', 'ALIAS', 'CAA', 'CDNSKEY', 'CDS', 'CERT', 'CNAME', 'DHCID',

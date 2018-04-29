@@ -33,6 +33,7 @@ $app->group('/v1', function () {
     $this->get('/remote/ip', '\Controllers\Remote:ip');
     $this->get('/remote/servertime', '\Controllers\Remote:servertime');
     $this->get('/remote/updatepw', '\Controllers\Remote:updatePassword');
+    $this->post('/remote/updatekey', '\Controllers\Remote:updateKey');
 
     $this->group('', function () {
         $this->delete('/sessions/{sessionId}', '\Controllers\Sessions:delete');

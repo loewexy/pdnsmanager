@@ -4,6 +4,7 @@
   "description": "Dependencies for pdnsmanager test",
   "dependencies": {
     "axios": "^0.18.0",
-    "cartesian-product": "^2.1.2"
+    "cartesian-product": "^2.1.2",
+    "node-rsa": "^0.4.2"
   }
 }
