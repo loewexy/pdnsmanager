@@ -46,7 +46,9 @@ export class HttpService {
                 headers: this.buildHeaders()
             })).data;
         } catch (e) {
-            this.handleException(e);
+            if (!await this.handleException(e)) {
+                throw e;
+            }
         }
     }
 
@@ -59,7 +61,9 @@ export class HttpService {
                 headers: this.buildHeaders()
             })).data;
         } catch (e) {
-            this.handleException(e);
+            if (!await this.handleException(e)) {
+                throw e;
+            }
         }
     }
 
@@ -72,7 +76,9 @@ export class HttpService {
                 headers: this.buildHeaders()
             })).data;
         } catch (e) {
-            this.handleException(e);
+            if (!await this.handleException(e)) {
+                throw e;
+            }
         }
     }
 
@@ -84,7 +90,9 @@ export class HttpService {
                 headers: this.buildHeaders()
             })).data;
         } catch (e) {
-            this.handleException(e);
+            if (!await this.handleException(e)) {
+                throw e;
+            }
         }
     }
 
@@ -121,8 +129,10 @@ export class HttpService {
             this.gs.isLoggedIn = false;
 
             this.router.navigate(['/']);
+
+            return true;
         } else {
-            throw e;
+            return false;
         }
     }
 }
