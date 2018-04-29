@@ -31,6 +31,7 @@ $app->group('/v1', function () {
     $this->post('/sessions', '\Controllers\Sessions:post');
 
     $this->get('/remote/ip', '\Controllers\Remote:ip');
+    $this->get('/remote/servertime', '\Controllers\Remote:servertime');
     $this->get('/remote/updatepw', '\Controllers\Remote:updatePassword');
 
     $this->group('', function () {

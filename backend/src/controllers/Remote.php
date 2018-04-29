@@ -53,4 +53,11 @@ class Remote
         $this->logger->info('Record ' . $record . ' was changed via the changepw api.');
         return $res->withStatus(204);
     }
+
+    public function servertime(Request $req, Response $res, array $args)
+    {
+        return $res->withJson([
+            'time' => time()
+        ], 200);
+    }
 }
