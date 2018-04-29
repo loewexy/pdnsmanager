@@ -1,0 +1,14 @@
+<div class="row">
+    <div class="col-12">
+        <p class="font-weight-bold">Update PDNS Manager</p>
+
+        <p>Upgrading from {{ currentVersion }} to {{ targetVersion }}.</p>
+
+        <app-alert *ngIf="errorMessage">
+            <app-alert-message>{{ errorMessage }}</app-alert-message>
+        </app-alert>
+
+        <button class="btn btn-primary" (click)="onSubmit()">Upgrade</button>
+        <app-fa-icon class="ml-3" icon="spinner" size=2 animate="pulse" [hidden]="!loading"></app-fa-icon>
+    </div>
+</div>

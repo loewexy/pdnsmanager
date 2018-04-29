@@ -1,3 +1,4 @@
+import { UpdateComponent } from './pages/update/update.component';
 import { EditCredentialsComponent } from './pages/edit-credentials/edit-credentials.component';
 import { NativeGuard } from './services/native-guard.service';
 import { LoggedOutGuard } from './services/logged-out-guard.service';
@@ -33,6 +34,10 @@ const routes: Routes = [
     {
         path: 'setup',
         component: SetupComponent
+    },
+    {
+        path: 'update',
+        component: UpdateComponent
     },
     {
         path: '',
