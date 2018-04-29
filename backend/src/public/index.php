@@ -35,6 +35,9 @@ $app->group('/v1', function () {
     $this->get('/remote/updatepw', '\Controllers\Remote:updatePassword');
     $this->post('/remote/updatekey', '\Controllers\Remote:updateKey');
 
+    $this->get('/update', '\Controllers\Update:get');
+    $this->post('/update', '\Controllers\Update:post');
+
     $this->group('', function () {
         $this->delete('/sessions/{sessionId}', '\Controllers\Sessions:delete');
 

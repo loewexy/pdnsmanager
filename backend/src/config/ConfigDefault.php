@@ -37,7 +37,8 @@ $defaultConfig = [
             'SRV', 'TKEY', 'SSHFP', 'TLSA', 'TSIG', 'TXT', 'WKS', 'MBOXFW', 'URL'
         ]
     ],
-    'proxys' => []
+    'proxys' => [],
+    'dbVersion' => 5
 ];
 
 if (file_exists('../config/ConfigOverride.php')) {

@@ -67,7 +67,6 @@ CREATE TABLE `domains` (
 -- Table structure for table `permissions`
 --
 
-DROP TABLE IF EXISTS `permissions`;
 CREATE TABLE `permissions` (
   `domain_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
@@ -80,9 +79,8 @@ CREATE TABLE `permissions` (
 -- Table structure for table `records`
 --
 
-DROP TABLE IF EXISTS `records`;
 CREATE TABLE `records` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `domain_id` int(11) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
   `type` varchar(10) DEFAULT NULL,
@@ -102,7 +100,6 @@ CREATE TABLE `records` (
 -- Table structure for table `remote`
 --
 
-DROP TABLE IF EXISTS `remote`;
 CREATE TABLE `remote` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `record` int(11) NOT NULL,
@@ -119,7 +116,6 @@ CREATE TABLE `remote` (
 -- Table structure for table `supermasters`
 --
 
-DROP TABLE IF EXISTS `supermasters`;
 CREATE TABLE `supermasters` (
   `ip` varchar(64) NOT NULL,
   `nameserver` varchar(255) NOT NULL,
@@ -133,7 +129,6 @@ CREATE TABLE `supermasters` (
 -- Table structure for table `tsigkeys`
 --
 
-DROP TABLE IF EXISTS `tsigkeys`;
 CREATE TABLE `tsigkeys` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
@@ -148,7 +143,6 @@ CREATE TABLE `tsigkeys` (
 -- Table structure for table `users`
 --
 
-DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
@@ -157,6 +151,25 @@ CREATE TABLE `users` (
   `password` varchar(255) DEFAULT NULL,
   PRIMARY KEY(`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `options`
+--
+
+CREATE TABLE `options` (
+  `name` varchar(255) NOT NULL,
+  `value` varchar(2000) DEFAULT NULL,
+  PRIMARY KEY (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `options`
+--
+
+INSERT INTO `options` (`name`, `value`) VALUES
+('schema_version', '5');
 
 -- --------------------------------------------------------
 
@@ -197,3 +210,22 @@ ALTER TABLE `records`
 --
 ALTER TABLE `tsigkeys`
   ADD UNIQUE KEY `namealgoindex` (`name`,`algorithm`);
+
+--
+-- Constraints for table `permissions`
+--
+ALTER TABLE `permissions`
+  ADD CONSTRAINT `permissions_ibfk_1` FOREIGN KEY (`domain_id`) REFERENCES `domains` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `permissions_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `records`
+--
+ALTER TABLE `records`
+  ADD CONSTRAINT `records_ibfk_1` FOREIGN KEY (`domain_id`) REFERENCES `domains` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `remote`
+--
+ALTER TABLE `remote`
+  ADD CONSTRAINT `remote_ibfk_1` FOREIGN KEY (`record`) REFERENCES `records` (`id`) ON DELETE CASCADE;

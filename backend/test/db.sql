@@ -201,6 +201,25 @@ CREATE TABLE `tsigkeys` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `options`
+--
+
+DROP TABLE IF EXISTS `options`;
+CREATE TABLE `options` (
+  `name` varchar(255) NOT NULL,
+  `value` varchar(2000) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `options`
+--
+
+INSERT INTO `options` (`name`, `value`) VALUES
+('schema_version', '5');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `users`
 --
 

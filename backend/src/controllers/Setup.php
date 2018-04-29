@@ -75,8 +75,7 @@ class Setup
             $sqlLines = explode(';', file_get_contents('../sql/setup.sql'));
 
             foreach ($sqlLines as $sql) {
-                if (strlen(trim($sql)) > 0) {
-                    var_dump($sql);
+                if (strlen(preg_replace('/\s+/', '', $sql)) > 0) {
                     $pdo->exec($sql);
                 }
             }
