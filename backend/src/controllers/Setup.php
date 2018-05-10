@@ -91,10 +91,11 @@ class Setup
             // Save config file
             $config = [
                 'db' => [
-                    'host' => 'mysql.dmz.intranet',
-                    'user' => 'pdnsnew',
-                    'password' => 'pdnsnew',
-                    'dbname' => 'pdnsnew'
+                    'host' => $db['host'],
+                    'user' => $db['user'],
+                    'password' => $db['password'],
+                    'dbname' => $db['database'],
+                    'port' => intval($db['port'])
                 ]
             ];
             $configFile = '<?php' . "\n\n" . 'return ' . var_export($config, true) . ';';
