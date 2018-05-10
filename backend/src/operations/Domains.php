@@ -82,7 +82,7 @@ class Domains
         $query = $this->db->prepare('
             SELECT D.id,D.name,D.type,D.master,count(R.domain_id) AS records
             FROM domains D
-            LEFT OUTER JOIN records R ON D.id = R.domain_id
+            LEFT OUTER JOIN records R ON D.id = R.domain_id AND R.type <> \'SOA\'
             LEFT OUTER JOIN permissions P ON D.id = P.domain_id
             WHERE (P.user_id=:userId OR :userIsAdmin) AND
             (R.type <> \'SOA\' OR R.type IS NULL)
@@ -223,7 +223,7 @@ class Domains
     {
         $query = $this->db->prepare('
             SELECT D.id,D.name,D.type,D.master,COUNT(R.domain_id) AS records FROM domains D
-            LEFT OUTER JOIN records R ON D.id = R.domain_id
+            LEFT OUTER JOIN records R ON D.id = R.domain_id AND R.type <> \'SOA\'
             WHERE D.id=:id AND (R.type <> \'SOA\' OR R.type IS NULL)
             GROUP BY D.id,D.name,D.type,D.master
         ');
