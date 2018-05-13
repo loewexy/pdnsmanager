@@ -73,8 +73,8 @@ class Remote
             $this->logger->debug('User tried to update non existent record via changekey api.');
             return $res->withJson(['error' => 'The given record does not exist.'], 404);
         } catch (\Exceptions\ForbiddenException $e) {
-            $this->logger->debug('User tried to update an record via changekey api with incorrect password.');
-            return $res->withJson(['error' => 'The provided password was invalid.'], 403);
+            $this->logger->debug('User tried to update an record via changekey api with incorrect signature.');
+            return $res->withJson(['error' => 'The provided signature was invalid.'], 403);
         }
 
         $this->logger->info('Record ' . $record . ' was changed via the changekey api.');
