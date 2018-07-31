@@ -17,6 +17,8 @@ export class SearchComponent implements OnInit {
 
     public inputControl: FormControl;
 
+    public disableDefokus = false;
+
     public open = false;
 
     constructor() { }
@@ -61,7 +63,7 @@ export class SearchComponent implements OnInit {
     }
 
     public onBlur() {
-        setTimeout(() => this.open = false, 100);
+        setTimeout(() => { if (!this.disableDefokus) { this.open = false; } }, 100);
     }
 
     public hintText(): string | null {
