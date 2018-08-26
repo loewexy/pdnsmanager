@@ -28,7 +28,7 @@ deploy:
       script: .travis/deploy-snapshot.sh
       skip_cleanup: true
       on:
-        branch: dev
+        branch: master
     - provider: script
       script: .travis/deploy-release.sh
       skip_cleanup: true
