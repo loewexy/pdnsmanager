@@ -1,12 +1,12 @@
 # PDNS Manager
  
-[PDNS Manager](https://pdnsmanager.lmitsystems.de) is a simple yet powerful free administration tool for the Powerdns authoritative nameserver. It supports master, native and slave zones.
+[PDNS Manager](https://pdnsmanager.org) is a simple yet powerful free administration tool for the Powerdns authoritative nameserver. It supports master, native and slave zones.
 
 PNDS Manager was developed from scratch to achieve a user-friendly
 and pretty looking interface.
 
 PDNS Manager also features a powerful API to set records programatically.
-This can be used e.g. for a dynamic DNS service, but also to obtain certificates from [Let's Encrypt](https://letsencrypt.org/ via the dns-01 challenge.
+This can be used e.g. for a dynamic DNS service, but also to obtain certificates from [Let's Encrypt](https://letsencrypt.org/) via the dns-01 challenge.
 
 PDNS Managers Backend is written in PHP using [Slim Framework](https://www.slimframework.com/). The backend uses a MySQL/Maria DB database. The database is also used by Powerdns using the pdns-backend-mysql backend. The Frontend is based on [Angular](https://angular.io/) and [Bootstrap](https://getbootstrap.com/).
 
