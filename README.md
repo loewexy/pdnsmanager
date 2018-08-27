@@ -1,45 +1,19 @@
 # PDNS Manager
  
- ## Caution 
- This is the development branch for pdnsmanager it should become the 2.0 version if it is ready. If you want to use the software download a stable release from https://pdnsmanager.lmitsystems.de.
- 
- This development version contains known bugs and security vulnerabilities. Do not use it!
- 
- ## Development Setup
- Before you can start you have to configure the backend manually with a valid config-user.php
- 
- Also you have to install Angular CLI globally using 
- ```bash
- npm install -g @angular/cli
- ```
+[PDNS Manager](https://pdnsmanager.lmitsystems.de) is a simple yet powerful free administration tool for the Powerdns authoritative nameserver. It supports master, native and slave zones.
 
- Then you have to install all dependencies using
- ```bash
- npm install
- ```
+PNDS Manager was developed from scratch to achieve a user-friendly
+and pretty looking interface.
 
-Finally you have to setup a pre-commit hook using
-```bash
-ln utils/pre-commit.hook .git/hooks/pre-commit
-```
+PDNS Manager also features a powerful API to set records programatically.
+This can be used e.g. for a dynamic DNS service, but also to obtain certificates from [Let's Encrypt](https://letsencrypt.org/ via the dns-01 challenge.
 
- ## Development Commands
- To run a development instance change in the backend-legacy folder and start the backend in one terminal.
- ```bash
- cd backend-legacy
- php -S localhost:8000
- ```
+PDNS Managers Backend is written in PHP using [Slim Framework](https://www.slimframework.com/). The backend uses a MySQL/Maria DB database. The database is also used by Powerdns using the pdns-backend-mysql backend. The Frontend is based on [Angular](https://angular.io/) and [Bootstrap](https://getbootstrap.com/).
 
- Afterwords you can run the development-server in another terminal using
- ```bash
- npm start
- ```
- 
- Then you can go to a browser and open http://localhost:4200
+PDNS Manager also features a plugin API to support different session caches or authentication strategies. If you want to contribute a new plugin here feel free to contact me.
 
-If you want to lint the project run
-```bash
-npm run lint
-```
-this command will also be in the provided commit hook so that it is impossible to commit code which does not pass the linter.
+## More information
+You can find more information and documentation as well as contact information on [pdnsmanager.org](https://pdnsmanager.org). There are also some tutorials to get you quickly up and running.
 
+## Contribute
+If you are looking for a new feature or you found a bug, feel free to create a pull request or open a issue.
