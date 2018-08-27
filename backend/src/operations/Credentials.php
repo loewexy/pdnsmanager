@@ -226,7 +226,6 @@ class Credentials
 
         $description = $description !== null ? $description : $record['description'];
         $type = $type !== null ? $type : $record['type'];
-        $secret = $secret !== null ? $secret : $record['security'];
 
         if ($type === 'key') {
             if (openssl_pkey_get_public($key) === false) {
