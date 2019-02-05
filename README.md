@@ -2,8 +2,7 @@
  
 [PDNS Manager](https://pdnsmanager.org) is a simple yet powerful free administration tool for the Powerdns authoritative nameserver. It supports master, native and slave zones.
 
-PNDS Manager was developed from scratch to achieve a user-friendly
-and pretty looking interface.
+PDNS Manager was developed from scratch to achieve a user-friendly and pretty looking interface.
 
 PDNS Manager also features a powerful API to set records programatically.
 This can be used e.g. for a dynamic DNS service, but also to obtain certificates from [Let's Encrypt](https://letsencrypt.org/) via the dns-01 challenge.
