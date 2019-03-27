@@ -72,12 +72,6 @@ class Update
 
     private function getCurrentVersion() : int
     {
-        $query = $this->db->prepare('SHOW TABLES LIKE \'options\';');
-        $query->execute();
-        if ($query->fetch() === false) {
-            return 0;
-        }
-
         $query = $this->db->prepare('SELECT value FROM options WHERE name=\'schema_version\'');
         $query->execute();
 
