@@ -2,6 +2,7 @@
 
 $defaultConfig = [
     'db' => [
+        'type' => 'mysql',
         'host' => 'localhost',
         'user' => 'user',
         'password' => 'password',
