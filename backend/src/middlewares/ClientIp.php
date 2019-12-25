@@ -38,9 +38,8 @@ class ClientIp
                 $ip = $_SERVER['REMOTE_ADDR'];
 
                 for ($i = count($parts) - 1; $i >= 0; $i--) {
-                    if (in_array($parts[$i], $proxys) && $i > 0) {
-                        $ip = $parts[$i - 1];
-                    } else {
+                    if (!in_array($parts[$i], $proxys)) {
+                        $ip = $parts[$i];
                         break;
                     }
                 }

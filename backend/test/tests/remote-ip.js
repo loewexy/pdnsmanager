@@ -41,6 +41,6 @@ test.run(async function () {
         });
 
         assert.equal(res.status, 200);
-        assert.equal(res.data, { ip: '127.0.0.1' }, 'X-Forwarded-For Test 3');
+        assert.equal(res.data, { ip: '1.2.3.4' }, 'X-Forwarded-For Test 3');
     });
 });
