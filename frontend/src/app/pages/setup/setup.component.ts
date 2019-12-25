@@ -58,7 +58,7 @@ export class SetupComponent implements OnInit {
         } catch (e) {
             switch (e.response.status) {
                 case 404:
-                    this.errorMessage = 'The application has already been setup or the backend is misconfigured.';
+                    this.errorMessage = 'The backend seems to be misconfigured or the application has a config file already.';
                     break;
                 case 500:
                     this.errorMessage = e.response.data.error;
