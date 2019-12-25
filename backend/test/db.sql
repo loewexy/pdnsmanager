@@ -11,7 +11,7 @@ SET FOREIGN_KEY_CHECKS=0;
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
-DROP TABLE `comments`, `cryptokeys`, `domainmetadata`, `domains`, `options`, `permissions`, `records`, `remote`, `supermasters`, `tsigkeys`, `users`;
+DROP TABLE IF EXISTS `comments`, `cryptokeys`, `domainmetadata`, `domains`, `options`, `permissions`, `records`, `remote`, `supermasters`, `tsigkeys`, `users`;
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
