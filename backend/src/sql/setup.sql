@@ -80,7 +80,7 @@ CREATE TABLE `permissions` (
 --
 
 CREATE TABLE `records` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `domain_id` int(11) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
   `type` varchar(10) DEFAULT NULL,
@@ -102,7 +102,7 @@ CREATE TABLE `records` (
 
 CREATE TABLE `remote` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `record` int(11) NOT NULL,
+  `record` bigint(20) NOT NULL,
   `description` varchar(255) NOT NULL,
   `type` varchar(20) NOT NULL,
   `security` varchar(2000) NOT NULL,
@@ -169,7 +169,7 @@ CREATE TABLE `options` (
 --
 
 INSERT INTO `options` (`name`, `value`) VALUES
-('schema_version', '6');
+('schema_version', '7');
 
 -- --------------------------------------------------------
 

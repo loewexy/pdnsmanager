@@ -3,13 +3,15 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Mar 31, 2018 at 12:51 PM
--- Server version: 5.7.21-0ubuntu0.16.04.1
--- PHP Version: 7.0.28-0ubuntu0.16.04.1
+-- Erstellungszeit: 25. Dez 2019 um 23:22
+-- Server-Version: 5.7.23-0ubuntu0.16.04.1
+-- PHP-Version: 7.0.30-0ubuntu0.16.04.1
 
+SET FOREIGN_KEY_CHECKS=0;
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
+DROP TABLE `comments`, `cryptokeys`, `domainmetadata`, `domains`, `options`, `permissions`, `records`, `remote`, `supermasters`, `tsigkeys`, `users`;
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -17,13 +19,13 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `pdnsnew`
+-- Datenbank: `pdnsnew`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `comments`
+-- Tabellenstruktur für Tabelle `comments`
 --
 
 DROP TABLE IF EXISTS `comments`;
@@ -40,7 +42,7 @@ CREATE TABLE `comments` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `cryptokeys`
+-- Tabellenstruktur für Tabelle `cryptokeys`
 --
 
 DROP TABLE IF EXISTS `cryptokeys`;
@@ -55,7 +57,7 @@ CREATE TABLE `cryptokeys` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `domainmetadata`
+-- Tabellenstruktur für Tabelle `domainmetadata`
 --
 
 DROP TABLE IF EXISTS `domainmetadata`;
@@ -69,7 +71,7 @@ CREATE TABLE `domainmetadata` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `domains`
+-- Tabellenstruktur für Tabelle `domains`
 --
 
 DROP TABLE IF EXISTS `domains`;
@@ -84,7 +86,7 @@ CREATE TABLE `domains` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `domains`
+-- Daten für Tabelle `domains`
 --
 
 INSERT INTO `domains` (`id`, `name`, `master`, `last_check`, `type`, `notified_serial`, `account`) VALUES
@@ -97,7 +99,26 @@ INSERT INTO `domains` (`id`, `name`, `master`, `last_check`, `type`, `notified_s
 -- --------------------------------------------------------
 
 --
--- Table structure for table `permissions`
+-- Tabellenstruktur für Tabelle `options`
+--
+
+DROP TABLE IF EXISTS `options`;
+CREATE TABLE `options` (
+  `name` varchar(255) NOT NULL,
+  `value` varchar(2000) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Daten für Tabelle `options`
+--
+
+INSERT INTO `options` (`name`, `value`) VALUES
+('schema_version', '7');
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `permissions`
 --
 
 DROP TABLE IF EXISTS `permissions`;
@@ -107,7 +128,7 @@ CREATE TABLE `permissions` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `permissions`
+-- Daten für Tabelle `permissions`
 --
 
 INSERT INTO `permissions` (`domain_id`, `user_id`) VALUES
@@ -117,7 +138,7 @@ INSERT INTO `permissions` (`domain_id`, `user_id`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `records`
+-- Tabellenstruktur für Tabelle `records`
 --
 
 DROP TABLE IF EXISTS `records`;
@@ -136,7 +157,7 @@ CREATE TABLE `records` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `records`
+-- Daten für Tabelle `records`
 --
 
 INSERT INTO `records` (`id`, `domain_id`, `name`, `type`, `content`, `ttl`, `prio`, `change_date`, `disabled`, `ordername`, `auth`) VALUES
@@ -149,13 +170,13 @@ INSERT INTO `records` (`id`, `domain_id`, `name`, `type`, `content`, `ttl`, `pri
 -- --------------------------------------------------------
 
 --
--- Table structure for table `remote`
+-- Tabellenstruktur für Tabelle `remote`
 --
 
 DROP TABLE IF EXISTS `remote`;
 CREATE TABLE `remote` (
   `id` int(11) NOT NULL,
-  `record` int(11) NOT NULL,
+  `record` bigint(20) DEFAULT NULL,
   `description` varchar(255) NOT NULL,
   `type` varchar(20) NOT NULL,
   `security` varchar(2000) NOT NULL,
@@ -163,7 +184,7 @@ CREATE TABLE `remote` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `remote`
+-- Daten für Tabelle `remote`
 --
 
 INSERT INTO `remote` (`id`, `record`, `description`, `type`, `security`, `nonce`) VALUES
@@ -174,7 +195,7 @@ INSERT INTO `remote` (`id`, `record`, `description`, `type`, `security`, `nonce`
 -- --------------------------------------------------------
 
 --
--- Table structure for table `supermasters`
+-- Tabellenstruktur für Tabelle `supermasters`
 --
 
 DROP TABLE IF EXISTS `supermasters`;
@@ -187,7 +208,7 @@ CREATE TABLE `supermasters` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tsigkeys`
+-- Tabellenstruktur für Tabelle `tsigkeys`
 --
 
 DROP TABLE IF EXISTS `tsigkeys`;
@@ -201,26 +222,7 @@ CREATE TABLE `tsigkeys` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `options`
---
-
-DROP TABLE IF EXISTS `options`;
-CREATE TABLE `options` (
-  `name` varchar(255) NOT NULL,
-  `value` varchar(2000) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `options`
---
-
-INSERT INTO `options` (`name`, `value`) VALUES
-('schema_version', '6');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `users`
+-- Tabellenstruktur für Tabelle `users`
 --
 
 DROP TABLE IF EXISTS `users`;
@@ -233,7 +235,7 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `users`
+-- Daten für Tabelle `users`
 --
 
 INSERT INTO `users` (`id`, `name`, `backend`, `type`, `password`) VALUES
@@ -242,11 +244,11 @@ INSERT INTO `users` (`id`, `name`, `backend`, `type`, `password`) VALUES
 (3, 'configuser', 'config', 'user', NULL);
 
 --
--- Indexes for dumped tables
+-- Indizes der exportierten Tabellen
 --
 
 --
--- Indexes for table `comments`
+-- Indizes für die Tabelle `comments`
 --
 ALTER TABLE `comments`
   ADD PRIMARY KEY (`id`),
@@ -254,34 +256,40 @@ ALTER TABLE `comments`
   ADD KEY `comments_order_idx` (`domain_id`,`modified_at`);
 
 --
--- Indexes for table `cryptokeys`
+-- Indizes für die Tabelle `cryptokeys`
 --
 ALTER TABLE `cryptokeys`
   ADD PRIMARY KEY (`id`),
   ADD KEY `domainidindex` (`domain_id`);
 
 --
--- Indexes for table `domainmetadata`
+-- Indizes für die Tabelle `domainmetadata`
 --
 ALTER TABLE `domainmetadata`
   ADD PRIMARY KEY (`id`),
   ADD KEY `domainmetadata_idx` (`domain_id`,`kind`);
 
 --
--- Indexes for table `domains`
+-- Indizes für die Tabelle `domains`
 --
 ALTER TABLE `domains`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `name_index` (`name`);
+  ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `permissions`
+-- Indizes für die Tabelle `options`
+--
+ALTER TABLE `options`
+  ADD PRIMARY KEY (`name`);
+
+--
+-- Indizes für die Tabelle `permissions`
 --
 ALTER TABLE `permissions`
-  ADD PRIMARY KEY (`user_id`,`domain_id`);
+  ADD PRIMARY KEY (`domain_id`,`user_id`),
+  ADD KEY `permissions_ibfk_2` (`user_id`);
 
 --
--- Indexes for table `records`
+-- Indizes für die Tabelle `records`
 --
 ALTER TABLE `records`
   ADD PRIMARY KEY (`id`),
@@ -290,74 +298,99 @@ ALTER TABLE `records`
   ADD KEY `ordername` (`ordername`);
 
 --
--- Indexes for table `remote`
+-- Indizes für die Tabelle `remote`
 --
 ALTER TABLE `remote`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `remote_ibfk_1` (`record`);
 
 --
--- Indexes for table `supermasters`
+-- Indizes für die Tabelle `supermasters`
 --
 ALTER TABLE `supermasters`
   ADD PRIMARY KEY (`ip`,`nameserver`);
 
 --
--- Indexes for table `tsigkeys`
+-- Indizes für die Tabelle `tsigkeys`
 --
 ALTER TABLE `tsigkeys`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `namealgoindex` (`name`,`algorithm`);
 
 --
--- Indexes for table `users`
+-- Indizes für die Tabelle `users`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT für exportierte Tabellen
 --
 
 --
--- AUTO_INCREMENT for table `comments`
+-- AUTO_INCREMENT für Tabelle `comments`
 --
 ALTER TABLE `comments`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
--- AUTO_INCREMENT for table `cryptokeys`
+-- AUTO_INCREMENT für Tabelle `cryptokeys`
 --
 ALTER TABLE `cryptokeys`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
--- AUTO_INCREMENT for table `domainmetadata`
+-- AUTO_INCREMENT für Tabelle `domainmetadata`
 --
 ALTER TABLE `domainmetadata`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
--- AUTO_INCREMENT for table `domains`
+-- AUTO_INCREMENT für Tabelle `domains`
 --
 ALTER TABLE `domains`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 --
--- AUTO_INCREMENT for table `records`
+-- AUTO_INCREMENT für Tabelle `records`
 --
 ALTER TABLE `records`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 --
--- AUTO_INCREMENT for table `remote`
+-- AUTO_INCREMENT für Tabelle `remote`
 --
 ALTER TABLE `remote`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
--- AUTO_INCREMENT for table `tsigkeys`
+-- AUTO_INCREMENT für Tabelle `tsigkeys`
 --
 ALTER TABLE `tsigkeys`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
--- AUTO_INCREMENT for table `users`
+-- AUTO_INCREMENT für Tabelle `users`
 --
 ALTER TABLE `users`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+--
+-- Constraints der exportierten Tabellen
+--
+
+--
+-- Constraints der Tabelle `permissions`
+--
+ALTER TABLE `permissions`
+  ADD CONSTRAINT `permissions_ibfk_1` FOREIGN KEY (`domain_id`) REFERENCES `domains` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `permissions_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints der Tabelle `records`
+--
+ALTER TABLE `records`
+  ADD CONSTRAINT `records_ibfk_1` FOREIGN KEY (`domain_id`) REFERENCES `domains` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints der Tabelle `remote`
+--
+ALTER TABLE `remote`
+  ADD CONSTRAINT `remote_ibfk_1` FOREIGN KEY (`record`) REFERENCES `records` (`id`);
+SET FOREIGN_KEY_CHECKS=1;
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
