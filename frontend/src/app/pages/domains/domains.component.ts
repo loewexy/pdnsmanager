@@ -62,7 +62,7 @@ export class DomainsComponent implements OnInit {
         try {
             await this.modal.showMessage(new ModalOptionsDatatype({
                 heading: 'Confirm deletion',
-                body: 'Are you shure you want to delete ' + domain.name + '?',
+                body: 'Are you sure you want to delete ' + domain.name + '?',
                 acceptText: 'Delete',
                 dismisText: 'Cancel',
                 acceptClass: 'danger'

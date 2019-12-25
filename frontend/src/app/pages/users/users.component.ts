@@ -62,7 +62,7 @@ export class UsersComponent implements OnInit {
         try {
             await this.modal.showMessage(new ModalOptionsDatatype({
                 heading: 'Confirm deletion',
-                body: 'Are you shure you want to delete ' + user.name + '?',
+                body: 'Are you sure you want to delete ' + user.name + '?',
                 acceptText: 'Delete',
                 dismisText: 'Cancel',
                 acceptClass: 'danger'

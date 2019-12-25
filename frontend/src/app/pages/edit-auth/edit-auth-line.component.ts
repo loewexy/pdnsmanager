@@ -88,7 +88,7 @@ export class EditAuthLineComponent implements OnInit, OnChanges {
         try {
             await this.modal.showMessage(new ModalOptionsDatatype({
                 heading: 'Confirm deletion',
-                body: 'Are you shure you want to delete the ' + this.inputType.value +
+                body: 'Are you sure you want to delete the ' + this.inputType.value +
                     ' record ' + this.fullName() + ' with content ' + this.inputContent.value + '?',
                 acceptText: 'Delete',
                 dismisText: 'Cancel',
