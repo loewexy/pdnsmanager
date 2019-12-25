@@ -90,8 +90,30 @@ test.run(async function () {
             url: '/users/4',
             method: 'put',
             data: {
-                name: 'foo',
+                name: 'foo1',
                 password: 'bar',
+                type: 'user'
+            }
+        });
+        assert.equal(res.status, 204, 'Update should succeed.');
+
+        //Test if updated user can log in
+        var res = await req({
+            url: '/sessions',
+            method: 'post',
+            data: {
+                username: 'foo1',
+                password: 'bar'
+            }
+        });
+        assert.equal(res.status, 201, 'Login with updated user should succeed.');
+
+        //Test user update without password
+        var res = await req({
+            url: '/users/4',
+            method: 'put',
+            data: {
+                name: 'foo',
                 type: 'user'
             }
         });

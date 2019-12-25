@@ -283,12 +283,12 @@ class Users
         }
 
         if ($record['backend'] === 'native' && $name !== null) {
-            //Check if user already exists
+            //Check if user with new name already exists
             $query = $this->db->prepare('SELECT id FROM users WHERE name=:name AND backend=\'native\'');
             $query->bindValue(':name', $name);
             $query->execute();
-            $record = $query->fetch();
-            if ($record !== false && intval($record['id']) !== $userId) {
+            $recordTest = $query->fetch();
+            if ($recordTest !== false && intval($recordTest['id']) !== $userId) {
                 throw new \Exceptions\AlreadyExistentException();
             }
         }
