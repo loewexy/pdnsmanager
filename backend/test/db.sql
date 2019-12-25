@@ -215,7 +215,7 @@ CREATE TABLE `options` (
 --
 
 INSERT INTO `options` (`name`, `value`) VALUES
-('schema_version', '5');
+('schema_version', '6');
 
 -- --------------------------------------------------------
 
