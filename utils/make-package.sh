@@ -21,6 +21,13 @@ cd ..
 cp LICENSE "$1"
 cp README.md "$1"
 
+# Add version info
+cat << EOF > "$1"/version.json
+{
+    "version": "$2"
+}
+EOF
+
 # Create archive
 tar -czf "$1".tar.gz "$1"
 
