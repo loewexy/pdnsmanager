@@ -310,19 +310,20 @@ class Records
         $content = $content === null ? $record['content'] : $content;
         $priority = $priority === null ? intval($record['prio']) : $priority;
         $ttl = $ttl === null ? intval($record['ttl']) : $ttl;
+        if ($record['name'] != $name || $record['type'] != $type || $record['content'] != $content || intval($record['prio']) != $priority || intval($record['ttl']) != $ttl) {
+            $query = $this->db->prepare('UPDATE records SET name=:name,type=:type,content=:content,prio=:priority,ttl=:ttl WHERE id=:recordId');
+            $query->bindValue('recordId', $recordId);
+            $query->bindValue(':name', $name);
+            $query->bindValue(':type', $type);
+            $query->bindValue(':content', $content);
+            $query->bindValue(':priority', $priority);
+            $query->bindValue(':ttl', $ttl);
+            $query->execute();
 
-        $query = $this->db->prepare('UPDATE records SET name=:name,type=:type,content=:content,prio=:priority,ttl=:ttl WHERE id=:recordId');
-        $query->bindValue('recordId', $recordId);
-        $query->bindValue(':name', $name);
-        $query->bindValue(':type', $type);
-        $query->bindValue(':content', $content);
-        $query->bindValue(':priority', $priority);
-        $query->bindValue(':ttl', $ttl);
-        $query->execute();
+            $soa = new \Operations\Soa($this->c);
+            $soa->updateSerial($domainId);
 
-        $soa = new \Operations\Soa($this->c);
-        $soa->updateSerial($domainId);
-
-        $this->db->commit();
+            $this->db->commit();
+        }
     }
 }
